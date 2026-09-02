@@ -32,7 +32,7 @@ jobs:
           ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
         run: |
           zowe rse issue unix \
-            "/u/b027086/ci/build.sh" \
+            "placeholder" \
             --cwd "/u/$ZOS_USER"
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
