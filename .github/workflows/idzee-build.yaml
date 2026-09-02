@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      
+
   workflow_dispatch:
 
 jobs:
@@ -33,6 +33,7 @@ jobs:
         run: |
           zowe rse issue unix \
             "/u/b027086/ci/build.sh" \
+            --cwd "/u/$ZOS_USER"
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --base-path rseapi \
