@@ -1,0 +1,1465 @@
+»
+                                         High Level Assembler Option Summary                   (PTF UI90738)   Page    1
+                                                                                            HLASM R6.0  2026/08/24 11.50
+  No Overriding ASMAOPT Parameters
+  Overriding Parameters-  SYSPARM(MAP),DECK,NOOBJECT
+  No Process Statements
+
+
+  Options for this Assembly
+                    NOADATA
+                      ALIGN
+                    NOASA
+                      ASCII(00819)
+                      BATCH
+                      CA(LOCAL)
+                      CE(LOCAL)
+                      CODEPAGE(01148)
+                    NOCOMPAT
+                      CU(LOCAL)
+                    NODATAMAP
+                    NODBCS
+3 PARM/OPTION         DECK
+                      DXREF
+                      EBCDIC(00037)
+                      ESD
+                    NOEXIT
+                      FAIL(NOMSG,NOMNOTE,MAXERRS(500))
+                      FLAG(0,ALIGN,CONT,EXLITW,NOIMPLEN,NOLONGER,NOPAGE0,PUSH,RECORD,RENT,NOSIGNED,NOSUBSTR,NOTRUNC,
+                           USING0)
+                    NOFOLD
+                    NOGOFF
+                      ILMA
+                    NOINFO
+                      LANGUAGE(EN)
+                    NOLIBMAC
+                      LINECOUNT(60)
+                      LIST(121)
+                      MACHINE(,NOLIST)
+                      MXREF(SOURCE)
+3 PARM/OPTION       NOOBJECT
+                      OPTABLE(UNI,NOLIST)
+                    NOPCONTROL
+                    NOPESTOP
+                    NOPROFILE
+                    NORA2
+                    NORENT
+                      RLD
+                      RXREF
+                      SECTALGN(8)
+                      SIZE(MAX)
+                    NOSUPRWARN
+3 PARM/OPTION         SYSPARM(MAP)
+                    NOTERM
+                    NOTEST
+                      THREAD
+                    NOTRANSLATE
+                      TYPECHECK(MAGNITUDE,REGISTER,SIGNED)
+                      UNICODE(01200)
+»
+                                         High Level Assembler Option Summary                   (PTF UI90738)   Page    2
+                                                                                            HLASM R6.0  2026/08/24 11.50
+                      USING(NOLIMIT,MAP,WARN(15))
+                    NOWORKFILE
+                      XREF(SHORT,UNREFS)
+
+  No Overriding DD Names
+»
+                                              External Symbol Dictionary                                       Page    3
+Symbol   Type   Id     Address  Length   Owner Id Flags Alias-of                            HLASM R6.0  2026/08/24 11.50
+EPSMLIS   SD 00000001 00000000 00000AC7             06
+»
+                                                                                                               Page    4
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                      1 *********************************************************************** 00010000
+                                      2 EPSMLIS  DFHMSD TYPE=&SYSPARM,MODE=INOUT,LANG=COBOL,                   X
+                                                       STORAGE=AUTO,TIOAPFX=YES,DSATTS=(COLOR,HILIGHT),        X 0009000
+                                                       MAPATTS=(COLOR,HILIGHT)                                   0009100
+                                    100+***********************************************************************
+000000                00000 00AC7   101+EPSMLIS  CSECT                                                     @PCA 01-DFHMS
+                                    102+EPSMLIS  AMODE 31                                                  @PCA 01-DFHMS
+                                    103+EPSMLIS  RMODE ANY                                                 @PCA 01-DFHMS
+000000                              104+MSD0001  DS    0D                  MAP SET ORIGIN                  @02A 01-DFHMS
+000000 C5D7E2D4D3C9E240             105+         DC    CL8'EPSMLIS'        MAP SET NAME                       @ 01-DFHMS
+000008 00                           106+         DC    AL1(DFHU0)          OVERFLOW TRAILER LENGTH              01-DFHMS
+000009 32                           107+         DC    X'32'               VERSION 3.2  OF CICS            @P5C 01-DFHMS
+00000A 4040                         108+         DC    CL2' '              LDC MNEMONIC                @BB85D1L 01-DFHMS
+                                    109+***********************************************************************
+
+                                    111 EPSMLIS  DFHMDI SIZE=(24,80),CTRL=(PRINT,FREEKB)                         0011000
+                                    205+***********************************************************************
+00000C                              206+         DS    0C                  MAP ORIGIN                         @ 01-DFHMD
+                      0000C         207+DFHL1    EQU   *                   START OF MAP                         01-DFHMD
+00000C 004F                         208+         DC    AL2(DFHK1)          MAP DESCRIPTOR LENGTH                01-DFHMD
+00000E 0000                         209+         DC    XL2'0000'           INPUT PARTITION NAME     @E5E2C @H1C 01-DFHMD
+000010 0000                         210+         DC    XL2'0000'           OUTPUT PARTITION NAME    @E5E2C @H1C 01-DFHMD
+000012 0000                         211+         DC    XL2'0000'           ACTIVE PARTITION NAME    @E5E2C @H1C 01-DFHMD
+000014 C5D7E2D4D3C9E240             212+         DC    CL8'EPSMLIS'  .          MAP NAME                      @ 01-DFHMD
+00001C 0AB7                         213+         DC    AL2(DFHM1)          MAP LENGTH                           01-DFHMD
+00001E 01FE                         214+         DC    AL2(DFHS1)          MAP SPECIFICATION LENGTH             01-DFHMD
+000020 031E                         215+         DC    AL2(DFHN1)          INPUT WORK AREA LENGTH               01-DFHMD
+000022 04AB                         216+         DC    AL2(DFHP1)          OUTPUT WORK AREA LENGTH              01-DFHMD
+000024 C0                           217+         DC    AL1(192)  .              MAP DESCRIPTOR FLAG BYTE      @ 01-DFHMD
+000025 4A                           218+         DC    CL1'¢'              3270 WRITE CONTROL CHARACTER       @ 01-DFHMD
+000026 0358                         219+         DC    AL2(DFHQ1)          3270 CURSOR POSITION                 01-DFHMD
+000028 00                           220+         DC    AL1(0)              MAP MARGIN                         @ 01-DFHMD
+000029 18                           221+         DC    AL1(24)             MAP LENGTH - NUMBER OF LINES       @ 01-DFHMD
+00002A 50                           222+         DC    AL1(80)             MAP WIDTH - NUMBER OF COLUMNS      @ 01-DFHMD
+00002B FF                           223+         DC    AL1(255)            MAP STARTING LINE NUMBER           @ 01-DFHMD
+00002C FE                           224+         DC    AL1(254)            MAP STARTING COLUMN NUMBER         @ 01-DFHMD
+00002D 11                           225+         DC    AL1(DFHT1)          MAP INDICATOR                        01-DFHMD
+00002E 00                           226+         DC    AL1(0)              TYPE REQUEST BYTE TWO              @ 01-DFHMD
+00002F 00                           227+         DC    AL1(0)              TYPE REQUEST BYTE THREE            @ 01-DFHMD
+000030                00030 0002E   228+         ORG   *-2                 Overlay byte 2 and 3            @0DA 01-DFHMD
+00002E 0000                         229+         DC    AL2(DFHZ1)          Count of useredit fields        @0DA 01-DFHMD
+000030 00                           230+         DC    AL1(0)              TYPE REQUEST BYTE FOUR             @ 01-DFHMD
+000031 00                           231+         DC    AL1(0)              TYPE REQUEST BYTE FIVE             @ 01-DFHMD
+000032 0305                         232+         DC    AL2(DFHX1)          offset of descriptor            @L8C 01-DFHMD
+000034 00                           233+         DC    AL1(0)              REQUEST WRITE CONTROL CHARACTER    @ 01-DFHMD
+000035 0C                           234+         DC    AL1(12)             MAX NO OF ATTRS                 @L3A 01-DFHMD
+000036 00000000                     235+         DC    AL4(0)              MAP CHAIN POINTER               @L3A 01-DFHMD
+00003A 0002                         236+         DC    AL2(2)              NO. OF ATTRS IN MAP FIELDS      @L3A 01-DFHMD
+00003C 0002                         237+         DC    AL2(2)              NO. OF ATTRS IN DSECT FIELDS    @L3A 01-DFHMD
+00003E 01000200                     238+         DC    AL1(1,0,2,0)                                        @L3A 01-DFHMD
+000042 00000000                     239+         DC    AL1(0,0,0,0)                                        @L3A 01-DFHMD
+000046 00000000                     240+         DC    AL1(0,0,0,0)                                        @L3A 01-DFHMD
+i00004A 01000200                     241+         DC    AL1(1,0,2,0)                                        @L3A 01-DFHMD
+                                                                                                               Page    5
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+00004E 00000000                     242+         DC    AL1(0,0,0,0)                                        @L3A 01-DFHMD
+000052 00000000                     243+         DC    AL1(0,0,0,0)                                        @L3A 01-DFHMD
+000056 00                           244+         DC    AL1(0)              FIELD SEPARATOR LENGTH          @L3A 01-DFHMD
+000057 40404040                     245+         DC    CL4' '                      FIELD SEPARATOR VALUE   @L3C 01-DFHMD
+                      0004F         246+DFHK1    EQU *-DFHL1               LENGTH OF MAP HEADER                 01-DFHMD
+                                    247+***********************************************************************
+
+                                    249          DFHMDF POS=(1,24),LENGTH=26,INITIAL='Better Mortgage Rates',  *
+                                                       ATTRB=(ASKIP,BRT)
+                                    344+***********************************************************************
+00005B                              345+         DS    0C                  FIELD NAME                         @ 01-DFHMD
+00005B 0000                         346+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00005D 001A                         347+         DC    AL2(26)             FIELD LENGTH                       @ 01-DFHMD
+00005F 02                           348+         DC    AL1(2)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000060 F8                           349+         DC    CL1'8'              FIELD ATTRIBUTE                    @ 01-DFHMD
+000061 0017                         350+         DC    AL2(23)      .           FIELD POSITION                @ 01-DFHMD
+000063 00                           351+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000064 00                           352+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+000065 C285A3A3859940D4             353+         DC    CL26'Better Mortgage Rates'                             X01-DFHMD
+00006D 9699A38781878540                +                                   DEFAULT MAP DATA                   @
+                                    354+***********************************************************************
+
+                                    356          DFHMDF POS=(24,58),LENGTH=0,                                  *
+                                                       ATTRB=ASKIP
+                                    451+***********************************************************************
+00007F                              452+         DS    0C                  FIELD NAME                         @ 01-DFHMD
+00007F 0000                         453+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000081 0000                         454+         DC    AL2(0)              FIELD LENGTH                       @ 01-DFHMD
+000083 00                           455+         DC    AL1(0)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000084 F0                           456+         DC    CL1'0'              FIELD ATTRIBUTE                    @ 01-DFHMD
+000085 0769                         457+         DC    AL2(1897)    .           FIELD POSITION                @ 01-DFHMD
+000087 00                           458+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000088 00                           459+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                    460+***********************************************************************
+
+                                    462 *        MENU MORTGAGE LIST.
+                                    464 LITCOMP  DFHMDF POS=(3,1),LENGTH=24,INITIAL='Company',                 *
+                                                       ATTRB=(ASKIP,NORM)
+** ASMA254I *** MNOTE ***           558+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***           559+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                    561+***********************************************************************
+000089                              562+LITCOMP  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000089 0000                         563+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00008B 0018                         564+         DC    AL2(24)             FIELD LENGTH                       @ 01-DFHMD
+00008D 03                           565+         DC    AL1(3)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00008E F0                           566+         DC    CL1'0'              FIELD ATTRIBUTE                    @ 01-DFHMD
+00008F 00A0                         567+         DC    AL2(160)     .           FIELD POSITION                @ 01-DFHMD
+i000091 00                           568+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+                                                                                                               Page    6
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+000092 00                           569+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+000093 C39694978195A840             570+         DC    CL24'Company'       DEFAULT MAP DATA                   @ 01-DFHMD
+                                    571+***********************************************************************
+
+                                    573 LITPHN   DFHMDF POS=(3,26),LENGTH=13,INITIAL='Phone Number',           *
+                                                       ATTRB=(PROT,NORM)
+** ASMA254I *** MNOTE ***           667+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***           668+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                    670+***********************************************************************
+0000AB                              671+LITPHN   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0000AB 0000                         672+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0000AD 000D                         673+         DC    AL2(13)             FIELD LENGTH                       @ 01-DFHMD
+0000AF 03                           674+         DC    AL1(3)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0000B0 60                           675+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+0000B1 00B9                         676+         DC    AL2(185)     .           FIELD POSITION                @ 01-DFHMD
+0000B3 00                           677+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0000B4 00                           678+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+0000B5 D78896958540D5A4             679+         DC    CL13'Phone Number'  DEFAULT MAP DATA                   @ 01-DFHMD
+                                    680+***********************************************************************
+
+                                    682 EPDIFF1  DFHMDF POS=(3,40),LENGTH=13,INITIAL='Interest Rate',          *
+                                                       ATTRB=(PROT,NORM)
+** ASMA254I *** MNOTE ***           776+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***           777+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                    779+***********************************************************************
+0000C2                              780+EPDIFF1  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0000C2 0000                         781+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0000C4 000D                         782+         DC    AL2(13)             FIELD LENGTH                       @ 01-DFHMD
+0000C6 03                           783+         DC    AL1(3)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0000C7 60                           784+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+0000C8 00C7                         785+         DC    AL2(199)     .           FIELD POSITION                @ 01-DFHMD
+0000CA 00                           786+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0000CB 00                           787+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+0000CC C995A3859985A2A3             788+         DC    CL13'Interest Rate' DEFAULT MAP DATA                   @ 01-DFHMD
+                                    789+***********************************************************************
+
+                                    791 EPDIFF2  DFHMDF POS=(3,54),LENGTH=16,INITIAL='Monthly Payment',        *
+                                                       ATTRB=(PROT,NORM)
+** ASMA254I *** MNOTE ***           885+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***           886+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                    888+***********************************************************************
+0000D9                              889+EPDIFF2  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0000D9 0000                         890+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0000DB 0010                         891+         DC    AL2(16)             FIELD LENGTH                       @ 01-DFHMD
+0000DD 03                           892+         DC    AL1(3)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0000DE 60                           893+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+0000DF 00D5                         894+         DC    AL2(213)     .           FIELD POSITION                @ 01-DFHMD
+0000E1 00                           895+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+i0000E2 00                           896+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                                                                                               Page    7
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+0000E3 D49695A38893A840             897+         DC    CL16'Monthly Payment'                                   X01-DFHMD
+0000EB D781A8948595A340                +                                   DEFAULT MAP DATA                   @
+                                    898+***********************************************************************
+
+                                    900 LITPHN1  DFHMDF POS=(3,71),LENGTH=7,INITIAL='# Years',                 *
+                                                       ATTRB=(PROT,NORM)
+** ASMA254I *** MNOTE ***           994+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***           995+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                    997+***********************************************************************
+0000F3                              998+LITPHN1  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0000F3 0000                         999+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0000F5 0007                        1000+         DC    AL2(7)              FIELD LENGTH                       @ 01-DFHMD
+0000F7 03                          1001+         DC    AL1(3)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0000F8 60                          1002+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+0000F9 00E6                        1003+         DC    AL2(230)     .           FIELD POSITION                @ 01-DFHMD
+0000FB 00                          1004+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0000FC 00                          1005+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+0000FD 7B40E8858199A2              1006+         DC    CL7'# Years'        DEFAULT MAP DATA                   @ 01-DFHMD
+                                   1007+***********************************************************************
+
+                                   1009 EPCMP1   DFHMDF POS=(4,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          1103+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1104+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1108+***********************************************************************
+000104                             1109+EPCMP1   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000104 0000                        1110+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000106 0018                        1111+         DC    AL2(24)             FIELD LENGTH                       @ 01-DFHMD
+000108 01                          1112+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000109 60                          1113+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+00010A 00F0                        1114+         DC    AL2(240)     .           FIELD POSITION                @ 01-DFHMD
+00010C F4                          1115+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+00010D 00                          1116+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   1117+***********************************************************************
+
+                                   1119 EPPHN1   DFHMDF POS=(4,26),LENGTH=13,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          1213+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1214+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1218+***********************************************************************
+00010E                             1219+EPPHN1   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+00010E 0000                        1220+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000110 000D                        1221+         DC    AL2(13)             FIELD LENGTH                       @ 01-DFHMD
+000112 01                          1222+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000113 60                          1223+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+000114 0109                        1224+         DC    AL2(265)     .           FIELD POSITION                @ 01-DFHMD
+000116 F4                          1225+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000117 00                          1226+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+i                                   1227+***********************************************************************
+                                                                                                               Page    8
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   1229 EPRATE1  DFHMDF POS=(4,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          1323+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1324+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1327+***********************************************************************
+000118                             1328+EPRATE1  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000118 0000                        1329+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00011A 0005                        1330+         DC    AL2(5)              FIELD LENGTH                       @ 01-DFHMD
+00011C 0D                          1331+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00011D 50                          1332+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+00011E 011C                        1333+         DC    AL2(284)     .           FIELD POSITION                @ 01-DFHMD
+000120 F4                          1334+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000121 00                          1335+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   1336+***********************************************************************
+
+                                   1338 EPLOAN1  DFHMDF POS=(4,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          1432+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1433+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1435+***********************************************************************
+000122                             1436+EPLOAN1  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000122 0000                        1437+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000124 000C                        1438+         DC    AL2(12)             FIELD LENGTH                       @ 01-DFHMD
+000126 0D                          1439+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000127 50                          1440+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+000128 0127                        1441+         DC    AL2(295)     .           FIELD POSITION                @ 01-DFHMD
+00012A 00                          1442+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+00012B 00                          1443+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   1444+***********************************************************************
+
+                                   1446 EPYEARS1 DFHMDF POS=(4,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          1540+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1541+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1544+***********************************************************************
+00012C                             1545+EPYEARS1 DS    0C                  FIELD NAME                      @08A 01-DFHMD
+00012C 0000                        1546+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00012E 0002                        1547+         DC    AL2(2)              FIELD LENGTH                       @ 01-DFHMD
+000130 0D                          1548+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000131 50                          1549+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+000132 0139                        1550+         DC    AL2(313)     .           FIELD POSITION                @ 01-DFHMD
+000134 F4                          1551+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000135 00                          1552+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   1553+***********************************************************************
+
+                                   1555 EPCMP2   DFHMDF POS=(5,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          1649+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+i** ASMA254I *** MNOTE ***          1650+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                                                                                               Page    9
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   1654+***********************************************************************
+000136                             1655+EPCMP2   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000136 0000                        1656+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000138 0018                        1657+         DC    AL2(24)             FIELD LENGTH                       @ 01-DFHMD
+00013A 01                          1658+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00013B 60                          1659+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+00013C 0140                        1660+         DC    AL2(320)     .           FIELD POSITION                @ 01-DFHMD
+00013E F4                          1661+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+00013F 00                          1662+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   1663+***********************************************************************
+
+                                   1665 EPPHN2   DFHMDF POS=(5,26),LENGTH=13,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          1759+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1760+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1764+***********************************************************************
+000140                             1765+EPPHN2   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000140 0000                        1766+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000142 000D                        1767+         DC    AL2(13)             FIELD LENGTH                       @ 01-DFHMD
+000144 01                          1768+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000145 60                          1769+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+000146 0159                        1770+         DC    AL2(345)     .           FIELD POSITION                @ 01-DFHMD
+000148 F4                          1771+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000149 00                          1772+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   1773+***********************************************************************
+
+                                   1775 EPRATE2  DFHMDF POS=(5,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          1869+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1870+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1873+***********************************************************************
+00014A                             1874+EPRATE2  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+00014A 0000                        1875+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00014C 0005                        1876+         DC    AL2(5)              FIELD LENGTH                       @ 01-DFHMD
+00014E 0D                          1877+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00014F 50                          1878+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+000150 016C                        1879+         DC    AL2(364)     .           FIELD POSITION                @ 01-DFHMD
+000152 F4                          1880+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000153 00                          1881+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   1882+***********************************************************************
+
+                                   1884 EPLOAN2  DFHMDF POS=(5,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          1978+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1979+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1981+***********************************************************************
+000154                             1982+EPLOAN2  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000154 0000                        1983+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+i000156 000C                        1984+         DC    AL2(12)             FIELD LENGTH                       @ 01-DFHMD
+                                                                                                               Page   10
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+000158 0D                          1985+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000159 50                          1986+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+00015A 0177                        1987+         DC    AL2(375)     .           FIELD POSITION                @ 01-DFHMD
+00015C 00                          1988+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+00015D 00                          1989+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   1990+***********************************************************************
+
+                                   1992 EPYEARS2 DFHMDF POS=(5,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          2086+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2087+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2090+***********************************************************************
+00015E                             2091+EPYEARS2 DS    0C                  FIELD NAME                      @08A 01-DFHMD
+00015E 0000                        2092+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000160 0002                        2093+         DC    AL2(2)              FIELD LENGTH                       @ 01-DFHMD
+000162 0D                          2094+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000163 50                          2095+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+000164 0189                        2096+         DC    AL2(393)     .           FIELD POSITION                @ 01-DFHMD
+000166 F4                          2097+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000167 00                          2098+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   2099+***********************************************************************
+
+                                   2101 EPCMP3   DFHMDF POS=(6,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          2195+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2196+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2200+***********************************************************************
+000168                             2201+EPCMP3   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000168 0000                        2202+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00016A 0018                        2203+         DC    AL2(24)             FIELD LENGTH                       @ 01-DFHMD
+00016C 01                          2204+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00016D 60                          2205+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+00016E 0190                        2206+         DC    AL2(400)     .           FIELD POSITION                @ 01-DFHMD
+000170 F4                          2207+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000171 00                          2208+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   2209+***********************************************************************
+
+                                   2211 EPPHN3   DFHMDF POS=(6,26),LENGTH=13,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          2305+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2306+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2310+***********************************************************************
+000172                             2311+EPPHN3   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000172 0000                        2312+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000174 000D                        2313+         DC    AL2(13)             FIELD LENGTH                       @ 01-DFHMD
+000176 01                          2314+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000177 60                          2315+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+000178 01A9                        2316+         DC    AL2(425)     .           FIELD POSITION                @ 01-DFHMD
+i00017A F4                          2317+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+                                                                                                               Page   11
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+00017B 00                          2318+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   2319+***********************************************************************
+
+                                   2321 EPRATE3  DFHMDF POS=(6,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          2415+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2416+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2419+***********************************************************************
+00017C                             2420+EPRATE3  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+00017C 0000                        2421+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00017E 0005                        2422+         DC    AL2(5)              FIELD LENGTH                       @ 01-DFHMD
+000180 0D                          2423+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000181 50                          2424+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+000182 01BC                        2425+         DC    AL2(444)     .           FIELD POSITION                @ 01-DFHMD
+000184 F4                          2426+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000185 00                          2427+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   2428+***********************************************************************
+
+                                   2430 EPLOAN3  DFHMDF POS=(6,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          2524+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2525+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2527+***********************************************************************
+000186                             2528+EPLOAN3  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000186 0000                        2529+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000188 000C                        2530+         DC    AL2(12)             FIELD LENGTH                       @ 01-DFHMD
+00018A 0D                          2531+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00018B 50                          2532+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+00018C 01C7                        2533+         DC    AL2(455)     .           FIELD POSITION                @ 01-DFHMD
+00018E 00                          2534+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+00018F 00                          2535+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   2536+***********************************************************************
+
+                                   2538 EPYEARS3 DFHMDF POS=(6,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          2632+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2633+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2636+***********************************************************************
+000190                             2637+EPYEARS3 DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000190 0000                        2638+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000192 0002                        2639+         DC    AL2(2)              FIELD LENGTH                       @ 01-DFHMD
+000194 0D                          2640+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000195 50                          2641+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+000196 01D9                        2642+         DC    AL2(473)     .           FIELD POSITION                @ 01-DFHMD
+000198 F4                          2643+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000199 00                          2644+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+i                                   2645+***********************************************************************
+                                                                                                               Page   12
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   2647 EPCMP4   DFHMDF POS=(7,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          2741+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2742+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2746+***********************************************************************
+00019A                             2747+EPCMP4   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+00019A 0000                        2748+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00019C 0018                        2749+         DC    AL2(24)             FIELD LENGTH                       @ 01-DFHMD
+00019E 01                          2750+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00019F 60                          2751+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+0001A0 01E0                        2752+         DC    AL2(480)     .           FIELD POSITION                @ 01-DFHMD
+0001A2 F4                          2753+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0001A3 00                          2754+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   2755+***********************************************************************
+
+                                   2757 EPPHN4   DFHMDF POS=(7,26),LENGTH=13,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          2851+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2852+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2856+***********************************************************************
+0001A4                             2857+EPPHN4   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0001A4 0000                        2858+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0001A6 000D                        2859+         DC    AL2(13)             FIELD LENGTH                       @ 01-DFHMD
+0001A8 01                          2860+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0001A9 60                          2861+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+0001AA 01F9                        2862+         DC    AL2(505)     .           FIELD POSITION                @ 01-DFHMD
+0001AC F4                          2863+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0001AD 00                          2864+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   2865+***********************************************************************
+
+                                   2867 EPRATE4  DFHMDF POS=(7,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          2961+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2962+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2965+***********************************************************************
+0001AE                             2966+EPRATE4  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0001AE 0000                        2967+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0001B0 0005                        2968+         DC    AL2(5)              FIELD LENGTH                       @ 01-DFHMD
+0001B2 0D                          2969+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0001B3 50                          2970+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+0001B4 020C                        2971+         DC    AL2(524)     .           FIELD POSITION                @ 01-DFHMD
+0001B6 F4                          2972+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0001B7 00                          2973+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   2974+***********************************************************************
+
+                                   2976 EPLOAN4  DFHMDF POS=(7,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          3070+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+i** ASMA254I *** MNOTE ***          3071+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                                                                                               Page   13
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   3073+***********************************************************************
+0001B8                             3074+EPLOAN4  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0001B8 0000                        3075+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0001BA 000C                        3076+         DC    AL2(12)             FIELD LENGTH                       @ 01-DFHMD
+0001BC 0D                          3077+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0001BD 50                          3078+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+0001BE 0217                        3079+         DC    AL2(535)     .           FIELD POSITION                @ 01-DFHMD
+0001C0 00                          3080+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0001C1 00                          3081+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   3082+***********************************************************************
+
+                                   3084 EPYEARS4 DFHMDF POS=(7,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          3178+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3179+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3182+***********************************************************************
+0001C2                             3183+EPYEARS4 DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0001C2 0000                        3184+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0001C4 0002                        3185+         DC    AL2(2)              FIELD LENGTH                       @ 01-DFHMD
+0001C6 0D                          3186+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0001C7 50                          3187+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+0001C8 0229                        3188+         DC    AL2(553)     .           FIELD POSITION                @ 01-DFHMD
+0001CA F4                          3189+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0001CB 00                          3190+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   3191+***********************************************************************
+
+                                   3193 EPCMP5   DFHMDF POS=(8,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          3287+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3288+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3292+***********************************************************************
+0001CC                             3293+EPCMP5   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0001CC 0000                        3294+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0001CE 0018                        3295+         DC    AL2(24)             FIELD LENGTH                       @ 01-DFHMD
+0001D0 01                          3296+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0001D1 60                          3297+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+0001D2 0230                        3298+         DC    AL2(560)     .           FIELD POSITION                @ 01-DFHMD
+0001D4 F4                          3299+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0001D5 00                          3300+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   3301+***********************************************************************
+
+                                   3303 EPPHN5   DFHMDF POS=(8,26),LENGTH=13,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          3397+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3398+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3402+***********************************************************************
+0001D6                             3403+EPPHN5   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0001D6 0000                        3404+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+i0001D8 000D                        3405+         DC    AL2(13)             FIELD LENGTH                       @ 01-DFHMD
+                                                                                                               Page   14
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+0001DA 01                          3406+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0001DB 60                          3407+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+0001DC 0249                        3408+         DC    AL2(585)     .           FIELD POSITION                @ 01-DFHMD
+0001DE F4                          3409+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0001DF 00                          3410+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   3411+***********************************************************************
+
+                                   3413 EPRATE5  DFHMDF POS=(8,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          3507+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3508+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3511+***********************************************************************
+0001E0                             3512+EPRATE5  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0001E0 0000                        3513+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0001E2 0005                        3514+         DC    AL2(5)              FIELD LENGTH                       @ 01-DFHMD
+0001E4 0D                          3515+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0001E5 50                          3516+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+0001E6 025C                        3517+         DC    AL2(604)     .           FIELD POSITION                @ 01-DFHMD
+0001E8 F4                          3518+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0001E9 00                          3519+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   3520+***********************************************************************
+
+                                   3522 EPLOAN5  DFHMDF POS=(8,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          3616+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3617+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3619+***********************************************************************
+0001EA                             3620+EPLOAN5  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0001EA 0000                        3621+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0001EC 000C                        3622+         DC    AL2(12)             FIELD LENGTH                       @ 01-DFHMD
+0001EE 0D                          3623+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0001EF 50                          3624+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+0001F0 0267                        3625+         DC    AL2(615)     .           FIELD POSITION                @ 01-DFHMD
+0001F2 00                          3626+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0001F3 00                          3627+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   3628+***********************************************************************
+
+                                   3630 EPYEARS5 DFHMDF POS=(8,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          3724+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3725+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3728+***********************************************************************
+0001F4                             3729+EPYEARS5 DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0001F4 0000                        3730+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0001F6 0002                        3731+         DC    AL2(2)              FIELD LENGTH                       @ 01-DFHMD
+0001F8 0D                          3732+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0001F9 50                          3733+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+0001FA 0279                        3734+         DC    AL2(633)     .           FIELD POSITION                @ 01-DFHMD
+i0001FC F4                          3735+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+                                                                                                               Page   15
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+0001FD 00                          3736+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   3737+***********************************************************************
+
+                                   3739 EPCMP6   DFHMDF POS=(9,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          3833+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3834+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3838+***********************************************************************
+0001FE                             3839+EPCMP6   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0001FE 0000                        3840+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000200 0018                        3841+         DC    AL2(24)             FIELD LENGTH                       @ 01-DFHMD
+000202 01                          3842+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000203 60                          3843+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+000204 0280                        3844+         DC    AL2(640)     .           FIELD POSITION                @ 01-DFHMD
+000206 F4                          3845+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000207 00                          3846+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   3847+***********************************************************************
+
+                                   3849 EPPHN6   DFHMDF POS=(9,26),LENGTH=13,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          3943+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3944+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3948+***********************************************************************
+000208                             3949+EPPHN6   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000208 0000                        3950+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00020A 000D                        3951+         DC    AL2(13)             FIELD LENGTH                       @ 01-DFHMD
+00020C 01                          3952+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00020D 60                          3953+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+00020E 0299                        3954+         DC    AL2(665)     .           FIELD POSITION                @ 01-DFHMD
+000210 F4                          3955+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000211 00                          3956+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   3957+***********************************************************************
+
+                                   3959 EPRATE6  DFHMDF POS=(9,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          4053+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4054+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4057+***********************************************************************
+000212                             4058+EPRATE6  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000212 0000                        4059+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000214 0005                        4060+         DC    AL2(5)              FIELD LENGTH                       @ 01-DFHMD
+000216 0D                          4061+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000217 50                          4062+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+000218 02AC                        4063+         DC    AL2(684)     .           FIELD POSITION                @ 01-DFHMD
+00021A F4                          4064+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+00021B 00                          4065+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+i                                   4066+***********************************************************************
+                                                                                                               Page   16
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   4068 EPLOAN6  DFHMDF POS=(9,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          4162+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4163+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4165+***********************************************************************
+00021C                             4166+EPLOAN6  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+00021C 0000                        4167+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00021E 000C                        4168+         DC    AL2(12)             FIELD LENGTH                       @ 01-DFHMD
+000220 0D                          4169+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000221 50                          4170+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+000222 02B7                        4171+         DC    AL2(695)     .           FIELD POSITION                @ 01-DFHMD
+000224 00                          4172+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000225 00                          4173+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   4174+***********************************************************************
+
+                                   4176 EPYEARS6 DFHMDF POS=(9,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          4270+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4271+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4274+***********************************************************************
+000226                             4275+EPYEARS6 DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000226 0000                        4276+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000228 0002                        4277+         DC    AL2(2)              FIELD LENGTH                       @ 01-DFHMD
+00022A 0D                          4278+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00022B 50                          4279+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+00022C 02C9                        4280+         DC    AL2(713)     .           FIELD POSITION                @ 01-DFHMD
+00022E F4                          4281+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+00022F 00                          4282+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   4283+***********************************************************************
+
+                                   4285 EPCMP7   DFHMDF POS=(10,1),LENGTH=24,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          4379+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4380+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4384+***********************************************************************
+000230                             4385+EPCMP7   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000230 0000                        4386+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000232 0018                        4387+         DC    AL2(24)             FIELD LENGTH                       @ 01-DFHMD
+000234 01                          4388+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000235 60                          4389+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+000236 02D0                        4390+         DC    AL2(720)     .           FIELD POSITION                @ 01-DFHMD
+000238 F4                          4391+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000239 00                          4392+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   4393+***********************************************************************
+
+                                   4395 EPPHN7   DFHMDF POS=(10,26),LENGTH=13,                                 *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          4489+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+i** ASMA254I *** MNOTE ***          4490+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                                                                                               Page   17
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   4494+***********************************************************************
+00023A                             4495+EPPHN7   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+00023A 0000                        4496+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00023C 000D                        4497+         DC    AL2(13)             FIELD LENGTH                       @ 01-DFHMD
+00023E 01                          4498+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00023F 60                          4499+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+000240 02E9                        4500+         DC    AL2(745)     .           FIELD POSITION                @ 01-DFHMD
+000242 F4                          4501+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000243 00                          4502+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   4503+***********************************************************************
+
+                                   4505 EPRATE7  DFHMDF POS=(10,45),LENGTH=5,                                  *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          4599+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4600+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4603+***********************************************************************
+000244                             4604+EPRATE7  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000244 0000                        4605+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000246 0005                        4606+         DC    AL2(5)              FIELD LENGTH                       @ 01-DFHMD
+000248 0D                          4607+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000249 50                          4608+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+00024A 02FC                        4609+         DC    AL2(764)     .           FIELD POSITION                @ 01-DFHMD
+00024C F4                          4610+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+00024D 00                          4611+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   4612+***********************************************************************
+
+                                   4614 EPLOAN7  DFHMDF POS=(10,56),LENGTH=12,                                 *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          4708+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4709+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4711+***********************************************************************
+00024E                             4712+EPLOAN7  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+00024E 0000                        4713+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000250 000C                        4714+         DC    AL2(12)             FIELD LENGTH                       @ 01-DFHMD
+000252 0D                          4715+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000253 50                          4716+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+000254 0307                        4717+         DC    AL2(775)     .           FIELD POSITION                @ 01-DFHMD
+000256 00                          4718+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000257 00                          4719+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   4720+***********************************************************************
+
+                                   4722 EPYEARS7 DFHMDF POS=(10,74),LENGTH=2,                                  *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          4816+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4817+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4820+***********************************************************************
+000258                             4821+EPYEARS7 DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000258 0000                        4822+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+i00025A 0002                        4823+         DC    AL2(2)              FIELD LENGTH                       @ 01-DFHMD
+                                                                                                               Page   18
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+00025C 0D                          4824+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00025D 50                          4825+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+00025E 0319                        4826+         DC    AL2(793)     .           FIELD POSITION                @ 01-DFHMD
+000260 F4                          4827+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000261 00                          4828+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   4829+***********************************************************************
+
+                                   4831 EPCMP8   DFHMDF POS=(11,1),LENGTH=24,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          4925+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4926+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4930+***********************************************************************
+000262                             4931+EPCMP8   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000262 0000                        4932+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000264 0018                        4933+         DC    AL2(24)             FIELD LENGTH                       @ 01-DFHMD
+000266 01                          4934+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000267 60                          4935+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+000268 0320                        4936+         DC    AL2(800)     .           FIELD POSITION                @ 01-DFHMD
+00026A F4                          4937+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+00026B 00                          4938+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   4939+***********************************************************************
+
+                                   4941 EPPHN8   DFHMDF POS=(11,26),LENGTH=13,                                 *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          5035+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5036+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5040+***********************************************************************
+00026C                             5041+EPPHN8   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+00026C 0000                        5042+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00026E 000D                        5043+         DC    AL2(13)             FIELD LENGTH                       @ 01-DFHMD
+000270 01                          5044+         DC    AL1(1)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000271 60                          5045+         DC    CL1'-'              FIELD ATTRIBUTE                    @ 01-DFHMD
+000272 0339                        5046+         DC    AL2(825)     .           FIELD POSITION                @ 01-DFHMD
+000274 F4                          5047+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000275 00                          5048+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   5049+***********************************************************************
+
+                                   5051 EPRATE8  DFHMDF POS=(11,45),LENGTH=5,                                  *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          5145+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5146+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5149+***********************************************************************
+000276                             5150+EPRATE8  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000276 0000                        5151+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000278 0005                        5152+         DC    AL2(5)              FIELD LENGTH                       @ 01-DFHMD
+00027A 0D                          5153+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00027B 50                          5154+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+00027C 034C                        5155+         DC    AL2(844)     .           FIELD POSITION                @ 01-DFHMD
+i00027E F4                          5156+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+                                                                                                               Page   19
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+00027F 00                          5157+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   5158+***********************************************************************
+
+                                   5160 EPLOAN8  DFHMDF POS=(11,56),LENGTH=12,                                 *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          5254+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5255+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5257+***********************************************************************
+000280                             5258+EPLOAN8  DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000280 0000                        5259+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000282 000C                        5260+         DC    AL2(12)             FIELD LENGTH                       @ 01-DFHMD
+000284 0D                          5261+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000285 50                          5262+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+000286 0357                        5263+         DC    AL2(855)     .           FIELD POSITION                @ 01-DFHMD
+000288 00                          5264+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000289 00                          5265+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   5266+***********************************************************************
+
+                                   5268          DFHMDF POS=(11,69),                                           *
+                                                       ATTRB=ASKIP
+** ASMA254I *** MNOTE ***          5362+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5363+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5365+***********************************************************************
+00028A                             5366+         DS    0C                  FIELD NAME                         @ 01-DFHMD
+00028A 0000                        5367+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+00028C 0000                        5368+         DC    AL2(0)              FIELD LENGTH                       @ 01-DFHMD
+00028E 00                          5369+         DC    AL1(0)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+00028F F0                          5370+         DC    CL1'0'              FIELD ATTRIBUTE                    @ 01-DFHMD
+000290 0364                        5371+         DC    AL2(868)     .           FIELD POSITION                @ 01-DFHMD
+000292 00                          5372+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+000293 00                          5373+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   5374+***********************************************************************
+
+                                   5376 EPYEARS8 DFHMDF POS=(11,74),LENGTH=2,                                  *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          5470+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5471+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5474+***********************************************************************
+000294                             5475+EPYEARS8 DS    0C                  FIELD NAME                      @08A 01-DFHMD
+000294 0000                        5476+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+000296 0002                        5477+         DC    AL2(2)              FIELD LENGTH                       @ 01-DFHMD
+000298 0D                          5478+         DC    AL1(13)             FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+000299 50                          5479+         DC    CL1'&&'             FIELD ATTRIBUTE                    @ 01-DFHMD
+00029A 0369                        5480+         DC    AL2(873)     .           FIELD POSITION                @ 01-DFHMD
+00029C F4                          5481+         DC    X'F4'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+00029D 00                          5482+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+i                                   5483+***********************************************************************
+                                                                                                               Page   20
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   5485          DFHMDF POS=(11,77),LENGTH=0,                                  *
+                                                       ATTRB=ASKIP
+** ASMA254I *** MNOTE ***          5579+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5580+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5582+***********************************************************************
+00029E                             5583+         DS    0C                  FIELD NAME                         @ 01-DFHMD
+00029E 0000                        5584+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0002A0 0000                        5585+         DC    AL2(0)              FIELD LENGTH                       @ 01-DFHMD
+0002A2 00                          5586+         DC    AL1(0)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0002A3 F0                          5587+         DC    CL1'0'              FIELD ATTRIBUTE                    @ 01-DFHMD
+0002A4 036C                        5588+         DC    AL2(876)     .           FIELD POSITION                @ 01-DFHMD
+0002A6 00                          5589+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0002A7 00                          5590+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+                                   5591+***********************************************************************
+
+                                   5593          DFHMDF POS=(23,17),LENGTH=43,                                 *
+                                                       INITIAL='Press F3 to quit or Enter to calculate loan',  *
+                                                       ATTRB=(ASKIP,NORM),HILIGHT=OFF,COLOR=BLUE
+** ASMA254I *** MNOTE ***          5687+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5688+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5692+***********************************************************************
+0002A8                             5693+         DS    0C                  FIELD NAME                         @ 01-DFHMD
+0002A8 0000                        5694+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0002AA 002B                        5695+         DC    AL2(43)             FIELD LENGTH                       @ 01-DFHMD
+0002AC 02                          5696+         DC    AL1(2)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0002AD F0                          5697+         DC    CL1'0'              FIELD ATTRIBUTE                    @ 01-DFHMD
+0002AE 06F0                        5698+         DC    AL2(1776)    .           FIELD POSITION                @ 01-DFHMD
+0002B0 F1                          5699+         DC    X'F1'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0002B1 00                          5700+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+0002B2 D79985A2A240C6F3            5701+         DC    CL43'Press F3 to quit or Enter to calculate loan'       X01-DFHMD
+0002BA 40A3964098A489A3                +                                   DEFAULT MAP DATA                   @
+                                   5702+***********************************************************************
+
+                                   5704 MSGERR   DFHMDF POS=(24,17),LENGTH=40,INITIAL='INVALID KEY PRESSED',   X
+                                                       ATTRB=(PROT,DRK)
+** ASMA254I *** MNOTE ***          5798+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5799+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5801+***********************************************************************
+0002DD                             5802+MSGERR   DS    0C                  FIELD NAME                      @08A 01-DFHMD
+0002DD 0000                        5803+         DC    AL2(0)              FIELD PAGE POSITION                @ 01-DFHMD
+0002DF 0028                        5804+         DC    AL2(40)             FIELD LENGTH                       @ 01-DFHMD
+0002E1 03                          5805+         DC    AL1(3)              FIELD DESCRIPTOR FLAG BYTE         @ 01-DFHMD
+0002E2 6C                          5806+         DC    CL1'%'              FIELD ATTRIBUTE                    @ 01-DFHMD
+0002E3 0740                        5807+         DC    AL2(1856)    .           FIELD POSITION                @ 01-DFHMD
+0002E5 00                          5808+         DC    X'00'               COLOUR ATTRIBUTE                @L3C 01-DFHMD
+0002E6 00                          5809+         DC    X'00'               HIGHLIGHTING ATTRIBUTE          @L3C 01-DFHMD
+0002E7 C9D5E5C1D3C9C440            5810+         DC    CL40'INVALID KEY PRESSED'                               X01-DFHMD
+0002EF D2C5E840D7D9C5E2                +                                   DEFAULT MAP DATA                   @
+i                                   5811+***********************************************************************
+                                                                                                               Page   21
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   5813 EPSMLIS DFHMSD TYPE=FINAL
+                                   5999+***********************************************************************
+                      001FE        6000+DFHS1    EQU   510   .                  MAP SPECIFICATION LENGTH        02-DFHMD
+                      0031E        6001+DFHN1    EQU   798                 INPUT WORK AREA LENGTH               02-DFHMD
+                      004AB        6002+DFHP1    EQU   1195                OUTPUT WORK AREA LENGTH              02-DFHMD
+                      00358        6003+DFHQ1    EQU   856                 CURSOR POSITION                      02-DFHMD
+                      00000        6004+DFHZ1    EQU   0                   count of useredit fields        @0DA 02-DFHMD
+                      00011        6005+DFHT1    EQU   17   .              MAP INDICATOR                        02-DFHMD
+00030F FFFF                        6006+         DC    2XL1'FF'            END OF MAP                         @ 02-DFHMD
+                      00311        6007+DFHXX1   EQU   *                                                   @L8A 02-DFHMD
+                      00305        6008+DFHX1    EQU   DFHXX1-DFHL1        offset of descriptor            @L8A 02-DFHMD
+000311 07B2                        6009+         DC    AL2(DFHY1)                                          @L8A 02-DFHMD
+000313 C1C4E2C4                    6010+         DC    C'ADSD'                                             @L8A 02-DFHMD
+000317 0001                        6011+         DC    AL2(1)              index of map within mapset      @L8A 02-DFHMD
+000319 002E                        6012+         DC    AL2(46)             no of fields in ADS             @L8A 02-DFHMD
+00031B 0323                        6013+         DC    AL2(798+5)          length of ADS                   @L8A 02-DFHMD
+00031D 0002                        6014+         DC    AL2(2)              no of attributes per field      @L8A 02-DFHMD
+00031F C3C840404040                6015+         DC    CL6'CH    '                                         @L8C 02-DFHMD
+000325 404040404040                6016+         DC    CL6'      '                                         @L8C 02-DFHMD
+00032B D3                          6017+         DC    CL1'L'              JUSTIFY LEFT or RIGHT           @L8A 02-DFHMD
+00032C 40                          6018+         DC    CL1' '              JUSTIFY FIRST, LAST or BOTTOM   @L8A 02-DFHMD
+00032D 00FF                        6019+         DC    AL2(255)            starting line                   @L8A 02-DFHMD
+00032F 00FE                        6020+         DC    AL2(254)            starting column                 @L8A 02-DFHMD
+000331 0018                        6021+         DC    AL2(24)             no of lines                     @L8A 02-DFHMD
+000333 0050                        6022+         DC    AL2(80)             no of columns                   @L8A 02-DFHMD
+000335 4A                          6023+         DC    CL1'¢'              Write Control Character         @L8A 02-DFHMD
+000336 00                          6024+         DC    BL1'00'             align to half-word boundary     @L8A 02-DFHMD
+000337 D3C9E3C3D6D4D740            6025+         DC    CL32'LITCOMP'       field name                      @L8A 02-DFHMD
+000357 0007                        6026+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+000359 0000                        6027+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+00035B 000C                        6028+         DC    AL2(12)             offset within dsect             @L8A 02-DFHMD
+00035D 0018                        6029+         DC    AL2(24)             length of field                 @L8A 02-DFHMD
+00035F D3                          6030+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+000360 40                          6031+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+000361 D3C9E3D7C8D54040            6032+         DC    CL32'LITPHN'        field name                      @L8A 02-DFHMD
+000381 0006                        6033+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+000383 0000                        6034+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000385 0029                        6035+         DC    AL2(41)             offset within dsect             @L8A 02-DFHMD
+000387 000D                        6036+         DC    AL2(13)             length of field                 @L8A 02-DFHMD
+000389 D3                          6037+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+00038A 40                          6038+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+00038B C5D7C4C9C6C6F140            6039+         DC    CL32'EPDIFF1'       field name                      @L8A 02-DFHMD
+0003AB 0007                        6040+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+0003AD 0000                        6041+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0003AF 003B                        6042+         DC    AL2(59)             offset within dsect             @L8A 02-DFHMD
+0003B1 000D                        6043+         DC    AL2(13)             length of field                 @L8A 02-DFHMD
+0003B3 D3                          6044+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+0003B4 40                          6045+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+0003B5 C5D7C4C9C6C6F240            6046+         DC    CL32'EPDIFF2'       field name                      @L8A 02-DFHMD
+0003D5 0007                        6047+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+0003D7 0000                        6048+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0003D9 004D                        6049+         DC    AL2(77)             offset within dsect             @L8A 02-DFHMD
+0003DB 0010                        6050+         DC    AL2(16)             length of field                 @L8A 02-DFHMD
+0003DD D3                          6051+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+i0003DE 40                          6052+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+                                                                                                               Page   22
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+0003DF D3C9E3D7C8D5F140            6053+         DC    CL32'LITPHN1'       field name                      @L8A 02-DFHMD
+0003FF 0007                        6054+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+000401 0000                        6055+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000403 0062                        6056+         DC    AL2(98)             offset within dsect             @L8A 02-DFHMD
+000405 0007                        6057+         DC    AL2(7)              length of field                 @L8A 02-DFHMD
+000407 D3                          6058+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+000408 40                          6059+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+000409 C5D7C3D4D7F14040            6060+         DC    CL32'EPCMP1'        field name                      @L8A 02-DFHMD
+000429 0006                        6061+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+00042B 0000                        6062+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+00042D 006E                        6063+         DC    AL2(110)            offset within dsect             @L8A 02-DFHMD
+00042F 0018                        6064+         DC    AL2(24)             length of field                 @L8A 02-DFHMD
+000431 D3                          6065+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+000432 40                          6066+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+000433 C5D7D7C8D5F14040            6067+         DC    CL32'EPPHN1'        field name                      @L8A 02-DFHMD
+000453 0006                        6068+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+000455 0000                        6069+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000457 008B                        6070+         DC    AL2(139)            offset within dsect             @L8A 02-DFHMD
+000459 000D                        6071+         DC    AL2(13)             length of field                 @L8A 02-DFHMD
+00045B D3                          6072+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+00045C 40                          6073+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+00045D C5D7D9C1E3C5F140            6074+         DC    CL32'EPRATE1'       field name                      @L8A 02-DFHMD
+00047D 0007                        6075+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+00047F 0000                        6076+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000481 009D                        6077+         DC    AL2(157)            offset within dsect             @L8A 02-DFHMD
+000483 0005                        6078+         DC    AL2(5)              length of field                 @L8A 02-DFHMD
+000485 D9                          6079+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+000486 F0                          6080+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+000487 C5D7D3D6C1D5F140            6081+         DC    CL32'EPLOAN1'       field name                      @L8A 02-DFHMD
+0004A7 0007                        6082+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+0004A9 0000                        6083+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0004AB 00A7                        6084+         DC    AL2(167)            offset within dsect             @L8A 02-DFHMD
+0004AD 000C                        6085+         DC    AL2(12)             length of field                 @L8A 02-DFHMD
+0004AF D9                          6086+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+0004B0 F0                          6087+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+0004B1 C5D7E8C5C1D9E2F1            6088+         DC    CL32'EPYEARS1'      field name                      @L8A 02-DFHMD
+0004D1 0008                        6089+         DC    AL2(8)              length of field name            @L8A 02-DFHMD
+0004D3 0000                        6090+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0004D5 00B8                        6091+         DC    AL2(184)            offset within dsect             @L8A 02-DFHMD
+0004D7 0002                        6092+         DC    AL2(2)              length of field                 @L8A 02-DFHMD
+0004D9 D9                          6093+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+0004DA F0                          6094+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+0004DB C5D7C3D4D7F24040            6095+         DC    CL32'EPCMP2'        field name                      @L8A 02-DFHMD
+0004FB 0006                        6096+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+0004FD 0000                        6097+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0004FF 00BF                        6098+         DC    AL2(191)            offset within dsect             @L8A 02-DFHMD
+000501 0018                        6099+         DC    AL2(24)             length of field                 @L8A 02-DFHMD
+000503 D3                          6100+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+000504 40                          6101+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+000505 C5D7D7C8D5F24040            6102+         DC    CL32'EPPHN2'        field name                      @L8A 02-DFHMD
+000525 0006                        6103+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+000527 0000                        6104+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000529 00DC                        6105+         DC    AL2(220)            offset within dsect             @L8A 02-DFHMD
+00052B 000D                        6106+         DC    AL2(13)             length of field                 @L8A 02-DFHMD
+i00052D D3                          6107+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+                                                                                                               Page   23
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+00052E 40                          6108+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+00052F C5D7D9C1E3C5F240            6109+         DC    CL32'EPRATE2'       field name                      @L8A 02-DFHMD
+00054F 0007                        6110+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+000551 0000                        6111+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000553 00EE                        6112+         DC    AL2(238)            offset within dsect             @L8A 02-DFHMD
+000555 0005                        6113+         DC    AL2(5)              length of field                 @L8A 02-DFHMD
+000557 D9                          6114+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+000558 F0                          6115+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+000559 C5D7D3D6C1D5F240            6116+         DC    CL32'EPLOAN2'       field name                      @L8A 02-DFHMD
+000579 0007                        6117+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+00057B 0000                        6118+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+00057D 00F8                        6119+         DC    AL2(248)            offset within dsect             @L8A 02-DFHMD
+00057F 000C                        6120+         DC    AL2(12)             length of field                 @L8A 02-DFHMD
+000581 D9                          6121+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+000582 F0                          6122+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+000583 C5D7E8C5C1D9E2F2            6123+         DC    CL32'EPYEARS2'      field name                      @L8A 02-DFHMD
+0005A3 0008                        6124+         DC    AL2(8)              length of field name            @L8A 02-DFHMD
+0005A5 0000                        6125+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0005A7 0109                        6126+         DC    AL2(265)            offset within dsect             @L8A 02-DFHMD
+0005A9 0002                        6127+         DC    AL2(2)              length of field                 @L8A 02-DFHMD
+0005AB D9                          6128+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+0005AC F0                          6129+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+0005AD C5D7C3D4D7F34040            6130+         DC    CL32'EPCMP3'        field name                      @L8A 02-DFHMD
+0005CD 0006                        6131+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+0005CF 0000                        6132+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0005D1 0110                        6133+         DC    AL2(272)            offset within dsect             @L8A 02-DFHMD
+0005D3 0018                        6134+         DC    AL2(24)             length of field                 @L8A 02-DFHMD
+0005D5 D3                          6135+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+0005D6 40                          6136+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+0005D7 C5D7D7C8D5F34040            6137+         DC    CL32'EPPHN3'        field name                      @L8A 02-DFHMD
+0005F7 0006                        6138+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+0005F9 0000                        6139+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0005FB 012D                        6140+         DC    AL2(301)            offset within dsect             @L8A 02-DFHMD
+0005FD 000D                        6141+         DC    AL2(13)             length of field                 @L8A 02-DFHMD
+0005FF D3                          6142+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+000600 40                          6143+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+000601 C5D7D9C1E3C5F340            6144+         DC    CL32'EPRATE3'       field name                      @L8A 02-DFHMD
+000621 0007                        6145+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+000623 0000                        6146+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000625 013F                        6147+         DC    AL2(319)            offset within dsect             @L8A 02-DFHMD
+000627 0005                        6148+         DC    AL2(5)              length of field                 @L8A 02-DFHMD
+000629 D9                          6149+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+00062A F0                          6150+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+00062B C5D7D3D6C1D5F340            6151+         DC    CL32'EPLOAN3'       field name                      @L8A 02-DFHMD
+00064B 0007                        6152+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+00064D 0000                        6153+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+00064F 0149                        6154+         DC    AL2(329)            offset within dsect             @L8A 02-DFHMD
+000651 000C                        6155+         DC    AL2(12)             length of field                 @L8A 02-DFHMD
+000653 D9                          6156+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+000654 F0                          6157+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+000655 C5D7E8C5C1D9E2F3            6158+         DC    CL32'EPYEARS3'      field name                      @L8A 02-DFHMD
+000675 0008                        6159+         DC    AL2(8)              length of field name            @L8A 02-DFHMD
+000677 0000                        6160+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000679 015A                        6161+         DC    AL2(346)            offset within dsect             @L8A 02-DFHMD
+i00067B 0002                        6162+         DC    AL2(2)              length of field                 @L8A 02-DFHMD
+                                                                                                               Page   24
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+00067D D9                          6163+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+00067E F0                          6164+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+00067F C5D7C3D4D7F44040            6165+         DC    CL32'EPCMP4'        field name                      @L8A 02-DFHMD
+00069F 0006                        6166+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+0006A1 0000                        6167+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0006A3 0161                        6168+         DC    AL2(353)            offset within dsect             @L8A 02-DFHMD
+0006A5 0018                        6169+         DC    AL2(24)             length of field                 @L8A 02-DFHMD
+0006A7 D3                          6170+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+0006A8 40                          6171+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+0006A9 C5D7D7C8D5F44040            6172+         DC    CL32'EPPHN4'        field name                      @L8A 02-DFHMD
+0006C9 0006                        6173+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+0006CB 0000                        6174+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0006CD 017E                        6175+         DC    AL2(382)            offset within dsect             @L8A 02-DFHMD
+0006CF 000D                        6176+         DC    AL2(13)             length of field                 @L8A 02-DFHMD
+0006D1 D3                          6177+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+0006D2 40                          6178+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+0006D3 C5D7D9C1E3C5F440            6179+         DC    CL32'EPRATE4'       field name                      @L8A 02-DFHMD
+0006F3 0007                        6180+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+0006F5 0000                        6181+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0006F7 0190                        6182+         DC    AL2(400)            offset within dsect             @L8A 02-DFHMD
+0006F9 0005                        6183+         DC    AL2(5)              length of field                 @L8A 02-DFHMD
+0006FB D9                          6184+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+0006FC F0                          6185+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+0006FD C5D7D3D6C1D5F440            6186+         DC    CL32'EPLOAN4'       field name                      @L8A 02-DFHMD
+00071D 0007                        6187+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+00071F 0000                        6188+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000721 019A                        6189+         DC    AL2(410)            offset within dsect             @L8A 02-DFHMD
+000723 000C                        6190+         DC    AL2(12)             length of field                 @L8A 02-DFHMD
+000725 D9                          6191+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+000726 F0                          6192+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+000727 C5D7E8C5C1D9E2F4            6193+         DC    CL32'EPYEARS4'      field name                      @L8A 02-DFHMD
+000747 0008                        6194+         DC    AL2(8)              length of field name            @L8A 02-DFHMD
+000749 0000                        6195+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+00074B 01AB                        6196+         DC    AL2(427)            offset within dsect             @L8A 02-DFHMD
+00074D 0002                        6197+         DC    AL2(2)              length of field                 @L8A 02-DFHMD
+00074F D9                          6198+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+000750 F0                          6199+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+000751 C5D7C3D4D7F54040            6200+         DC    CL32'EPCMP5'        field name                      @L8A 02-DFHMD
+000771 0006                        6201+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+000773 0000                        6202+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000775 01B2                        6203+         DC    AL2(434)            offset within dsect             @L8A 02-DFHMD
+000777 0018                        6204+         DC    AL2(24)             length of field                 @L8A 02-DFHMD
+000779 D3                          6205+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+00077A 40                          6206+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+00077B C5D7D7C8D5F54040            6207+         DC    CL32'EPPHN5'        field name                      @L8A 02-DFHMD
+00079B 0006                        6208+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+00079D 0000                        6209+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+00079F 01CF                        6210+         DC    AL2(463)            offset within dsect             @L8A 02-DFHMD
+0007A1 000D                        6211+         DC    AL2(13)             length of field                 @L8A 02-DFHMD
+0007A3 D3                          6212+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+0007A4 40                          6213+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+0007A5 C5D7D9C1E3C5F540            6214+         DC    CL32'EPRATE5'       field name                      @L8A 02-DFHMD
+0007C5 0007                        6215+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+0007C7 0000                        6216+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+i0007C9 01E1                        6217+         DC    AL2(481)            offset within dsect             @L8A 02-DFHMD
+                                                                                                               Page   25
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+0007CB 0005                        6218+         DC    AL2(5)              length of field                 @L8A 02-DFHMD
+0007CD D9                          6219+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+0007CE F0                          6220+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+0007CF C5D7D3D6C1D5F540            6221+         DC    CL32'EPLOAN5'       field name                      @L8A 02-DFHMD
+0007EF 0007                        6222+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+0007F1 0000                        6223+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0007F3 01EB                        6224+         DC    AL2(491)            offset within dsect             @L8A 02-DFHMD
+0007F5 000C                        6225+         DC    AL2(12)             length of field                 @L8A 02-DFHMD
+0007F7 D9                          6226+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+0007F8 F0                          6227+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+0007F9 C5D7E8C5C1D9E2F5            6228+         DC    CL32'EPYEARS5'      field name                      @L8A 02-DFHMD
+000819 0008                        6229+         DC    AL2(8)              length of field name            @L8A 02-DFHMD
+00081B 0000                        6230+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+00081D 01FC                        6231+         DC    AL2(508)            offset within dsect             @L8A 02-DFHMD
+00081F 0002                        6232+         DC    AL2(2)              length of field                 @L8A 02-DFHMD
+000821 D9                          6233+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+000822 F0                          6234+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+000823 C5D7C3D4D7F64040            6235+         DC    CL32'EPCMP6'        field name                      @L8A 02-DFHMD
+000843 0006                        6236+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+000845 0000                        6237+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000847 0203                        6238+         DC    AL2(515)            offset within dsect             @L8A 02-DFHMD
+000849 0018                        6239+         DC    AL2(24)             length of field                 @L8A 02-DFHMD
+00084B D3                          6240+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+00084C 40                          6241+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+00084D C5D7D7C8D5F64040            6242+         DC    CL32'EPPHN6'        field name                      @L8A 02-DFHMD
+00086D 0006                        6243+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+00086F 0000                        6244+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000871 0220                        6245+         DC    AL2(544)            offset within dsect             @L8A 02-DFHMD
+000873 000D                        6246+         DC    AL2(13)             length of field                 @L8A 02-DFHMD
+000875 D3                          6247+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+000876 40                          6248+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+000877 C5D7D9C1E3C5F640            6249+         DC    CL32'EPRATE6'       field name                      @L8A 02-DFHMD
+000897 0007                        6250+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+000899 0000                        6251+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+00089B 0232                        6252+         DC    AL2(562)            offset within dsect             @L8A 02-DFHMD
+00089D 0005                        6253+         DC    AL2(5)              length of field                 @L8A 02-DFHMD
+00089F D9                          6254+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+0008A0 F0                          6255+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+0008A1 C5D7D3D6C1D5F640            6256+         DC    CL32'EPLOAN6'       field name                      @L8A 02-DFHMD
+0008C1 0007                        6257+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+0008C3 0000                        6258+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0008C5 023C                        6259+         DC    AL2(572)            offset within dsect             @L8A 02-DFHMD
+0008C7 000C                        6260+         DC    AL2(12)             length of field                 @L8A 02-DFHMD
+0008C9 D9                          6261+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+0008CA F0                          6262+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+0008CB C5D7E8C5C1D9E2F6            6263+         DC    CL32'EPYEARS6'      field name                      @L8A 02-DFHMD
+0008EB 0008                        6264+         DC    AL2(8)              length of field name            @L8A 02-DFHMD
+0008ED 0000                        6265+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0008EF 024D                        6266+         DC    AL2(589)            offset within dsect             @L8A 02-DFHMD
+0008F1 0002                        6267+         DC    AL2(2)              length of field                 @L8A 02-DFHMD
+0008F3 D9                          6268+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+0008F4 F0                          6269+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+0008F5 C5D7C3D4D7F74040            6270+         DC    CL32'EPCMP7'        field name                      @L8A 02-DFHMD
+000915 0006                        6271+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+i000917 0000                        6272+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+                                                                                                               Page   26
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+000919 0254                        6273+         DC    AL2(596)            offset within dsect             @L8A 02-DFHMD
+00091B 0018                        6274+         DC    AL2(24)             length of field                 @L8A 02-DFHMD
+00091D D3                          6275+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+00091E 40                          6276+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+00091F C5D7D7C8D5F74040            6277+         DC    CL32'EPPHN7'        field name                      @L8A 02-DFHMD
+00093F 0006                        6278+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+000941 0000                        6279+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000943 0271                        6280+         DC    AL2(625)            offset within dsect             @L8A 02-DFHMD
+000945 000D                        6281+         DC    AL2(13)             length of field                 @L8A 02-DFHMD
+000947 D3                          6282+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+000948 40                          6283+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+000949 C5D7D9C1E3C5F740            6284+         DC    CL32'EPRATE7'       field name                      @L8A 02-DFHMD
+000969 0007                        6285+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+00096B 0000                        6286+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+00096D 0283                        6287+         DC    AL2(643)            offset within dsect             @L8A 02-DFHMD
+00096F 0005                        6288+         DC    AL2(5)              length of field                 @L8A 02-DFHMD
+000971 D9                          6289+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+000972 F0                          6290+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+000973 C5D7D3D6C1D5F740            6291+         DC    CL32'EPLOAN7'       field name                      @L8A 02-DFHMD
+000993 0007                        6292+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+000995 0000                        6293+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000997 028D                        6294+         DC    AL2(653)            offset within dsect             @L8A 02-DFHMD
+000999 000C                        6295+         DC    AL2(12)             length of field                 @L8A 02-DFHMD
+00099B D9                          6296+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+00099C F0                          6297+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+00099D C5D7E8C5C1D9E2F7            6298+         DC    CL32'EPYEARS7'      field name                      @L8A 02-DFHMD
+0009BD 0008                        6299+         DC    AL2(8)              length of field name            @L8A 02-DFHMD
+0009BF 0000                        6300+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0009C1 029E                        6301+         DC    AL2(670)            offset within dsect             @L8A 02-DFHMD
+0009C3 0002                        6302+         DC    AL2(2)              length of field                 @L8A 02-DFHMD
+0009C5 D9                          6303+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+0009C6 F0                          6304+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+0009C7 C5D7C3D4D7F84040            6305+         DC    CL32'EPCMP8'        field name                      @L8A 02-DFHMD
+0009E7 0006                        6306+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+0009E9 0000                        6307+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+0009EB 02A5                        6308+         DC    AL2(677)            offset within dsect             @L8A 02-DFHMD
+0009ED 0018                        6309+         DC    AL2(24)             length of field                 @L8A 02-DFHMD
+0009EF D3                          6310+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+0009F0 40                          6311+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+0009F1 C5D7D7C8D5F84040            6312+         DC    CL32'EPPHN8'        field name                      @L8A 02-DFHMD
+000A11 0006                        6313+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+000A13 0000                        6314+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000A15 02C2                        6315+         DC    AL2(706)            offset within dsect             @L8A 02-DFHMD
+000A17 000D                        6316+         DC    AL2(13)             length of field                 @L8A 02-DFHMD
+000A19 D3                          6317+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+000A1A 40                          6318+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+000A1B C5D7D9C1E3C5F840            6319+         DC    CL32'EPRATE8'       field name                      @L8A 02-DFHMD
+000A3B 0007                        6320+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+000A3D 0000                        6321+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000A3F 02D4                        6322+         DC    AL2(724)            offset within dsect             @L8A 02-DFHMD
+000A41 0005                        6323+         DC    AL2(5)              length of field                 @L8A 02-DFHMD
+000A43 D9                          6324+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+000A44 F0                          6325+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+000A45 C5D7D3D6C1D5F840            6326+         DC    CL32'EPLOAN8'       field name                      @L8A 02-DFHMD
+i000A65 0007                        6327+         DC    AL2(7)              length of field name            @L8A 02-DFHMD
+                                                                                                               Page   27
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+000A67 0000                        6328+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000A69 02DE                        6329+         DC    AL2(734)            offset within dsect             @L8A 02-DFHMD
+000A6B 000C                        6330+         DC    AL2(12)             length of field                 @L8A 02-DFHMD
+000A6D D9                          6331+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+000A6E F0                          6332+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+000A6F C5D7E8C5C1D9E2F8            6333+         DC    CL32'EPYEARS8'      field name                      @L8A 02-DFHMD
+000A8F 0008                        6334+         DC    AL2(8)              length of field name            @L8A 02-DFHMD
+000A91 0000                        6335+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000A93 02EF                        6336+         DC    AL2(751)            offset within dsect             @L8A 02-DFHMD
+000A95 0002                        6337+         DC    AL2(2)              length of field                 @L8A 02-DFHMD
+000A97 D9                          6338+         DC    C'R'                field justification (L or R)    @L8A 02-DFHMD
+000A98 F0                          6339+         DC    C'0'                field fill char (blank or 0)    @L8A 02-DFHMD
+000A99 D4E2C7C5D9D94040            6340+         DC    CL32'MSGERR'        field name                      @L8A 02-DFHMD
+000AB9 0006                        6341+         DC    AL2(6)              length of field name            @L8A 02-DFHMD
+000ABB 0000                        6342+         DC    AL2(0)              index within OCCURS             @L8A 02-DFHMD
+000ABD 02F6                        6343+         DC    AL2(758)            offset within dsect             @L8A 02-DFHMD
+000ABF 0028                        6344+         DC    AL2(40)             length of field                 @L8A 02-DFHMD
+000AC1 D3                          6345+         DC    C'L'                field justification (L or R)    @L8A 02-DFHMD
+000AC2 40                          6346+         DC    C' '                field fill char (blank or 0)    @L8A 02-DFHMD
+                      00AC3        6347+DFHR1    EQU   *                   END OF MAP                           02-DFHMD
+                      007B2        6348+DFHY1    EQU   DFHR1-DFHXX1        length of descriptor            @L8A 02-DFHMD
+                      00AB7        6349+DFHM1    EQU   DFHR1-DFHL1         MAP LENGTH                           02-DFHMD
+                      00000        6350+DFHU0    EQU   0                   OVERFLOW TRAILER LEN.                02-DFHMD
+000AC3 FFFFFFFF                    6351+         DC    4X'FF'              END OF MAPSET               @BBAD31J 02-DFHMD
+                                   6352+***********************************************************************
+
+                                   6447         END
+»
+                               Ordinary Symbol and Literal Cross Reference                                     Page   28
+Symbol   Length   Value     Id    R Type Asm  Program   Defn References                     HLASM R6.0  2026/08/24 11.50
+DFHK1         1 0000004F 00000001 A   U                  246  208
+DFHL1         1 0000000C 00000001     U                  207  246  6008  6349
+DFHM1         1 00000AB7 00000001 A   U                 6349  213
+DFHN1         1 0000031E 00000001 A   U                 6001  215
+DFHP1         1 000004AB 00000001 A   U                 6002  216
+DFHQ1         1 00000358 00000001 A   U                 6003  219
+DFHR1         1 00000AC3 00000001     U                 6347 6348  6349
+DFHS1         1 000001FE 00000001 A   U                 6000  214
+DFHT1         1 00000011 00000001 A   U                 6005  225
+DFHU0         1 00000000 00000001 A   U                 6350  106
+DFHXX1        1 00000311 00000001     U                 6007 6008  6348
+DFHX1         1 00000305 00000001 A   U                 6008  232
+DFHY1         1 000007B2 00000001 A   U                 6348 6009
+DFHZ1         1 00000000 00000001 A   U                 6004  229
+EPSMLIS       1 00000000 00000001     J                  101  102   103
+»
+                                  Unreferenced Symbols Defined in CSECTs                                       Page   29
+  Defn  Symbol                                                                              HLASM R6.0  2026/08/24 11.50
+  1109  EPCMP1
+  1655  EPCMP2
+  2201  EPCMP3
+  2747  EPCMP4
+  3293  EPCMP5
+  3839  EPCMP6
+  4385  EPCMP7
+  4931  EPCMP8
+   780  EPDIFF1
+   889  EPDIFF2
+  1436  EPLOAN1
+  1982  EPLOAN2
+  2528  EPLOAN3
+  3074  EPLOAN4
+  3620  EPLOAN5
+  4166  EPLOAN6
+  4712  EPLOAN7
+  5258  EPLOAN8
+  1219  EPPHN1
+  1765  EPPHN2
+  2311  EPPHN3
+  2857  EPPHN4
+  3403  EPPHN5
+  3949  EPPHN6
+  4495  EPPHN7
+  5041  EPPHN8
+  1328  EPRATE1
+  1874  EPRATE2
+  2420  EPRATE3
+  2966  EPRATE4
+  3512  EPRATE5
+  4058  EPRATE6
+  4604  EPRATE7
+  5150  EPRATE8
+  1545  EPYEARS1
+  2091  EPYEARS2
+  2637  EPYEARS3
+  3183  EPYEARS4
+  3729  EPYEARS5
+  4275  EPYEARS6
+  4821  EPYEARS7
+  5475  EPYEARS8
+   562  LITCOMP
+   671  LITPHN
+   998  LITPHN1
+   104  MSD0001
+  5802  MSGERR
+»
+                                          Macro and Copy Code Source Summary                                   Page   30
+ Con Source                                        Volume    Members                        HLASM R6.0  2026/08/24 11.50
+  L1 DFH610.CICS.SDFHMAC                           D5C610    DFHANRAT DFHANRWC DFHCOPYR DFHGDEFS DFHMDF   DFHMDI
+                                                             DFHMSD   DFHPRMCK DFHSYS
+»
+                                   General Purpose Register Cross Reference                                    Page   31
+ Register  References (M=modified, B=branch, U=USING, D=DROP, N=index)                      HLASM R6.0  2026/08/24 11.50
+    0(0)    (no references identified)
+    1(1)    (no references identified)
+    2(2)    (no references identified)
+    3(3)    (no references identified)
+    4(4)    (no references identified)
+    5(5)    (no references identified)
+    6(6)    (no references identified)
+    7(7)    (no references identified)
+    8(8)    (no references identified)
+    9(9)    (no references identified)
+   10(A)    (no references identified)
+   11(B)    (no references identified)
+   12(C)    (no references identified)
+   13(D)    (no references identified)
+   14(E)    (no references identified)
+   15(F)    (no references identified)
+»
+                                  Diagnostic Cross Reference and Assembler Summary                             Page   32
+                                                                                            HLASM R6.0  2026/08/24 11.50
+Statements Flagged
+    558(L1:DFHMDF,2152), 559(L1:DFHMDF,2153), 667(L1:DFHMDF,2152), 668(L1:DFHMDF,2153), 776(L1:DFHMDF,2152),
+    777(L1:DFHMDF,2153), 885(L1:DFHMDF,2152), 886(L1:DFHMDF,2153), 994(L1:DFHMDF,2152), 995(L1:DFHMDF,2153),
+    1103(L1:DFHMDF,2152), 1104(L1:DFHMDF,2153), 1213(L1:DFHMDF,2152), 1214(L1:DFHMDF,2153), 1323(L1:DFHMDF,2152),
+    1324(L1:DFHMDF,2153), 1432(L1:DFHMDF,2152), 1433(L1:DFHMDF,2153), 1540(L1:DFHMDF,2152), 1541(L1:DFHMDF,2153),
+    1649(L1:DFHMDF,2152), 1650(L1:DFHMDF,2153), 1759(L1:DFHMDF,2152), 1760(L1:DFHMDF,2153), 1869(L1:DFHMDF,2152),
+    1870(L1:DFHMDF,2153), 1978(L1:DFHMDF,2152), 1979(L1:DFHMDF,2153), 2086(L1:DFHMDF,2152), 2087(L1:DFHMDF,2153),
+    2195(L1:DFHMDF,2152), 2196(L1:DFHMDF,2153), 2305(L1:DFHMDF,2152), 2306(L1:DFHMDF,2153), 2415(L1:DFHMDF,2152),
+    2416(L1:DFHMDF,2153), 2524(L1:DFHMDF,2152), 2525(L1:DFHMDF,2153), 2632(L1:DFHMDF,2152), 2633(L1:DFHMDF,2153),
+    2741(L1:DFHMDF,2152), 2742(L1:DFHMDF,2153), 2851(L1:DFHMDF,2152), 2852(L1:DFHMDF,2153), 2961(L1:DFHMDF,2152),
+    2962(L1:DFHMDF,2153), 3070(L1:DFHMDF,2152), 3071(L1:DFHMDF,2153), 3178(L1:DFHMDF,2152), 3179(L1:DFHMDF,2153),
+    3287(L1:DFHMDF,2152), 3288(L1:DFHMDF,2153), 3397(L1:DFHMDF,2152), 3398(L1:DFHMDF,2153), 3507(L1:DFHMDF,2152),
+    3508(L1:DFHMDF,2153), 3616(L1:DFHMDF,2152), 3617(L1:DFHMDF,2153), 3724(L1:DFHMDF,2152), 3725(L1:DFHMDF,2153),
+    3833(L1:DFHMDF,2152), 3834(L1:DFHMDF,2153), 3943(L1:DFHMDF,2152), 3944(L1:DFHMDF,2153), 4053(L1:DFHMDF,2152),
+    4054(L1:DFHMDF,2153), 4162(L1:DFHMDF,2152), 4163(L1:DFHMDF,2153), 4270(L1:DFHMDF,2152), 4271(L1:DFHMDF,2153),
+    4379(L1:DFHMDF,2152), 4380(L1:DFHMDF,2153), 4489(L1:DFHMDF,2152), 4490(L1:DFHMDF,2153), 4599(L1:DFHMDF,2152),
+    4600(L1:DFHMDF,2153), 4708(L1:DFHMDF,2152), 4709(L1:DFHMDF,2153), 4816(L1:DFHMDF,2152), 4817(L1:DFHMDF,2153),
+    4925(L1:DFHMDF,2152), 4926(L1:DFHMDF,2153), 5035(L1:DFHMDF,2152), 5036(L1:DFHMDF,2153), 5145(L1:DFHMDF,2152),
+    5146(L1:DFHMDF,2153), 5254(L1:DFHMDF,2152), 5255(L1:DFHMDF,2153), 5362(L1:DFHMDF,2152), 5363(L1:DFHMDF,2153),
+    5470(L1:DFHMDF,2152), 5471(L1:DFHMDF,2153), 5579(L1:DFHMDF,2152), 5580(L1:DFHMDF,2153), 5687(L1:DFHMDF,2152),
+    5688(L1:DFHMDF,2153), 5798(L1:DFHMDF,2152), 5799(L1:DFHMDF,2153)
+
+     98 Statements Flagged in this Assembly        0 was Highest Severity Code
+HIGH LEVEL ASSEMBLER, 5696-234, RELEASE 6.0, PTF UI90738
+SYSTEM: z/OS 02.05.00              JOBNAME: B0270863    STEPNAME: *OMVSEX    PROCSTEP: (NOPROC)
+Unicode Module:   ASMA047C   From Page     1148   To Page    17584           ECECP: International 1
+Data Sets Allocated for this Assembly
+ Con DDname   Data Set Name                                Volume  Member
+  P1 SYSIN    B027086.DBB.BMS                              IN0001  EPSMLIS
+  L1 SYSLIB   DFH610.CICS.SDFHMAC                          D5C610
+  L2          SYS1.MACLIB                                  D5RES1
+     SYSPRINT SYS26236.T115053.RA000.B0270863.R0102087
+     SYSPUNCH SYS26236.T115053.RA000.B0270863.TEMPOBJ.H01
+
+1059752K allocated to Buffer Pool       Storage required    1360K
+    112 Primary Input Records Read         6959 Library Records Read                  0 Work File Reads
+      0 ASMAOPT Records Read               1465 Primary Print Records Written         0 Work File Writes
+     52 Object Records Written                0 ADATA Records Written
+Assembly Start Time: 11.50.53 Stop Time: 11.50.53 Processor Time: 01.11.34.9672
+Return Code 000

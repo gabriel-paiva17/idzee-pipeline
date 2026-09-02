@@ -1,0 +1,154 @@
+1z/OS V2 R5 BINDER     11:36:25 MONDAY AUGUST 24, 2026
+ BATCH EMULATOR  JOB(B0270863) STEP(*OMVSEX ) PGM= IEWBLINK
+ IEW2278I B352 INVOCATION PARAMETERS - MAP,RENT
+ IEW2650I 5102 MODULE ENTRY NOT PROVIDED.  ENTRY DEFAULTS TO SECTION EPSMORT.
+
+1                         *** M O D U L E  M A P ***
+
+ ---------------
+ CLASS  B_TEXT            LENGTH =      3AE  ATTRIBUTES = CAT,   LOAD, RMODE=ANY
+                          OFFSET =        0 IN SEGMENT 001     ALIGN = DBLWORD
+ ---------------
+
+  SECTION    CLASS                                      ------- SOURCE --------
+   OFFSET   OFFSET  NAME                TYPE    LENGTH  DDNAME   SEQ  MEMBER
+
+                 0  EPSMORT            CSECT       3AE  SYSLIN    01  **NULL**
+1          ***  DATA SET SUMMARY  ***
+
+ DDNAME    CONCAT   FILE IDENTIFICATION
+
+ SYSLIN      01     SYS26236.T113624.RA000.B0270863.TEMPOBJ.H01
+
+           *** E N D  O F  M O D U L E  M A P ***
+
+
+
+                                 *** O P E R A T I O N   S U M M A R Y   R E P O R T ***
+
+1PROCESSING OPTIONS:
+
+    ALIASES             NO
+    ALIGN2              NO
+    AMODE               UNSPECIFIED
+    CALL                YES
+    CASE                UPPER
+    COMPAT              UNSPECIFIED
+    COMPRESS            AUTO
+    DCBS                NO
+    DYNAM               NO
+    EXTATTR             UNSPECIFIED
+    EXITS:              NONE
+    FILL                NONE
+    GID                 UNSPECIFIED
+    HOBSET              NO
+    INFO                NO
+    LET                 04
+    LINECT              060
+    LIST                SUMMARY
+    LISTPRIV            NO
+    LONGPARM            NO
+    MAP                 YES
+    MAXBLK              032760
+    MODMAP              NO
+    MSGLEVEL            00
+    OVLY                NO
+    PRINT               YES
+    RES                 NO
+    REUSABILITY         REENTRANT
+    RMODE               UNSPECIFIED
+    RMODEX              NO
+    SIGN                NO
+    STORENX             NOREPLACE
+    STRIPCL             NO
+    STRIPSEC            NO
+    SYMTRACE
+    TERM                NO
+    TRAP                ON
+    UID                 UNSPECIFIED
+    UPCASE              NO
+    WKSPACE             000000K,000000K
+    XCAL                NO
+    XREF                NO
+    ***END OF OPTIONS***
+
+
+
+
+1SAVE OPERATION SUMMARY:
+
+    MEMBER NAME         EPSMORT
+    LOAD LIBRARY        B027086.DBB.LOAD
+    PROGRAM TYPE        PROGRAM OBJECT(FORMAT 2)
+    VOLUME SERIAL       IN0002
+    DISPOSITION         ADDED NEW
+    TIME OF SAVE        11.36.26  AUG 24, 2026
+
+
+1SAVE MODULE ATTRIBUTES:
+
+    AC                  000
+    AMODE                31
+    COMPRESSION         NONE
+    DC                  NO
+    EDITABLE            YES
+    EXCEEDS 16MB        NO
+    EXECUTABLE          YES
+    LONGPARM            NO
+    MIGRATABLE          YES
+    OL                  NO
+    OVLY                NO
+    PACK,PRIME          NO,NO
+    PAGE ALIGN          NO
+    REFR                NO
+    RENT                YES
+    REUS                YES
+    RMODE               ANY
+    SCTR                NO
+    SIGN                NO
+    SSI
+    SYM GENERATED       NO
+    TEST                NO
+    XPLINK              NO
+    MODULE SIZE (HEX)   000003B0
+    DASD SIZE (HEX)     00001000
+
+
+1 ENTRY POINT AND ALIAS SUMMARY:
+
+  NAME:            ENTRY TYPE AMODE C_OFFSET CLASS NAME        STATUS
+
+  EPSMORT           MAIN_EP      31 00000000 B_TEXT
+
+                          *** E N D   O F   O P E R A T I O N   S U M M A R Y   R E P O R T ***
+
+
+
+
+1z/OS V2 R5 BINDER     11:36:25 MONDAY AUGUST 24, 2026
+ BATCH EMULATOR  JOB(B0270863) STEP(*OMVSEX ) PGM= IEWBLINK
+ IEW2008I 0F03 PROCESSING COMPLETED.  RETURN CODE =  0.
+
+
+
+1----------------------
+ MESSAGE SUMMARY REPORT
+ ----------------------
+  TERMINAL MESSAGES      (SEVERITY = 16)
+  NONE
+
+  SEVERE MESSAGES        (SEVERITY = 12)
+  NONE
+
+  ERROR MESSAGES         (SEVERITY = 08)
+  NONE
+
+  WARNING MESSAGES       (SEVERITY = 04)
+  NONE
+
+  INFORMATIONAL MESSAGES (SEVERITY = 00)
+  2008  2278  2650
+
+
+  **** END OF MESSAGE SUMMARY REPORT ****
+

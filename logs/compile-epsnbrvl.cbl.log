@@ -1,0 +1,361 @@
+PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221                 Date 08/28/2026  Time 14:01:59   Page     1
+
+Options in effect:
+ NOADATA
+   ADV
+   AFP(NOVOLATILE)
+   QUOTE
+   ARCH(10)
+   ARITH(COMPAT)
+ NOAWO
+ NOBLOCK0
+   BUFSIZE(4096)
+ NOCICS
+   CODEPAGE(1140)
+ NOCOMPILE(S)
+   CONDCOMP(NOSKIPSRC)
+ NOCOPYLOC
+ NOCOPYRIGHT
+ NOCURRENCY
+   DATA(31)
+   DBCS
+ NODECK
+ NODEFINE
+ NODIAGTRUNC
+   DISPSIGN(COMPAT)
+ NODLL
+ NODUMP
+ NODYNAM
+ NOEXIT
+ NOEXPORTALL
+ NOFASTSRT
+   FLAG(I,I)
+ NOFLAGSTD
+   HGPR(PRESERVE)
+ NOINITCHECK
+ NOINITIAL
+   INLINE
+   INTDATE(ANSI)
+ NOINVDATA
+ NOJAVAIOP
+   LANGUAGE(EN)
+   LINECOUNT(60)
+ NOLIST
+   LP(32)
+ NOMAP
+   MAXPCF(100000)
+ NOMDECK
+ NONAME
+   NSYMBOL(NATIONAL)
+ NONUMBER
+ NONUMCHECK
+   NUMPROC(NOPFD)
+   OBJECT
+ NOOFFSET
+   OPTIMIZE(0)
+   OUTDD(SYSOUT)
+ NOPARMCHECK
+   PGMNAME(COMPAT)
+   QUALIFY(COMPAT)
+   RENTPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221                 Date 08/28/2026  Time 14:01:59   Page     2
+
+   RMODE(AUTO)
+ NORULES
+ NOSERVICE
+   SEQUENCE
+   SMARTBIN
+   SOURCE(DEC)
+   SPACE(1)
+ NOSQL
+   SQLCCSID
+ NOSQLIMS
+ NOSSRANGE
+ NOSTGOPT
+   SUPPRESS
+ NOTERM
+ NOTEST(NODWARF,NOSOURCE,NOSEPARATE)
+ NOTHREAD
+   TRUNC(STD)
+   TUNE(10)
+ NOVBREF
+   VLR(STANDARD)
+   VSAMOPENFS(COMPAT)
+ NOWORD
+   XMLPARSE(XMLSS)
+   XREF(FULL)
+   ZWBPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSNBRVL  Date 08/28/2026  Time 14:01:59   Page     3
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000001                ID DIVISION.
+  000002                PROGRAM-ID. EPSNBRVL
+  000003               *    THIS IS A CALLED PROGRAM EXAMPLE FOR DEMONSTRATION
+  000004               *
+  000005               *    THIS PROGRAM WILL BE CALLED BY ANOTHER, RECEIVE
+  000006               *    THE FOLLOWING INFOMATION AND RETURN A MONTLY PAYMENT AMOUNT
+  000007               *    INPUT:
+  000008               *       ORIGINAL PRINCIPLE AMOUNT
+  000009               *       YEARS OR MONTH INDICATOR
+  000010               *       NUMBER OF YEARS
+  000011               *       NUMBER OF MONTHS
+  000012               *       INTEREST RATE
+  000013               *    OUTPUT:
+  000014               *       MONTHLY PAYMENT
+  000015               *
+  000016               *    (C) 2020 IBM
+  000017                ENVIRONMENT DIVISION.
+  000018                CONFIGURATION SECTION.
+  000019                SOURCE-COMPUTER. FLEX-ES.
+  000020                OBJECT-COMPUTER. FLEX-ES.
+  000021                DATA DIVISION.
+  000022                WORKING-STORAGE SECTION.
+  000023               *
+  000024                01 WS-STATIC-DATA.
+  000025                    03 STATIC-ERRORS.
+  000026                       05 FILLER                  PIC 99 VALUE 1.
+  000027                       05 FILLER                  PIC X(80)
+  000028                       VALUE 'NO NUMBER PRESENT'.
+  000029                       05 FILLER                  PIC 99 VALUE 2.
+  000030                       05 FILLER                  PIC X(80)
+  000031                       VALUE 'SPACES IN NUMBER'.
+  000032                       05 FILLER                  PIC 99 VALUE 3.
+  000033                       05 FILLER                  PIC X(80)
+  000034                       VALUE 'TOO MANY DEICMAL POINTS'.
+  000035                       05 FILLER                  PIC 99 VALUE 4.
+  000036                       05 FILLER                  PIC X(80)
+  000037                       VALUE 'YEARS INDICATED, BUT YEARS ZERO OR LESS'.
+  000038                       05 FILLER                  PIC 99 VALUE 5.
+  000039                       05 FILLER                  PIC X(80)
+  000040                       VALUE 'ZERO OR LESS MONTHS'.
+  000041                       05 FILLER                  PIC 99 VALUE 6.
+  000042                       05 FILLER                  PIC X(80)
+  000043                       VALUE ' '.
+  000044                       05 FILLER                  PIC 99 VALUE 7.
+  000045                       05 FILLER                  PIC X(80)
+  000046                       VALUE ' '.
+  000047                       05 FILLER                  PIC 99 VALUE 8.
+  000048                       05 FILLER                  PIC X(80)
+  000049                       VALUE ' '.
+  000050                       05 FILLER                  PIC 99 VALUE 9.
+  000051                       05 FILLER                  PIC X(80)
+  000052                       VALUE ' '.
+  000053                       05 FILLER                  PIC 99 VALUE 10.
+  000054                       05 FILLER                  PIC X(80)
+  000055                       VALUE ' '.
+  000056                    03 STATIC-ERROR-TBL REDEFINES STATIC-ERRORS.                          25
+  000057                       05 STATIC-ERROR-TABLE OCCURS 10 TIMES.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSNBRVL  Date 08/28/2026  Time 14:01:59   Page     4
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000058                         07 ERROR-INDICATOR         PIC 99.
+  000059                         07 ERROR-TEXT              PIC X(80).
+  000060                01  WS-WORK-AMOUNTS.
+  000061                    03 WS-LEADING-SPACES      PIC 9(4) COMP VALUE 1.
+  000062                    03 WS-TRAILING-SPACES     PIC 9(4) COMP VALUE 0.
+  000063                    03 WS-END-SPACE           PIC 9(4) COMP VALUE 0.
+  000064                    03 WS-DECIMAL-SPACE       PIC 99        VALUE 0.
+  000065                    03 WS-IDX                 PIC 9(2) COMP.
+  000066                    03 WS-DEC-IDX             PIC 9(2) COMP.
+  000067                    03 WS-NUM-IDX             PIC 9(2) COMP.
+  000068
+  000069                    03 WS-MAX-NUMBER-LGTH     PIC 9(2) COMP.
+  000070                    03 WS-MAX-FIELD           PIC 9(2) COMP.
+  000071                    03 WS-DEC-ADJUST          PIC 9.
+  000072
+  000073
+  000074                LINKAGE SECTION.
+  000075               *
+  000076                COPY EPSNBRPM.
+  000077C               01  EPS-NUMBER-VALIDATION.
+  000078C              * INPUT
+  000079C                   03 EPSPARM-VALIDATE-DATA     PIC X(13).
+  000080C                   03 EPSPARM-MAX-LENGTH        PIC 99.
+  000081C              * OUTPUT
+  000082C                   03 EPSPARM-NUMBER            PIC 9(13).
+  000083C                   03 EPSPARM-DECIMAL           PIC V9(13).
+  000084C                   03 EPSPARM-BINARY-NUMBER     PIC 9(9)V99 COMP.
+  000085C                   03 EPSPARM-RETURN-ERROR      PIC X(80).
+  000086C
+  000087
+  000088                PROCEDURE DIVISION USING EPS-NUMBER-VALIDATION.                           77
+  000089               *
+  000090                A000-MAINLINE.
+  000091                    MOVE EPSPARM-MAX-LENGTH              TO WS-IDX.                       80 65
+  000092                    MOVE LENGTH OF EPSPARM-VALIDATE-DATA TO WS-MAX-FIELD                  IMP 79 70
+  000093                    IF WS-IDX > WS-MAX-FIELD                                              65 70
+  000094      1                MOVE WS-MAX-FIELD TO WS-IDX                                        70 65
+  000095                    ELSE
+  000096      1                MOVE WS-IDX       TO WS-MAX-FIELD                                  65 70
+  000097                    END-IF.
+  000098
+  000099                    MOVE ZERO   TO WS-END-SPACE.                                          IMP 63
+  000100                    MOVE SPACES TO EPSPARM-RETURN-ERROR.                                  IMP 85
+  000101                    MOVE ZERO   TO EPSPARM-BINARY-NUMBER                                  IMP 84
+  000102                                   EPSPARM-NUMBER                                         82
+  000103                                   EPSPARM-DECIMAL.                                       83
+  000104
+  000105               * FIND TRAILING SPACES
+  000106                    PERFORM UNTIL WS-IDX = 0                                              65
+  000107      1                IF EPSPARM-VALIDATE-DATA(WS-IDX:1) = SPACES                        79 65 IMP
+  000108      2                  ADD 1      TO WS-TRAILING-SPACES                                 62
+  000109      2                  SUBTRACT 1 FROM WS-IDX                                           65
+  000110      1                ELSE
+  000111      2                  MOVE WS-IDX TO WS-END-SPACE                                      65 63
+  000112      2                  MOVE 0 TO WS-IDX                                                 65
+  000113      1                END-IF
+  000114                    END-PERFORM.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSNBRVL  Date 08/28/2026  Time 14:01:59   Page     5
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000115
+  000116               * FIND LEADING SPACES
+  000117                    MOVE 1 TO WS-LEADING-SPACES.                                          61
+  000118
+  000119                    IF WS-END-SPACE NOT = 0                                               63
+  000120      1                MOVE 1 TO WS-IDX                                                   65
+  000121      1                PERFORM UNTIL WS-IDX >= WS-END-SPACE                               65 63
+  000122      2                  IF EPSPARM-VALIDATE-DATA(WS-IDX:1) = SPACES                      79 65 IMP
+  000123      3                     ADD 1 TO WS-LEADING-SPACES                                    61
+  000124      3                     ADD 1 TO WS-IDX                                               65
+  000125      2                  ELSE
+  000126      3                     COMPUTE WS-IDX = WS-END-SPACE + 1                             65 63
+  000127      2                  END-IF
+  000128      1                END-PERFORM
+  000129                    ELSE
+  000130      1                MOVE STATIC-ERROR-TABLE(1) TO EPSPARM-RETURN-ERROR                 57 85
+  000131                    END-IF.
+  000132
+  000133                    MOVE WS-LEADING-SPACES TO WS-IDX.                                     61 65
+  000134                    MOVE 1                 TO WS-DEC-IDX.                                 66
+  000135                    MOVE 0                 TO WS-DECIMAL-SPACE.                           64
+  000136
+  000137               * FIND DECIMAL POINT
+  000138                    PERFORM A002-COMPUTE-DECIMAL                                          179
+  000139                            UNTIL WS-IDX > WS-END-SPACE                                   65 63
+  000140                    .
+  000141
+  000142                    IF WS-DECIMAL-SPACE > 0                                               64
+  000143      1                COMPUTE WS-END-SPACE = WS-DECIMAL-SPACE - 1                        63 64
+  000144                    END-IF.
+  000145
+  000146               * VALIDATE NO INTERNAL BLANKS
+  000147                    MOVE WS-END-SPACE             TO WS-IDX.                              63 65
+  000148                    MOVE LENGTH OF EPSPARM-NUMBER TO WS-NUM-IDX.                          IMP 82 67
+  000149               *     SUBTRACT 1 FROM WS-NUM-IDX.
+  000150
+  000151                    PERFORM A001-COMPUTE-INTEGER                                          162
+  000152                            UNTIL WS-IDX < WS-LEADING-SPACES                              65 61
+  000153                    .
+  000154
+  000155                    IF EPSPARM-RETURN-ERROR = SPACES                                      85 IMP
+  000156      1                COMPUTE EPSPARM-BINARY-NUMBER = EPSPARM-NUMBER                     84 82
+  000157      1                                              + EPSPARM-DECIMAL                    83
+  000158                    END-IF.
+  000159                    GOBACK
+  000160                    .
+  000161
+  000162                A001-COMPUTE-INTEGER.
+  000163                    IF EPSPARM-VALIDATE-DATA(WS-IDX:1) = ','                              79 65
+  000164      1                SUBTRACT 1 FROM WS-IDX                                             65
+  000165                    ELSE
+  000166      1                IF EPSPARM-VALIDATE-DATA(WS-IDX:1) = SPACE                         79 65 IMP
+  000167      1                OR EPSPARM-VALIDATE-DATA(WS-IDX:1) IS NOT NUMERIC                  79 65
+  000168      2                   MOVE STATIC-ERROR-TABLE(2) TO EPSPARM-RETURN-ERROR              57 85
+  000169      2                   MOVE 0 TO WS-IDX                                                65
+  000170      1                ELSE
+  000171      2                   MOVE EPSPARM-VALIDATE-DATA(WS-IDX:1) TO                         79 65PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSNBRVL  Date 08/28/2026  Time 14:01:59   Page     6
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000172      2                        EPSPARM-NUMBER(WS-NUM-IDX:1)                               82 67
+  000173      2                   SUBTRACT 1 FROM WS-IDX                                          65
+  000174      2                                   WS-NUM-IDX                                      67
+  000175      1                END-IF
+  000176                    END-IF
+  000177                    .
+  000178
+  000179                A002-COMPUTE-DECIMAL.
+  000180                    IF WS-DECIMAL-SPACE = 0                                               64
+  000181      1                IF EPSPARM-VALIDATE-DATA(WS-IDX:1) = '.'                           79 65
+  000182      2                   MOVE WS-IDX TO WS-DECIMAL-SPACE                                 65 64
+  000183      1                END-IF
+  000184                    ELSE
+  000185      1                IF EPSPARM-VALIDATE-DATA(WS-IDX:1) = '.'                           79 65
+  000186      2                   MOVE STATIC-ERROR-TABLE(3) TO EPSPARM-RETURN-ERROR              57 85
+  000187      2                   MOVE WS-END-SPACE TO WS-IDX                                     63 65
+  000188      2                   MOVE 1            TO WS-DEC-IDX                                 66
+  000189      1                ELSE
+  000190      2                   MOVE EPSPARM-VALIDATE-DATA(WS-IDX:1) TO                         79 65
+  000191      2                        EPSPARM-DECIMAL(WS-DEC-IDX:1)                              83 66
+  000192      2                   ADD 1 TO WS-DEC-IDX                                             66
+  000193      1                END-IF
+  000194                    END-IF
+  000195                    ADD 1 TO WS-IDX                                                       65
+  000196                    .PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSNBRVL  Date 08/28/2026  Time 14:01:59   Page     7
+
+An "M" preceding a data-name reference indicates that the data-name is modified by this reference.
+
+ Defined   Cross-reference of data names   References
+
+      77   EPS-NUMBER-VALIDATION. . . . .  88
+      84   EPSPARM-BINARY-NUMBER. . . . .  M101 M156
+      83   EPSPARM-DECIMAL. . . . . . . .  M103 157 M191
+      80   EPSPARM-MAX-LENGTH . . . . . .  91
+      82   EPSPARM-NUMBER . . . . . . . .  M102 148 156 M172
+      85   EPSPARM-RETURN-ERROR . . . . .  M100 M130 155 M168 M186
+      79   EPSPARM-VALIDATE-DATA. . . . .  92 107 122 163 166 167 171 181 185 190
+      58   ERROR-INDICATOR
+      59   ERROR-TEXT
+      57   STATIC-ERROR-TABLE . . . . . .  130 168 186
+      56   STATIC-ERROR-TBL
+      25   STATIC-ERRORS. . . . . . . . .  56
+      71   WS-DEC-ADJUST
+      66   WS-DEC-IDX . . . . . . . . . .  M134 M188 191 M192
+      64   WS-DECIMAL-SPACE . . . . . . .  M135 142 143 180 M182
+      63   WS-END-SPACE . . . . . . . . .  M99 M111 119 121 126 139 M143 147 187
+      65   WS-IDX . . . . . . . . . . . .  M91 93 M94 96 106 107 M109 111 M112 M120 121 122 M124 M126 M133 139 M147 152
+                                           163 M164 166 167 M169 171 M173 181 182 185 M187 190 M195
+      61   WS-LEADING-SPACES. . . . . . .  M117 M123 133 152
+      70   WS-MAX-FIELD . . . . . . . . .  M92 93 94 M96
+      69   WS-MAX-NUMBER-LGTH
+      67   WS-NUM-IDX . . . . . . . . . .  M148 172 M174
+      24   WS-STATIC-DATA
+      62   WS-TRAILING-SPACES . . . . . .  M108
+      60   WS-WORK-AMOUNTSPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSNBRVL  Date 08/28/2026  Time 14:01:59   Page     8
+
+Context usage is indicated by the letter preceding a procedure-name reference.
+These letters and their meanings are:
+    A = ALTER (procedure-name)
+    D = GO TO (procedure-name) DEPENDING ON
+    E = End of range of (PERFORM) through (procedure-name)
+    G = GO TO (procedure-name)
+    P = PERFORM (procedure-name)
+    T = (ALTER) TO PROCEED TO (procedure-name)
+    U = USE FOR DEBUGGING (procedure-name)
+
+ Defined   Cross-reference of procedures   References
+
+      90   A000-MAINLINE
+     162   A001-COMPUTE-INTEGER . . . . .  P151
+     179   A002-COMPUTE-DECIMAL . . . . .  P138PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSNBRVL  Date 08/28/2026  Time 14:01:59   Page     9
+
+ Defined   Cross-reference of programs     References
+
+       2   EPSNBRVLPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSNBRVL  Date 08/28/2026  Time 14:01:59   Page    10
+
+
+         COPY/BASIS cross-reference of text-names, library names and dataset information
+
+ Text-name Library   File name                                    Concat   ISPF statistics
+ (Member)  (DDNAME)  (Dataset name)                               Level    Created         Changed
+
+ EPSNBRPM  SYSLIB    B027086.DBB.COPY                               0
+
+
+
+* Statistics for COBOL program EPSNBRVL:
+*    Source records = 196
+*    Data Division statements = 24
+*    Procedure Division statements = 52
+*    Generated COBOL statements = 0
+*    Program complexity factor = 53
+
+End of compilation 1,  program EPSNBRVL,  no statements flagged.
+
+Return code 0

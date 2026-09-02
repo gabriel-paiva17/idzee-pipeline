@@ -1,0 +1,231 @@
+{
+  "records": [
+    {
+      "id": "DBB API Version",
+      "type": "VERSION",
+      "version": "3.0.4.1",
+      "build": "770",
+      "date": "20-Jan-2026 14:33:42"
+    },
+    {
+      "id": "DBB Build Mode",
+      "type": "BUILD_MODE",
+      "build-mode": "NORMAL"
+    },
+    {
+      "id": "CREATE_PDS_1",
+      "type": "CREATE_PDS",
+      "dataset": "B027086.DBB.COBOL",
+      "options": "cyl space(1,1) lrecl(80) dsorg(PO) recfm(F,B) dsntype(library)",
+      "exists": true
+    },
+    {
+      "id": "CREATE_PDS_2",
+      "type": "CREATE_PDS",
+      "dataset": "B027086.DBB.COPY",
+      "options": "cyl space(1,1) lrecl(80) dsorg(PO) recfm(F,B) dsntype(library)",
+      "exists": true
+    },
+    {
+      "id": "CREATE_PDS_3",
+      "type": "CREATE_PDS",
+      "dataset": "B027086.DBB.BMS.COPY",
+      "options": "cyl space(1,1) lrecl(80) dsorg(PO) recfm(F,B) dsntype(library)",
+      "exists": true
+    },
+    {
+      "id": "CREATE_PDS_4",
+      "type": "CREATE_PDS",
+      "dataset": "B027086.DBB.DBRM",
+      "options": "cyl space(1,1) lrecl(80) dsorg(PO) recfm(F,B) dsntype(library)",
+      "exists": true
+    },
+    {
+      "id": "CREATE_PDS_5",
+      "type": "CREATE_PDS",
+      "dataset": "B027086.DBB.OBJ",
+      "options": "cyl space(1,1) lrecl(80) dsorg(PO) recfm(F,B) dsntype(library)",
+      "exists": true
+    },
+    {
+      "id": "CREATE_PDS_6",
+      "type": "CREATE_PDS",
+      "dataset": "B027086.DBB.LOAD",
+      "options": "cyl space(1,1) dsorg(PO) recfm(U) blksize(32760) dsntype(library)",
+      "exists": true
+    },
+    {
+      "id": "DEPENDENCY_SET_1",
+      "type": "DEPENDENCY_SET",
+      "file": "MortgageApplication/cobol/epsmlist.cbcw",
+      "dependencySet": [
+        {
+          "lname": "DFHAID",
+          "library": "SYSLIB",
+          "category": "COPY",
+          "resolved": false,
+          "excluded": false
+        },
+        {
+          "lname": "EPSMLIS",
+          "library": "SYSLIB",
+          "category": "COPY",
+          "sourceDir": "/u/b027086/dbb/",
+          "file": "MortgageApplication/copybook/epsmlis.cpy",
+          "resolved": true,
+          "excluded": false
+        },
+        {
+          "lname": "EPSMORTF",
+          "library": "SYSLIB",
+          "category": "COPY",
+          "sourceDir": "/u/b027086/dbb/",
+          "file": "MortgageApplication/copybook/epsmortf.cpy",
+          "resolved": true,
+          "excluded": false
+        },
+        {
+          "lname": "EPSMTCOM",
+          "library": "SYSLIB",
+          "category": "COPY",
+          "sourceDir": "/u/b027086/dbb/",
+          "file": "MortgageApplication/copybook/epsmtcom.cpy",
+          "resolved": true,
+          "excluded": false
+        },
+        {
+          "lname": "EPSMTINP",
+          "library": "SYSLIB",
+          "category": "COPY",
+          "sourceDir": "/u/b027086/dbb/",
+          "file": "MortgageApplication/copybook/epsmtinp.cpy",
+          "resolved": true,
+          "excluded": false
+        },
+        {
+          "lname": "EPSMTOUT",
+          "library": "SYSLIB",
+          "category": "COPY",
+          "sourceDir": "/u/b027086/dbb/",
+          "file": "MortgageApplication/copybook/epsmtout.cpy",
+          "resolved": true,
+          "excluded": false
+        },
+        {
+          "lname": "EPSNBRPM",
+          "library": "SYSLIB",
+          "category": "COPY",
+          "sourceDir": "/u/b027086/dbb/",
+          "file": "MortgageApplication/copybook/epsnbrpm.cpy",
+          "resolved": true,
+          "excluded": false
+        }
+      ]
+    },
+    {
+      "id": "COPY_TO_PDS_1",
+      "type": "COPY_TO_PDS",
+      "source": "/u/b027086/dbb/MortgageApplication/cobol/epsmlist.cbcw",
+      "destination": "B027086.DBB.COBOL(EPSMLIST)",
+      "mode": "TEXT"
+    },
+    {
+      "id": "COPY_TO_PDS_2",
+      "type": "COPY_TO_PDS",
+      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsmlis.cpy",
+      "destination": "B027086.DBB.COPY(EPSMLIS)",
+      "mode": "TEXT"
+    },
+    {
+      "id": "COPY_TO_PDS_3",
+      "type": "COPY_TO_PDS",
+      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsmortf.cpy",
+      "destination": "B027086.DBB.COPY(EPSMORTF)",
+      "mode": "TEXT"
+    },
+    {
+      "id": "COPY_TO_PDS_4",
+      "type": "COPY_TO_PDS",
+      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsmtcom.cpy",
+      "destination": "B027086.DBB.COPY(EPSMTCOM)",
+      "mode": "TEXT"
+    },
+    {
+      "id": "COPY_TO_PDS_5",
+      "type": "COPY_TO_PDS",
+      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsmtinp.cpy",
+      "destination": "B027086.DBB.COPY(EPSMTINP)",
+      "mode": "TEXT"
+    },
+    {
+      "id": "COPY_TO_PDS_6",
+      "type": "COPY_TO_PDS",
+      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsmtout.cpy",
+      "destination": "B027086.DBB.COPY(EPSMTOUT)",
+      "mode": "TEXT"
+    },
+    {
+      "id": "COPY_TO_PDS_7",
+      "type": "COPY_TO_PDS",
+      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsnbrpm.cpy",
+      "destination": "B027086.DBB.COPY(EPSNBRPM)",
+      "mode": "TEXT"
+    },
+    {
+      "id": "EXECUTE_1",
+      "type": "EXECUTE",
+      "command": "IGYCRCTL",
+      "options": "CICS",
+      "rc": 0,
+      "file": "MortgageApplication/cobol/epsmlist.cbcw",
+      "outputs": [
+        {
+          "dataset": "B027086.DBB.OBJ(EPSMLIST)"
+        }
+      ],
+      "datasets": [
+        "B027086.DBB.COBOL(EPSMLIST)"
+      ],
+      "logs": [
+        "/u/b027086/dbb/MortgageApplication/logs/compile-epsmlist.cbcw.log"
+      ]
+    },
+    {
+      "id": "COPY_TO_HFS_1",
+      "type": "COPY_TO_HFS",
+      "source": "SYSPRINT",
+      "destination": "/u/b027086/dbb/MortgageApplication/logs/compile-epsmlist.cbcw.log",
+      "mode": "TEXT"
+    },
+    {
+      "id": "EXECUTE_2",
+      "type": "EXECUTE",
+      "command": "IEWBLINK",
+      "options": "MAP,RENT",
+      "rc": 0,
+      "file": "MortgageApplication/cobol/epsmlist.cbcw",
+      "outputs": [
+        {
+          "dataset": "B027086.DBB.LOAD(EPSMLIST)",
+          "deployType": "LOAD"
+        }
+      ],
+      "logs": [
+        "/u/b027086/dbb/MortgageApplication/logs/linkEdit-epsmlist.cbcw.log"
+      ]
+    },
+    {
+      "id": "COPY_TO_HFS_2",
+      "type": "COPY_TO_HFS",
+      "source": "SYSPRINT",
+      "destination": "/u/b027086/dbb/MortgageApplication/logs/linkEdit-epsmlist.cbcw.log",
+      "mode": "TEXT"
+    },
+    {
+      "id": "BUILD_SUMMARY_1",
+      "type": "BUILD_SUMMARY",
+      "duration": "00 min, 32 sec",
+      "startTime": "31-Aug-2026 13:47:52"
+    }
+  ]
+}

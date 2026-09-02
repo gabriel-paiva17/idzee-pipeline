@@ -1,0 +1,273 @@
+1z/OS V2 R5 BINDER     13:48:23 MONDAY AUGUST 31, 2026
+ BATCH EMULATOR  JOB(B0270863) STEP(*OMVSEX ) PGM= IEWBLINK
+ IEW2278I B352 INVOCATION PARAMETERS - MAP,RENT
+
+1                         *** M O D U L E  M A P ***
+
+ ---------------
+ CLASS  C_CODE            LENGTH =     11A0  ATTRIBUTES = CAT,   LOAD, RMODE=ANY
+                          OFFSET =        0 IN SEGMENT 001     ALIGN = DBLWORD
+ ---------------
+
+  SECTION    CLASS                                      ------- SOURCE --------
+   OFFSET   OFFSET  NAME                TYPE    LENGTH  DDNAME   SEQ  MEMBER
+
+                 0  EPSMLIST           CSECT      11A0  SYSLIN    01  EPSMLIST
+        0        0     EPSMLIST#C         LABEL
+        0        0     EPSMLIST           LABEL
+
+ ---------------
+ CLASS  C_@@PPA2          LENGTH =        8  ATTRIBUTES = MRG,   LOAD, RMODE=ANY
+                          OFFSET =     11A0 IN SEGMENT 001     ALIGN = DBLWORD
+ ---------------
+
+             CLASS
+            OFFSET  NAME                TYPE    LENGTH   SECTION
+                 0  $PRIV000010      PART             8  EPSMLIST
+
+ ---------------
+ CLASS  C_@@CSINIT        LENGTH =        4  ATTRIBUTES = MRG,   LOAD, RMODE=ANY
+                          OFFSET =     11A8 IN SEGMENT 001     ALIGN = DBLWORD
+ ---------------
+
+             CLASS
+            OFFSET  NAME                TYPE    LENGTH   SECTION
+                 0  $PRIV000011      PART             4  EPSMLIST
+
+ ---------------
+ CLASS  B_TEXT            LENGTH =      C00  ATTRIBUTES = CAT,   LOAD, RMODE=ANY
+                          OFFSET =     11B0 IN SEGMENT 001     ALIGN = DBLWORD
+ ---------------
+
+  SECTION    CLASS                                      ------- SOURCE --------
+   OFFSET   OFFSET  NAME                TYPE    LENGTH  DDNAME   SEQ  MEMBER
+
+                 0  IGZXBS61        *  CSECT        10  SYSLIB    02  IGZXBS61
+
+                10  CEESG004        *  CSECT        34  SYSLIB    02  CEESG004
+
+                48  IGZXRT1         *  CSECT        12  SYSLIB    02  IGZXRT1
+
+                60  IGZXVMO         *  CSECT        12  SYSLIB    02  IGZXVMO
+
+                78  IGZXCMSG        *  CSECT        12  SYSLIB    02  IGZXCMSG
+
+                90  IGZXPRS         *  CSECT        12  SYSLIB    02  IGZXPRS
+
+                A8  DFHEAI          *  CSECT        28  SYSLIB    03  DFHEI1
+        8       B0     DFHEI1             LABEL
+
+                D0  IGZXBST4        *  CSECT       4E0  SYSLIB    02  IGZXBST4
+
+               5B0  CEEBETBL        *  CSECT        28  SYSLIB    02  CEEBETBL
+
+               5D8  CEESTART        *  CSECT        B0  SYSLIB    02  CEESTART
+1                         *** M O D U L E  M A P ***
+
+  SECTION    CLASS                                      ------- SOURCE --------
+   OFFSET   OFFSET  NAME                TYPE    LENGTH  DDNAME   SEQ  MEMBER
+
+
+               688  CEEBPUBT        *  CSECT        70  SYSLIB    02  CEEBPUBT
+
+               6F8  CEEBTRM         *  CSECT        74  SYSLIB    02  CEEBTRM
+
+               770  CEECPYRT        *  CSECT        CF  SYSLIB    02  CEEBTRM
+
+               840  CEEBLLST        *  CSECT        5C  SYSLIB    02  CEEBLLST
+       10      850     CEELLIST           LABEL
+
+               8A0  CEEBINT         *  CSECT         8  SYSLIB    02  CEEBINT
+
+               8A8  CEEARLU         *  CSECT        B8  SYSLIB    02  CEEARLU
+
+               960  CEEBPIRA        *  CSECT       2A0  SYSLIB    02  CEEINT
+        0      960     CEEINT             LABEL
+        0      960     CEEBPIRB           LABEL
+        0      960     CEEBPIRC           LABEL
+1                         *** M O D U L E  M A P ***
+
+ ---------------
+ CLASS  B_LIT             LENGTH =      100  ATTRIBUTES = CAT,   LOAD, RMODE=ANY
+                          OFFSET =     1DB0 IN SEGMENT 001     ALIGN = DBLWORD
+ ---------------
+
+  SECTION    CLASS                                      ------- SOURCE --------
+   OFFSET   OFFSET  NAME                TYPE    LENGTH  DDNAME   SEQ  MEMBER
+
+                 0  IEWBLIT            CSECT       100                **NULL**
+        0        0     IEWBLIT            LABEL
+
+ ---------------
+ CLASS  C_WSA             LENGTH =       BC  ATTRIBUTES = MRG, DEFER , RMODE=ANY
+                          OFFSET =        0 IN SEGMENT 002     ALIGN = DBLWORD
+ ---------------
+
+             CLASS
+            OFFSET  NAME                TYPE    LENGTH   SECTION
+                 0  $PRIV000012      PART            10
+                10  EPSMLIST#S       PART            AC  EPSMLIST
+
+ ---------------
+ CLASS  C_CEESG003        LENGTH =        0  ATTRIBUTES = CAT, NOLOAD
+
+ ---------------
+
+  SECTION    CLASS                                      ------- SOURCE --------
+   OFFSET   OFFSET  NAME                TYPE    LENGTH  DDNAME   SEQ  MEMBER
+
+                 0  EPSMLIST           CSECT         0  SYSLIN    01  EPSMLIST
+
+ ---------------
+ CLASS  D_MCODE           LENGTH =     3E22  ATTRIBUTES = CAT, NOLOAD
+
+ ---------------
+
+  SECTION    CLASS                                      ------- SOURCE --------
+   OFFSET   OFFSET  NAME                TYPE    LENGTH  DDNAME   SEQ  MEMBER
+
+                 0  EPSMLIST           CSECT      3E22  SYSLIN    01  EPSMLIST
+1          ***  DATA SET SUMMARY  ***
+
+ DDNAME    CONCAT   FILE IDENTIFICATION
+
+ SYSLIB      02     CEE.SCEELKED
+ SYSLIB      03     DFH610.CICS.SDFHLOAD
+ SYSLIN      01     B027086.DBB.OBJ
+1          *** SYMBOL REFERENCES NOT ASSOCIATED WITH ANY ADCON ***
+
+ TYPE   SCOPE   NAME
+
+
+           *** E N D  O F  M O D U L E  M A P ***
+
+
+
+                                 *** O P E R A T I O N   S U M M A R Y   R E P O R T ***
+
+1PROCESSING OPTIONS:
+
+    ALIASES             NO
+    ALIGN2              NO
+    AMODE               UNSPECIFIED
+    CALL                YES
+    CASE                UPPER
+    COMPAT              UNSPECIFIED
+    COMPRESS            AUTO
+    DCBS                NO
+    DYNAM               NO
+    EXTATTR             UNSPECIFIED
+    EXITS:              NONE
+    FILL                NONE
+    GID                 UNSPECIFIED
+    HOBSET              NO
+    INFO                NO
+    LET                 04
+    LINECT              060
+    LIST                SUMMARY
+    LISTPRIV            NO
+    LONGPARM            NO
+    MAP                 YES
+    MAXBLK              032760
+    MODMAP              NO
+    MSGLEVEL            00
+    OVLY                NO
+    PRINT               YES
+    RES                 NO
+    REUSABILITY         REENTRANT
+    RMODE               UNSPECIFIED
+    RMODEX              NO
+    SIGN                NO
+    STORENX             NOREPLACE
+    STRIPCL             NO
+    STRIPSEC            NO
+    SYMTRACE
+    TERM                NO
+    TRAP                ON
+    UID                 UNSPECIFIED
+    UPCASE              NO
+    WKSPACE             000000K,000000K
+    XCAL                NO
+    XREF                NO
+    ***END OF OPTIONS***
+
+
+
+
+1SAVE OPERATION SUMMARY:
+
+    MEMBER NAME         EPSMLIST
+    LOAD LIBRARY        B027086.DBB.LOAD
+    PROGRAM TYPE        PROGRAM OBJECT(FORMAT 3)
+    VOLUME SERIAL       IN0002
+    DISPOSITION         REPLACED
+    TIME OF SAVE        13.48.23  AUG 31, 2026
+
+
+1SAVE MODULE ATTRIBUTES:
+
+    AC                  000
+    AMODE                31
+    COMPRESSION         NONE
+    DC                  NO
+    EDITABLE            YES
+    EXCEEDS 16MB        NO
+    EXECUTABLE          YES
+    LONGPARM            NO
+    MIGRATABLE          NO
+    OL                  NO
+    OVLY                NO
+    PACK,PRIME          NO,NO
+    PAGE ALIGN          NO
+    REFR                NO
+    RENT                YES
+    REUS                YES
+    RMODE               ANY
+    SCTR                NO
+    SIGN                NO
+    SSI
+    SYM GENERATED       NO
+    TEST                NO
+    XPLINK              NO
+    MODULE SIZE (HEX)   00001F6C
+    DASD SIZE (HEX)     0000E000
+
+
+1 ENTRY POINT AND ALIAS SUMMARY:
+
+  NAME:            ENTRY TYPE AMODE C_OFFSET CLASS NAME        STATUS
+
+  EPSMLIST          MAIN_EP      31 00000000 C_CODE
+
+                          *** E N D   O F   O P E R A T I O N   S U M M A R Y   R E P O R T ***
+
+
+
+
+1z/OS V2 R5 BINDER     13:48:23 MONDAY AUGUST 31, 2026
+ BATCH EMULATOR  JOB(B0270863) STEP(*OMVSEX ) PGM= IEWBLINK
+ IEW2008I 0F03 PROCESSING COMPLETED.  RETURN CODE =  0.
+
+
+
+1----------------------
+ MESSAGE SUMMARY REPORT
+ ----------------------
+  TERMINAL MESSAGES      (SEVERITY = 16)
+  NONE
+
+  SEVERE MESSAGES        (SEVERITY = 12)
+  NONE
+
+  ERROR MESSAGES         (SEVERITY = 08)
+  NONE
+
+  WARNING MESSAGES       (SEVERITY = 04)
+  NONE
+
+  INFORMATIONAL MESSAGES (SEVERITY = 00)
+  2008  2278
+
+
+  **** END OF MESSAGE SUMMARY REPORT ****
+

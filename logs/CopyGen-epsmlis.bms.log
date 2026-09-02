@@ -1,0 +1,854 @@
+»
+                                         High Level Assembler Option Summary                   (PTF UI90738)   Page    1
+                                                                                            HLASM R6.0  2026/08/24 11.50
+  No Overriding ASMAOPT Parameters
+  Overriding Parameters-  SYSPARM(DSECT),DECK,NOOBJECT
+  No Process Statements
+
+
+  Options for this Assembly
+                    NOADATA
+                      ALIGN
+                    NOASA
+                      ASCII(00819)
+                      BATCH
+                      CA(LOCAL)
+                      CE(LOCAL)
+                      CODEPAGE(01148)
+                    NOCOMPAT
+                      CU(LOCAL)
+                    NODATAMAP
+                    NODBCS
+3 PARM/OPTION         DECK
+                      DXREF
+                      EBCDIC(00037)
+                      ESD
+                    NOEXIT
+                      FAIL(NOMSG,NOMNOTE,MAXERRS(500))
+                      FLAG(0,ALIGN,CONT,EXLITW,NOIMPLEN,NOLONGER,NOPAGE0,PUSH,RECORD,RENT,NOSIGNED,NOSUBSTR,NOTRUNC,
+                           USING0)
+                    NOFOLD
+                    NOGOFF
+                      ILMA
+                    NOINFO
+                      LANGUAGE(EN)
+                    NOLIBMAC
+                      LINECOUNT(60)
+                      LIST(121)
+                      MACHINE(,NOLIST)
+                      MXREF(SOURCE)
+3 PARM/OPTION       NOOBJECT
+                      OPTABLE(UNI,NOLIST)
+                    NOPCONTROL
+                    NOPESTOP
+                    NOPROFILE
+                    NORA2
+                    NORENT
+                      RLD
+                      RXREF
+                      SECTALGN(8)
+                      SIZE(MAX)
+                    NOSUPRWARN
+3 PARM/OPTION         SYSPARM(DSECT)
+                    NOTERM
+                    NOTEST
+                      THREAD
+                    NOTRANSLATE
+                      TYPECHECK(MAGNITUDE,REGISTER,SIGNED)
+                      UNICODE(01200)
+»
+                                         High Level Assembler Option Summary                   (PTF UI90738)   Page    2
+                                                                                            HLASM R6.0  2026/08/24 11.50
+                      USING(NOLIMIT,MAP,WARN(15))
+                    NOWORKFILE
+                      XREF(SHORT,UNREFS)
+
+  No Overriding DD Names
+»
+                                                                                                               Page    3
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                      1 *********************************************************************** 00010000
+                                      2 EPSMLIS  DFHMSD TYPE=&SYSPARM,MODE=INOUT,LANG=COBOL,                   X
+                                                       STORAGE=AUTO,TIOAPFX=YES,DSATTS=(COLOR,HILIGHT),        X 0009000
+                                                       MAPATTS=(COLOR,HILIGHT)                                   0009100
+                                    100 EPSMLIS  DFHMDI SIZE=(24,80),CTRL=(PRINT,FREEKB)                         0011000
+                                    194+         PUNCH '       01  EPSMLISI.'                                 @ 01-DFHMD
+                                    195+         PUNCH '           02  FILLER PIC X(12).'              @BB6D00T 01-DFHMD
+                                    196          DFHMDF POS=(1,24),LENGTH=26,INITIAL='Better Mortgage Rates',  *
+                                                       ATTRB=(ASKIP,BRT)
+                                    291          DFHMDF POS=(24,58),LENGTH=0,                                  *
+                                                       ATTRB=ASKIP
+                                    386 *        MENU MORTGAGE LIST.
+                                    388 LITCOMP  DFHMDF POS=(3,1),LENGTH=24,INITIAL='Company',                 *
+                                                       ATTRB=(ASKIP,NORM)
+** ASMA254I *** MNOTE ***           482+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***           483+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                    485+         PUNCH '           02  LITCOMPL    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                    486+         PUNCH '           02  LITCOMPF    PICTURE X.'         @BBD5E01 01-DFHMD
+                                    487+         PUNCH '           02  FILLER REDEFINES LITCOMPF.'     @BM13780 01-DFHMD
+                                    488+         PUNCH '             03 LITCOMPA    PICTURE X.'        @BM13780 01-DFHMD
+                                    489+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                    490+         PUNCH '           02  LITCOMPI  PIC X(24).'           @BBD5E01 01-DFHMD
+                                    491 LITPHN   DFHMDF POS=(3,26),LENGTH=13,INITIAL='Phone Number',           *
+                                                       ATTRB=(PROT,NORM)
+** ASMA254I *** MNOTE ***           585+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***           586+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                    588+         PUNCH '           02  LITPHNL    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                    589+         PUNCH '           02  LITPHNF    PICTURE X.'          @BBD5E01 01-DFHMD
+                                    590+         PUNCH '           02  FILLER REDEFINES LITPHNF.'      @BM13780 01-DFHMD
+                                    591+         PUNCH '             03 LITPHNA    PICTURE X.'         @BM13780 01-DFHMD
+                                    592+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                    593+         PUNCH '           02  LITPHNI  PIC X(13).'            @BBD5E01 01-DFHMD
+                                    594 EPDIFF1  DFHMDF POS=(3,40),LENGTH=13,INITIAL='Interest Rate',          *
+                                                       ATTRB=(PROT,NORM)
+** ASMA254I *** MNOTE ***           688+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***           689+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                    691+         PUNCH '           02  EPDIFF1L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                    692+         PUNCH '           02  EPDIFF1F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                    693+         PUNCH '           02  FILLER REDEFINES EPDIFF1F.'     @BM13780 01-DFHMD
+                                    694+         PUNCH '             03 EPDIFF1A    PICTURE X.'        @BM13780 01-DFHMD
+                                    695+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                    696+         PUNCH '           02  EPDIFF1I  PIC X(13).'           @BBD5E01 01-DFHMD
+                                    697 EPDIFF2  DFHMDF POS=(3,54),LENGTH=16,INITIAL='Monthly Payment',        *
+                                                       ATTRB=(PROT,NORM)
+** ASMA254I *** MNOTE ***           791+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***           792+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                    794+         PUNCH '           02  EPDIFF2L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                    795+         PUNCH '           02  EPDIFF2F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                    796+         PUNCH '           02  FILLER REDEFINES EPDIFF2F.'     @BM13780 01-DFHMD
+                                    797+         PUNCH '             03 EPDIFF2A    PICTURE X.'        @BM13780 01-DFHMD
+                                    798+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                    799+         PUNCH '           02  EPDIFF2I  PIC X(16).'           @BBD5E01 01-DFHMD
+                                    800 LITPHN1  DFHMDF POS=(3,71),LENGTH=7,INITIAL='# Years',                 *
+i                                                       ATTRB=(PROT,NORM)
+                                                                                                               Page    4
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+** ASMA254I *** MNOTE ***           894+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***           895+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                    897+         PUNCH '           02  LITPHN1L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                    898+         PUNCH '           02  LITPHN1F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                    899+         PUNCH '           02  FILLER REDEFINES LITPHN1F.'     @BM13780 01-DFHMD
+                                    900+         PUNCH '             03 LITPHN1A    PICTURE X.'        @BM13780 01-DFHMD
+                                    901+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                    902+         PUNCH '           02  LITPHN1I  PIC X(7).'            @BBD5E01 01-DFHMD
+                                    903 EPCMP1   DFHMDF POS=(4,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***           997+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***           998+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1002+         PUNCH '           02  EPCMP1L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   1003+         PUNCH '           02  EPCMP1F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   1004+         PUNCH '           02  FILLER REDEFINES EPCMP1F.'      @BM13780 01-DFHMD
+                                   1005+         PUNCH '             03 EPCMP1A    PICTURE X.'         @BM13780 01-DFHMD
+                                   1006+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1007+         PUNCH '           02  EPCMP1I  PIC X(24).'            @BBD5E01 01-DFHMD
+                                   1008 EPPHN1   DFHMDF POS=(4,26),LENGTH=13,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          1102+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1103+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1107+         PUNCH '           02  EPPHN1L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   1108+         PUNCH '           02  EPPHN1F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   1109+         PUNCH '           02  FILLER REDEFINES EPPHN1F.'      @BM13780 01-DFHMD
+                                   1110+         PUNCH '             03 EPPHN1A    PICTURE X.'         @BM13780 01-DFHMD
+                                   1111+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1112+         PUNCH '           02  EPPHN1I  PIC X(13).'            @BBD5E01 01-DFHMD
+                                   1113 EPRATE1  DFHMDF POS=(4,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          1207+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1208+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1211+         PUNCH '           02  EPRATE1L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   1212+         PUNCH '           02  EPRATE1F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   1213+         PUNCH '           02  FILLER REDEFINES EPRATE1F.'     @BM13780 01-DFHMD
+                                   1214+         PUNCH '             03 EPRATE1A    PICTURE X.'        @BM13780 01-DFHMD
+                                   1215+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1216+         PUNCH '           02  EPRATE1I  PIC X(5).'            @BBD5E01 01-DFHMD
+                                   1217 EPLOAN1  DFHMDF POS=(4,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          1311+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1312+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1314+         PUNCH '           02  EPLOAN1L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   1315+         PUNCH '           02  EPLOAN1F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   1316+         PUNCH '           02  FILLER REDEFINES EPLOAN1F.'     @BM13780 01-DFHMD
+                                   1317+         PUNCH '             03 EPLOAN1A    PICTURE X.'        @BM13780 01-DFHMD
+                                   1318+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1319+         PUNCH '           02  EPLOAN1I  PIC X(12).'           @BBD5E01 01-DFHMD
+                                   1320 EPYEARS1 DFHMDF POS=(4,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          1414+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1415+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1418+         PUNCH '           02  EPYEARS1L    COMP  PIC  S9(4). '        X01-DFHMD
+                                       +                                                               @BBD5E01
+i                                   1419+         PUNCH '           02  EPYEARS1F    PICTURE X.'        @BBD5E01 01-DFHMD
+                                                                                                               Page    5
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   1420+         PUNCH '           02  FILLER REDEFINES EPYEARS1F.'    @BM13780 01-DFHMD
+                                   1421+         PUNCH '             03 EPYEARS1A    PICTURE X.'       @BM13780 01-DFHMD
+                                   1422+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1423+         PUNCH '           02  EPYEARS1I  PIC X(2).'           @BBD5E01 01-DFHMD
+                                   1424 EPCMP2   DFHMDF POS=(5,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          1518+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1519+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1523+         PUNCH '           02  EPCMP2L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   1524+         PUNCH '           02  EPCMP2F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   1525+         PUNCH '           02  FILLER REDEFINES EPCMP2F.'      @BM13780 01-DFHMD
+                                   1526+         PUNCH '             03 EPCMP2A    PICTURE X.'         @BM13780 01-DFHMD
+                                   1527+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1528+         PUNCH '           02  EPCMP2I  PIC X(24).'            @BBD5E01 01-DFHMD
+                                   1529 EPPHN2   DFHMDF POS=(5,26),LENGTH=13,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          1623+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1624+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1628+         PUNCH '           02  EPPHN2L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   1629+         PUNCH '           02  EPPHN2F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   1630+         PUNCH '           02  FILLER REDEFINES EPPHN2F.'      @BM13780 01-DFHMD
+                                   1631+         PUNCH '             03 EPPHN2A    PICTURE X.'         @BM13780 01-DFHMD
+                                   1632+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1633+         PUNCH '           02  EPPHN2I  PIC X(13).'            @BBD5E01 01-DFHMD
+                                   1634 EPRATE2  DFHMDF POS=(5,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          1728+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1729+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1732+         PUNCH '           02  EPRATE2L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   1733+         PUNCH '           02  EPRATE2F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   1734+         PUNCH '           02  FILLER REDEFINES EPRATE2F.'     @BM13780 01-DFHMD
+                                   1735+         PUNCH '             03 EPRATE2A    PICTURE X.'        @BM13780 01-DFHMD
+                                   1736+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1737+         PUNCH '           02  EPRATE2I  PIC X(5).'            @BBD5E01 01-DFHMD
+                                   1738 EPLOAN2  DFHMDF POS=(5,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          1832+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1833+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1835+         PUNCH '           02  EPLOAN2L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   1836+         PUNCH '           02  EPLOAN2F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   1837+         PUNCH '           02  FILLER REDEFINES EPLOAN2F.'     @BM13780 01-DFHMD
+                                   1838+         PUNCH '             03 EPLOAN2A    PICTURE X.'        @BM13780 01-DFHMD
+                                   1839+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1840+         PUNCH '           02  EPLOAN2I  PIC X(12).'           @BBD5E01 01-DFHMD
+                                   1841 EPYEARS2 DFHMDF POS=(5,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          1935+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1936+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1939+         PUNCH '           02  EPYEARS2L    COMP  PIC  S9(4). '        X01-DFHMD
+                                       +                                                               @BBD5E01
+                                   1940+         PUNCH '           02  EPYEARS2F    PICTURE X.'        @BBD5E01 01-DFHMD
+                                   1941+         PUNCH '           02  FILLER REDEFINES EPYEARS2F.'    @BM13780 01-DFHMD
+                                   1942+         PUNCH '             03 EPYEARS2A    PICTURE X.'       @BM13780 01-DFHMD
+                                   1943+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+i                                   1944+         PUNCH '           02  EPYEARS2I  PIC X(2).'           @BBD5E01 01-DFHMD
+                                                                                                               Page    6
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   1945 EPCMP3   DFHMDF POS=(6,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          2039+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2040+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2044+         PUNCH '           02  EPCMP3L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   2045+         PUNCH '           02  EPCMP3F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   2046+         PUNCH '           02  FILLER REDEFINES EPCMP3F.'      @BM13780 01-DFHMD
+                                   2047+         PUNCH '             03 EPCMP3A    PICTURE X.'         @BM13780 01-DFHMD
+                                   2048+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   2049+         PUNCH '           02  EPCMP3I  PIC X(24).'            @BBD5E01 01-DFHMD
+                                   2050 EPPHN3   DFHMDF POS=(6,26),LENGTH=13,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          2144+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2145+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2149+         PUNCH '           02  EPPHN3L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   2150+         PUNCH '           02  EPPHN3F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   2151+         PUNCH '           02  FILLER REDEFINES EPPHN3F.'      @BM13780 01-DFHMD
+                                   2152+         PUNCH '             03 EPPHN3A    PICTURE X.'         @BM13780 01-DFHMD
+                                   2153+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   2154+         PUNCH '           02  EPPHN3I  PIC X(13).'            @BBD5E01 01-DFHMD
+                                   2155 EPRATE3  DFHMDF POS=(6,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          2249+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2250+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2253+         PUNCH '           02  EPRATE3L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   2254+         PUNCH '           02  EPRATE3F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   2255+         PUNCH '           02  FILLER REDEFINES EPRATE3F.'     @BM13780 01-DFHMD
+                                   2256+         PUNCH '             03 EPRATE3A    PICTURE X.'        @BM13780 01-DFHMD
+                                   2257+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   2258+         PUNCH '           02  EPRATE3I  PIC X(5).'            @BBD5E01 01-DFHMD
+                                   2259 EPLOAN3  DFHMDF POS=(6,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          2353+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2354+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2356+         PUNCH '           02  EPLOAN3L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   2357+         PUNCH '           02  EPLOAN3F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   2358+         PUNCH '           02  FILLER REDEFINES EPLOAN3F.'     @BM13780 01-DFHMD
+                                   2359+         PUNCH '             03 EPLOAN3A    PICTURE X.'        @BM13780 01-DFHMD
+                                   2360+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   2361+         PUNCH '           02  EPLOAN3I  PIC X(12).'           @BBD5E01 01-DFHMD
+                                   2362 EPYEARS3 DFHMDF POS=(6,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          2456+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2457+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2460+         PUNCH '           02  EPYEARS3L    COMP  PIC  S9(4). '        X01-DFHMD
+                                       +                                                               @BBD5E01
+                                   2461+         PUNCH '           02  EPYEARS3F    PICTURE X.'        @BBD5E01 01-DFHMD
+                                   2462+         PUNCH '           02  FILLER REDEFINES EPYEARS3F.'    @BM13780 01-DFHMD
+                                   2463+         PUNCH '             03 EPYEARS3A    PICTURE X.'       @BM13780 01-DFHMD
+                                   2464+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   2465+         PUNCH '           02  EPYEARS3I  PIC X(2).'           @BBD5E01 01-DFHMD
+                                   2466 EPCMP4   DFHMDF POS=(7,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          2560+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+i** ASMA254I *** MNOTE ***          2561+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                                                                                               Page    7
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   2565+         PUNCH '           02  EPCMP4L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   2566+         PUNCH '           02  EPCMP4F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   2567+         PUNCH '           02  FILLER REDEFINES EPCMP4F.'      @BM13780 01-DFHMD
+                                   2568+         PUNCH '             03 EPCMP4A    PICTURE X.'         @BM13780 01-DFHMD
+                                   2569+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   2570+         PUNCH '           02  EPCMP4I  PIC X(24).'            @BBD5E01 01-DFHMD
+                                   2571 EPPHN4   DFHMDF POS=(7,26),LENGTH=13,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          2665+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2666+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2670+         PUNCH '           02  EPPHN4L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   2671+         PUNCH '           02  EPPHN4F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   2672+         PUNCH '           02  FILLER REDEFINES EPPHN4F.'      @BM13780 01-DFHMD
+                                   2673+         PUNCH '             03 EPPHN4A    PICTURE X.'         @BM13780 01-DFHMD
+                                   2674+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   2675+         PUNCH '           02  EPPHN4I  PIC X(13).'            @BBD5E01 01-DFHMD
+                                   2676 EPRATE4  DFHMDF POS=(7,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          2770+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2771+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2774+         PUNCH '           02  EPRATE4L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   2775+         PUNCH '           02  EPRATE4F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   2776+         PUNCH '           02  FILLER REDEFINES EPRATE4F.'     @BM13780 01-DFHMD
+                                   2777+         PUNCH '             03 EPRATE4A    PICTURE X.'        @BM13780 01-DFHMD
+                                   2778+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   2779+         PUNCH '           02  EPRATE4I  PIC X(5).'            @BBD5E01 01-DFHMD
+                                   2780 EPLOAN4  DFHMDF POS=(7,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          2874+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2875+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2877+         PUNCH '           02  EPLOAN4L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   2878+         PUNCH '           02  EPLOAN4F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   2879+         PUNCH '           02  FILLER REDEFINES EPLOAN4F.'     @BM13780 01-DFHMD
+                                   2880+         PUNCH '             03 EPLOAN4A    PICTURE X.'        @BM13780 01-DFHMD
+                                   2881+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   2882+         PUNCH '           02  EPLOAN4I  PIC X(12).'           @BBD5E01 01-DFHMD
+                                   2883 EPYEARS4 DFHMDF POS=(7,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          2977+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          2978+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   2981+         PUNCH '           02  EPYEARS4L    COMP  PIC  S9(4). '        X01-DFHMD
+                                       +                                                               @BBD5E01
+                                   2982+         PUNCH '           02  EPYEARS4F    PICTURE X.'        @BBD5E01 01-DFHMD
+                                   2983+         PUNCH '           02  FILLER REDEFINES EPYEARS4F.'    @BM13780 01-DFHMD
+                                   2984+         PUNCH '             03 EPYEARS4A    PICTURE X.'       @BM13780 01-DFHMD
+                                   2985+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   2986+         PUNCH '           02  EPYEARS4I  PIC X(2).'           @BBD5E01 01-DFHMD
+                                   2987 EPCMP5   DFHMDF POS=(8,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          3081+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3082+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3086+         PUNCH '           02  EPCMP5L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   3087+         PUNCH '           02  EPCMP5F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   3088+         PUNCH '           02  FILLER REDEFINES EPCMP5F.'      @BM13780 01-DFHMD
+i                                   3089+         PUNCH '             03 EPCMP5A    PICTURE X.'         @BM13780 01-DFHMD
+                                                                                                               Page    8
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   3090+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   3091+         PUNCH '           02  EPCMP5I  PIC X(24).'            @BBD5E01 01-DFHMD
+                                   3092 EPPHN5   DFHMDF POS=(8,26),LENGTH=13,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          3186+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3187+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3191+         PUNCH '           02  EPPHN5L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   3192+         PUNCH '           02  EPPHN5F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   3193+         PUNCH '           02  FILLER REDEFINES EPPHN5F.'      @BM13780 01-DFHMD
+                                   3194+         PUNCH '             03 EPPHN5A    PICTURE X.'         @BM13780 01-DFHMD
+                                   3195+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   3196+         PUNCH '           02  EPPHN5I  PIC X(13).'            @BBD5E01 01-DFHMD
+                                   3197 EPRATE5  DFHMDF POS=(8,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          3291+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3292+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3295+         PUNCH '           02  EPRATE5L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   3296+         PUNCH '           02  EPRATE5F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   3297+         PUNCH '           02  FILLER REDEFINES EPRATE5F.'     @BM13780 01-DFHMD
+                                   3298+         PUNCH '             03 EPRATE5A    PICTURE X.'        @BM13780 01-DFHMD
+                                   3299+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   3300+         PUNCH '           02  EPRATE5I  PIC X(5).'            @BBD5E01 01-DFHMD
+                                   3301 EPLOAN5  DFHMDF POS=(8,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          3395+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3396+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3398+         PUNCH '           02  EPLOAN5L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   3399+         PUNCH '           02  EPLOAN5F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   3400+         PUNCH '           02  FILLER REDEFINES EPLOAN5F.'     @BM13780 01-DFHMD
+                                   3401+         PUNCH '             03 EPLOAN5A    PICTURE X.'        @BM13780 01-DFHMD
+                                   3402+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   3403+         PUNCH '           02  EPLOAN5I  PIC X(12).'           @BBD5E01 01-DFHMD
+                                   3404 EPYEARS5 DFHMDF POS=(8,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          3498+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3499+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3502+         PUNCH '           02  EPYEARS5L    COMP  PIC  S9(4). '        X01-DFHMD
+                                       +                                                               @BBD5E01
+                                   3503+         PUNCH '           02  EPYEARS5F    PICTURE X.'        @BBD5E01 01-DFHMD
+                                   3504+         PUNCH '           02  FILLER REDEFINES EPYEARS5F.'    @BM13780 01-DFHMD
+                                   3505+         PUNCH '             03 EPYEARS5A    PICTURE X.'       @BM13780 01-DFHMD
+                                   3506+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   3507+         PUNCH '           02  EPYEARS5I  PIC X(2).'           @BBD5E01 01-DFHMD
+                                   3508 EPCMP6   DFHMDF POS=(9,1),LENGTH=24,                                   *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          3602+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3603+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3607+         PUNCH '           02  EPCMP6L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   3608+         PUNCH '           02  EPCMP6F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   3609+         PUNCH '           02  FILLER REDEFINES EPCMP6F.'      @BM13780 01-DFHMD
+                                   3610+         PUNCH '             03 EPCMP6A    PICTURE X.'         @BM13780 01-DFHMD
+                                   3611+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   3612+         PUNCH '           02  EPCMP6I  PIC X(24).'            @BBD5E01 01-DFHMD
+                                   3613 EPPHN6   DFHMDF POS=(9,26),LENGTH=13,                                  *
+i                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+                                                                                                               Page    9
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+** ASMA254I *** MNOTE ***          3707+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3708+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3712+         PUNCH '           02  EPPHN6L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   3713+         PUNCH '           02  EPPHN6F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   3714+         PUNCH '           02  FILLER REDEFINES EPPHN6F.'      @BM13780 01-DFHMD
+                                   3715+         PUNCH '             03 EPPHN6A    PICTURE X.'         @BM13780 01-DFHMD
+                                   3716+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   3717+         PUNCH '           02  EPPHN6I  PIC X(13).'            @BBD5E01 01-DFHMD
+                                   3718 EPRATE6  DFHMDF POS=(9,45),LENGTH=5,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          3812+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3813+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3816+         PUNCH '           02  EPRATE6L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   3817+         PUNCH '           02  EPRATE6F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   3818+         PUNCH '           02  FILLER REDEFINES EPRATE6F.'     @BM13780 01-DFHMD
+                                   3819+         PUNCH '             03 EPRATE6A    PICTURE X.'        @BM13780 01-DFHMD
+                                   3820+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   3821+         PUNCH '           02  EPRATE6I  PIC X(5).'            @BBD5E01 01-DFHMD
+                                   3822 EPLOAN6  DFHMDF POS=(9,56),LENGTH=12,                                  *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          3916+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          3917+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   3919+         PUNCH '           02  EPLOAN6L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   3920+         PUNCH '           02  EPLOAN6F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   3921+         PUNCH '           02  FILLER REDEFINES EPLOAN6F.'     @BM13780 01-DFHMD
+                                   3922+         PUNCH '             03 EPLOAN6A    PICTURE X.'        @BM13780 01-DFHMD
+                                   3923+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   3924+         PUNCH '           02  EPLOAN6I  PIC X(12).'           @BBD5E01 01-DFHMD
+                                   3925 EPYEARS6 DFHMDF POS=(9,74),LENGTH=2,                                   *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          4019+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4020+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4023+         PUNCH '           02  EPYEARS6L    COMP  PIC  S9(4). '        X01-DFHMD
+                                       +                                                               @BBD5E01
+                                   4024+         PUNCH '           02  EPYEARS6F    PICTURE X.'        @BBD5E01 01-DFHMD
+                                   4025+         PUNCH '           02  FILLER REDEFINES EPYEARS6F.'    @BM13780 01-DFHMD
+                                   4026+         PUNCH '             03 EPYEARS6A    PICTURE X.'       @BM13780 01-DFHMD
+                                   4027+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   4028+         PUNCH '           02  EPYEARS6I  PIC X(2).'           @BBD5E01 01-DFHMD
+                                   4029 EPCMP7   DFHMDF POS=(10,1),LENGTH=24,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          4123+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4124+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4128+         PUNCH '           02  EPCMP7L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   4129+         PUNCH '           02  EPCMP7F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   4130+         PUNCH '           02  FILLER REDEFINES EPCMP7F.'      @BM13780 01-DFHMD
+                                   4131+         PUNCH '             03 EPCMP7A    PICTURE X.'         @BM13780 01-DFHMD
+                                   4132+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   4133+         PUNCH '           02  EPCMP7I  PIC X(24).'            @BBD5E01 01-DFHMD
+                                   4134 EPPHN7   DFHMDF POS=(10,26),LENGTH=13,                                 *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          4228+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4229+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4233+         PUNCH '           02  EPPHN7L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+i                                   4234+         PUNCH '           02  EPPHN7F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                                                                                               Page   10
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   4235+         PUNCH '           02  FILLER REDEFINES EPPHN7F.'      @BM13780 01-DFHMD
+                                   4236+         PUNCH '             03 EPPHN7A    PICTURE X.'         @BM13780 01-DFHMD
+                                   4237+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   4238+         PUNCH '           02  EPPHN7I  PIC X(13).'            @BBD5E01 01-DFHMD
+                                   4239 EPRATE7  DFHMDF POS=(10,45),LENGTH=5,                                  *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          4333+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4334+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4337+         PUNCH '           02  EPRATE7L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   4338+         PUNCH '           02  EPRATE7F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   4339+         PUNCH '           02  FILLER REDEFINES EPRATE7F.'     @BM13780 01-DFHMD
+                                   4340+         PUNCH '             03 EPRATE7A    PICTURE X.'        @BM13780 01-DFHMD
+                                   4341+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   4342+         PUNCH '           02  EPRATE7I  PIC X(5).'            @BBD5E01 01-DFHMD
+                                   4343 EPLOAN7  DFHMDF POS=(10,56),LENGTH=12,                                 *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          4437+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4438+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4440+         PUNCH '           02  EPLOAN7L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   4441+         PUNCH '           02  EPLOAN7F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   4442+         PUNCH '           02  FILLER REDEFINES EPLOAN7F.'     @BM13780 01-DFHMD
+                                   4443+         PUNCH '             03 EPLOAN7A    PICTURE X.'        @BM13780 01-DFHMD
+                                   4444+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   4445+         PUNCH '           02  EPLOAN7I  PIC X(12).'           @BBD5E01 01-DFHMD
+                                   4446 EPYEARS7 DFHMDF POS=(10,74),LENGTH=2,                                  *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          4540+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4541+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4544+         PUNCH '           02  EPYEARS7L    COMP  PIC  S9(4). '        X01-DFHMD
+                                       +                                                               @BBD5E01
+                                   4545+         PUNCH '           02  EPYEARS7F    PICTURE X.'        @BBD5E01 01-DFHMD
+                                   4546+         PUNCH '           02  FILLER REDEFINES EPYEARS7F.'    @BM13780 01-DFHMD
+                                   4547+         PUNCH '             03 EPYEARS7A    PICTURE X.'       @BM13780 01-DFHMD
+                                   4548+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   4549+         PUNCH '           02  EPYEARS7I  PIC X(2).'           @BBD5E01 01-DFHMD
+                                   4550 EPCMP8   DFHMDF POS=(11,1),LENGTH=24,                                  *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          4644+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4645+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4649+         PUNCH '           02  EPCMP8L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   4650+         PUNCH '           02  EPCMP8F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   4651+         PUNCH '           02  FILLER REDEFINES EPCMP8F.'      @BM13780 01-DFHMD
+                                   4652+         PUNCH '             03 EPCMP8A    PICTURE X.'         @BM13780 01-DFHMD
+                                   4653+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   4654+         PUNCH '           02  EPCMP8I  PIC X(24).'            @BBD5E01 01-DFHMD
+                                   4655 EPPHN8   DFHMDF POS=(11,26),LENGTH=13,                                 *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=GREEN
+** ASMA254I *** MNOTE ***          4749+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4750+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4754+         PUNCH '           02  EPPHN8L    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   4755+         PUNCH '           02  EPPHN8F    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   4756+         PUNCH '           02  FILLER REDEFINES EPPHN8F.'      @BM13780 01-DFHMD
+                                   4757+         PUNCH '             03 EPPHN8A    PICTURE X.'         @BM13780 01-DFHMD
+                                   4758+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+i                                   4759+         PUNCH '           02  EPPHN8I  PIC X(13).'            @BBD5E01 01-DFHMD
+                                                                                                               Page   11
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   4760 EPRATE8  DFHMDF POS=(11,45),LENGTH=5,                                  *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          4854+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4855+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4858+         PUNCH '           02  EPRATE8L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   4859+         PUNCH '           02  EPRATE8F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   4860+         PUNCH '           02  FILLER REDEFINES EPRATE8F.'     @BM13780 01-DFHMD
+                                   4861+         PUNCH '             03 EPRATE8A    PICTURE X.'        @BM13780 01-DFHMD
+                                   4862+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   4863+         PUNCH '           02  EPRATE8I  PIC X(5).'            @BBD5E01 01-DFHMD
+                                   4864 EPLOAN8  DFHMDF POS=(11,56),LENGTH=12,                                 *
+                                                       ATTRB=(NUM,IC,NORM)
+** ASMA254I *** MNOTE ***          4958+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          4959+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   4961+         PUNCH '           02  EPLOAN8L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   4962+         PUNCH '           02  EPLOAN8F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   4963+         PUNCH '           02  FILLER REDEFINES EPLOAN8F.'     @BM13780 01-DFHMD
+                                   4964+         PUNCH '             03 EPLOAN8A    PICTURE X.'        @BM13780 01-DFHMD
+                                   4965+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   4966+         PUNCH '           02  EPLOAN8I  PIC X(12).'           @BBD5E01 01-DFHMD
+                                   4967          DFHMDF POS=(11,69),                                           *
+                                                       ATTRB=ASKIP
+** ASMA254I *** MNOTE ***          5061+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5062+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5064 EPYEARS8 DFHMDF POS=(11,74),LENGTH=2,                                  *
+                                                       ATTRB=(NUM,NORM),COLOR=GREEN
+** ASMA254I *** MNOTE ***          5158+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5159+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5162+         PUNCH '           02  EPYEARS8L    COMP  PIC  S9(4). '        X01-DFHMD
+                                       +                                                               @BBD5E01
+                                   5163+         PUNCH '           02  EPYEARS8F    PICTURE X.'        @BBD5E01 01-DFHMD
+                                   5164+         PUNCH '           02  FILLER REDEFINES EPYEARS8F.'    @BM13780 01-DFHMD
+                                   5165+         PUNCH '             03 EPYEARS8A    PICTURE X.'       @BM13780 01-DFHMD
+                                   5166+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   5167+         PUNCH '           02  EPYEARS8I  PIC X(2).'           @BBD5E01 01-DFHMD
+                                   5168          DFHMDF POS=(11,77),LENGTH=0,                                  *
+                                                       ATTRB=ASKIP
+** ASMA254I *** MNOTE ***          5262+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5263+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5265          DFHMDF POS=(23,17),LENGTH=43,                                 *
+                                                       INITIAL='Press F3 to quit or Enter to calculate loan',  *
+                                                       ATTRB=(ASKIP,NORM),HILIGHT=OFF,COLOR=BLUE
+** ASMA254I *** MNOTE ***          5359+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5360+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5364 MSGERR   DFHMDF POS=(24,17),LENGTH=40,INITIAL='INVALID KEY PRESSED',   X
+                                                       ATTRB=(PROT,DRK)
+** ASMA254I *** MNOTE ***          5458+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          5459+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   5461+         PUNCH '           02  MSGERRL    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   5462+         PUNCH '           02  MSGERRF    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   5463+         PUNCH '           02  FILLER REDEFINES MSGERRF.'      @BM13780 01-DFHMD
+                                   5464+         PUNCH '             03 MSGERRA    PICTURE X.'         @BM13780 01-DFHMD
+                                   5465+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   5466+         PUNCH '           02  MSGERRI  PIC X(40).'            @BBD5E01 01-DFHMD
+i                                   5467 EPSMLIS DFHMSD TYPE=FINAL
+                                                                                                               Page   12
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   5653+         PUNCH '       01  EPSMLISO REDEFINES EPSMLISI.'              @ 02-DFHMD
+                                   5654+         PUNCH '           02  FILLER PIC X(12).'              @BB6D00T 02-DFHMD
+                                   5655+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5656+         PUNCH '           02  LITCOMPC    PICTURE X.'             @L3A 02-DFHMD
+                                   5657+         PUNCH '           02  LITCOMPH    PICTURE X.'             @L3A 02-DFHMD
+                                   5658+         PUNCH '           02  LITCOMPO  PIC X(24).'           @BBD5E01 02-DFHMD
+                                   5659+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5660+         PUNCH '           02  LITPHNC    PICTURE X.'              @L3A 02-DFHMD
+                                   5661+         PUNCH '           02  LITPHNH    PICTURE X.'              @L3A 02-DFHMD
+                                   5662+         PUNCH '           02  LITPHNO  PIC X(13).'            @BBD5E01 02-DFHMD
+                                   5663+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5664+         PUNCH '           02  EPDIFF1C    PICTURE X.'             @L3A 02-DFHMD
+                                   5665+         PUNCH '           02  EPDIFF1H    PICTURE X.'             @L3A 02-DFHMD
+                                   5666+         PUNCH '           02  EPDIFF1O  PIC X(13).'           @BBD5E01 02-DFHMD
+                                   5667+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5668+         PUNCH '           02  EPDIFF2C    PICTURE X.'             @L3A 02-DFHMD
+                                   5669+         PUNCH '           02  EPDIFF2H    PICTURE X.'             @L3A 02-DFHMD
+                                   5670+         PUNCH '           02  EPDIFF2O  PIC X(16).'           @BBD5E01 02-DFHMD
+                                   5671+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5672+         PUNCH '           02  LITPHN1C    PICTURE X.'             @L3A 02-DFHMD
+                                   5673+         PUNCH '           02  LITPHN1H    PICTURE X.'             @L3A 02-DFHMD
+                                   5674+         PUNCH '           02  LITPHN1O  PIC X(7).'            @BBD5E01 02-DFHMD
+                                   5675+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5676+         PUNCH '           02  EPCMP1C    PICTURE X.'              @L3A 02-DFHMD
+                                   5677+         PUNCH '           02  EPCMP1H    PICTURE X.'              @L3A 02-DFHMD
+                                   5678+         PUNCH '           02  EPCMP1O  PIC X(24).'            @BBD5E01 02-DFHMD
+                                   5679+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5680+         PUNCH '           02  EPPHN1C    PICTURE X.'              @L3A 02-DFHMD
+                                   5681+         PUNCH '           02  EPPHN1H    PICTURE X.'              @L3A 02-DFHMD
+                                   5682+         PUNCH '           02  EPPHN1O  PIC X(13).'            @BBD5E01 02-DFHMD
+                                   5683+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5684+         PUNCH '           02  EPRATE1C    PICTURE X.'             @L3A 02-DFHMD
+                                   5685+         PUNCH '           02  EPRATE1H    PICTURE X.'             @L3A 02-DFHMD
+                                   5686+         PUNCH '           02  EPRATE1O  PIC X(5).'            @BBD5E01 02-DFHMD
+                                   5687+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5688+         PUNCH '           02  EPLOAN1C    PICTURE X.'             @L3A 02-DFHMD
+                                   5689+         PUNCH '           02  EPLOAN1H    PICTURE X.'             @L3A 02-DFHMD
+                                   5690+         PUNCH '           02  EPLOAN1O  PIC X(12).'           @BBD5E01 02-DFHMD
+                                   5691+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5692+         PUNCH '           02  EPYEARS1C    PICTURE X.'            @L3A 02-DFHMD
+                                   5693+         PUNCH '           02  EPYEARS1H    PICTURE X.'            @L3A 02-DFHMD
+                                   5694+         PUNCH '           02  EPYEARS1O  PIC X(2).'           @BBD5E01 02-DFHMD
+                                   5695+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5696+         PUNCH '           02  EPCMP2C    PICTURE X.'              @L3A 02-DFHMD
+                                   5697+         PUNCH '           02  EPCMP2H    PICTURE X.'              @L3A 02-DFHMD
+                                   5698+         PUNCH '           02  EPCMP2O  PIC X(24).'            @BBD5E01 02-DFHMD
+                                   5699+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5700+         PUNCH '           02  EPPHN2C    PICTURE X.'              @L3A 02-DFHMD
+                                   5701+         PUNCH '           02  EPPHN2H    PICTURE X.'              @L3A 02-DFHMD
+                                   5702+         PUNCH '           02  EPPHN2O  PIC X(13).'            @BBD5E01 02-DFHMD
+                                   5703+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5704+         PUNCH '           02  EPRATE2C    PICTURE X.'             @L3A 02-DFHMD
+                                   5705+         PUNCH '           02  EPRATE2H    PICTURE X.'             @L3A 02-DFHMD
+                                   5706+         PUNCH '           02  EPRATE2O  PIC X(5).'            @BBD5E01 02-DFHMD
+i                                   5707+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                                                                                               Page   13
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   5708+         PUNCH '           02  EPLOAN2C    PICTURE X.'             @L3A 02-DFHMD
+                                   5709+         PUNCH '           02  EPLOAN2H    PICTURE X.'             @L3A 02-DFHMD
+                                   5710+         PUNCH '           02  EPLOAN2O  PIC X(12).'           @BBD5E01 02-DFHMD
+                                   5711+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5712+         PUNCH '           02  EPYEARS2C    PICTURE X.'            @L3A 02-DFHMD
+                                   5713+         PUNCH '           02  EPYEARS2H    PICTURE X.'            @L3A 02-DFHMD
+                                   5714+         PUNCH '           02  EPYEARS2O  PIC X(2).'           @BBD5E01 02-DFHMD
+                                   5715+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5716+         PUNCH '           02  EPCMP3C    PICTURE X.'              @L3A 02-DFHMD
+                                   5717+         PUNCH '           02  EPCMP3H    PICTURE X.'              @L3A 02-DFHMD
+                                   5718+         PUNCH '           02  EPCMP3O  PIC X(24).'            @BBD5E01 02-DFHMD
+                                   5719+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5720+         PUNCH '           02  EPPHN3C    PICTURE X.'              @L3A 02-DFHMD
+                                   5721+         PUNCH '           02  EPPHN3H    PICTURE X.'              @L3A 02-DFHMD
+                                   5722+         PUNCH '           02  EPPHN3O  PIC X(13).'            @BBD5E01 02-DFHMD
+                                   5723+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5724+         PUNCH '           02  EPRATE3C    PICTURE X.'             @L3A 02-DFHMD
+                                   5725+         PUNCH '           02  EPRATE3H    PICTURE X.'             @L3A 02-DFHMD
+                                   5726+         PUNCH '           02  EPRATE3O  PIC X(5).'            @BBD5E01 02-DFHMD
+                                   5727+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5728+         PUNCH '           02  EPLOAN3C    PICTURE X.'             @L3A 02-DFHMD
+                                   5729+         PUNCH '           02  EPLOAN3H    PICTURE X.'             @L3A 02-DFHMD
+                                   5730+         PUNCH '           02  EPLOAN3O  PIC X(12).'           @BBD5E01 02-DFHMD
+                                   5731+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5732+         PUNCH '           02  EPYEARS3C    PICTURE X.'            @L3A 02-DFHMD
+                                   5733+         PUNCH '           02  EPYEARS3H    PICTURE X.'            @L3A 02-DFHMD
+                                   5734+         PUNCH '           02  EPYEARS3O  PIC X(2).'           @BBD5E01 02-DFHMD
+                                   5735+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5736+         PUNCH '           02  EPCMP4C    PICTURE X.'              @L3A 02-DFHMD
+                                   5737+         PUNCH '           02  EPCMP4H    PICTURE X.'              @L3A 02-DFHMD
+                                   5738+         PUNCH '           02  EPCMP4O  PIC X(24).'            @BBD5E01 02-DFHMD
+                                   5739+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5740+         PUNCH '           02  EPPHN4C    PICTURE X.'              @L3A 02-DFHMD
+                                   5741+         PUNCH '           02  EPPHN4H    PICTURE X.'              @L3A 02-DFHMD
+                                   5742+         PUNCH '           02  EPPHN4O  PIC X(13).'            @BBD5E01 02-DFHMD
+                                   5743+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5744+         PUNCH '           02  EPRATE4C    PICTURE X.'             @L3A 02-DFHMD
+                                   5745+         PUNCH '           02  EPRATE4H    PICTURE X.'             @L3A 02-DFHMD
+                                   5746+         PUNCH '           02  EPRATE4O  PIC X(5).'            @BBD5E01 02-DFHMD
+                                   5747+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5748+         PUNCH '           02  EPLOAN4C    PICTURE X.'             @L3A 02-DFHMD
+                                   5749+         PUNCH '           02  EPLOAN4H    PICTURE X.'             @L3A 02-DFHMD
+                                   5750+         PUNCH '           02  EPLOAN4O  PIC X(12).'           @BBD5E01 02-DFHMD
+                                   5751+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5752+         PUNCH '           02  EPYEARS4C    PICTURE X.'            @L3A 02-DFHMD
+                                   5753+         PUNCH '           02  EPYEARS4H    PICTURE X.'            @L3A 02-DFHMD
+                                   5754+         PUNCH '           02  EPYEARS4O  PIC X(2).'           @BBD5E01 02-DFHMD
+                                   5755+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5756+         PUNCH '           02  EPCMP5C    PICTURE X.'              @L3A 02-DFHMD
+                                   5757+         PUNCH '           02  EPCMP5H    PICTURE X.'              @L3A 02-DFHMD
+                                   5758+         PUNCH '           02  EPCMP5O  PIC X(24).'            @BBD5E01 02-DFHMD
+                                   5759+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5760+         PUNCH '           02  EPPHN5C    PICTURE X.'              @L3A 02-DFHMD
+                                   5761+         PUNCH '           02  EPPHN5H    PICTURE X.'              @L3A 02-DFHMD
+i                                   5762+         PUNCH '           02  EPPHN5O  PIC X(13).'            @BBD5E01 02-DFHMD
+                                                                                                               Page   14
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   5763+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5764+         PUNCH '           02  EPRATE5C    PICTURE X.'             @L3A 02-DFHMD
+                                   5765+         PUNCH '           02  EPRATE5H    PICTURE X.'             @L3A 02-DFHMD
+                                   5766+         PUNCH '           02  EPRATE5O  PIC X(5).'            @BBD5E01 02-DFHMD
+                                   5767+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5768+         PUNCH '           02  EPLOAN5C    PICTURE X.'             @L3A 02-DFHMD
+                                   5769+         PUNCH '           02  EPLOAN5H    PICTURE X.'             @L3A 02-DFHMD
+                                   5770+         PUNCH '           02  EPLOAN5O  PIC X(12).'           @BBD5E01 02-DFHMD
+                                   5771+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5772+         PUNCH '           02  EPYEARS5C    PICTURE X.'            @L3A 02-DFHMD
+                                   5773+         PUNCH '           02  EPYEARS5H    PICTURE X.'            @L3A 02-DFHMD
+                                   5774+         PUNCH '           02  EPYEARS5O  PIC X(2).'           @BBD5E01 02-DFHMD
+                                   5775+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5776+         PUNCH '           02  EPCMP6C    PICTURE X.'              @L3A 02-DFHMD
+                                   5777+         PUNCH '           02  EPCMP6H    PICTURE X.'              @L3A 02-DFHMD
+                                   5778+         PUNCH '           02  EPCMP6O  PIC X(24).'            @BBD5E01 02-DFHMD
+                                   5779+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5780+         PUNCH '           02  EPPHN6C    PICTURE X.'              @L3A 02-DFHMD
+                                   5781+         PUNCH '           02  EPPHN6H    PICTURE X.'              @L3A 02-DFHMD
+                                   5782+         PUNCH '           02  EPPHN6O  PIC X(13).'            @BBD5E01 02-DFHMD
+                                   5783+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5784+         PUNCH '           02  EPRATE6C    PICTURE X.'             @L3A 02-DFHMD
+                                   5785+         PUNCH '           02  EPRATE6H    PICTURE X.'             @L3A 02-DFHMD
+                                   5786+         PUNCH '           02  EPRATE6O  PIC X(5).'            @BBD5E01 02-DFHMD
+                                   5787+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5788+         PUNCH '           02  EPLOAN6C    PICTURE X.'             @L3A 02-DFHMD
+                                   5789+         PUNCH '           02  EPLOAN6H    PICTURE X.'             @L3A 02-DFHMD
+                                   5790+         PUNCH '           02  EPLOAN6O  PIC X(12).'           @BBD5E01 02-DFHMD
+                                   5791+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5792+         PUNCH '           02  EPYEARS6C    PICTURE X.'            @L3A 02-DFHMD
+                                   5793+         PUNCH '           02  EPYEARS6H    PICTURE X.'            @L3A 02-DFHMD
+                                   5794+         PUNCH '           02  EPYEARS6O  PIC X(2).'           @BBD5E01 02-DFHMD
+                                   5795+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5796+         PUNCH '           02  EPCMP7C    PICTURE X.'              @L3A 02-DFHMD
+                                   5797+         PUNCH '           02  EPCMP7H    PICTURE X.'              @L3A 02-DFHMD
+                                   5798+         PUNCH '           02  EPCMP7O  PIC X(24).'            @BBD5E01 02-DFHMD
+                                   5799+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5800+         PUNCH '           02  EPPHN7C    PICTURE X.'              @L3A 02-DFHMD
+                                   5801+         PUNCH '           02  EPPHN7H    PICTURE X.'              @L3A 02-DFHMD
+                                   5802+         PUNCH '           02  EPPHN7O  PIC X(13).'            @BBD5E01 02-DFHMD
+                                   5803+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5804+         PUNCH '           02  EPRATE7C    PICTURE X.'             @L3A 02-DFHMD
+                                   5805+         PUNCH '           02  EPRATE7H    PICTURE X.'             @L3A 02-DFHMD
+                                   5806+         PUNCH '           02  EPRATE7O  PIC X(5).'            @BBD5E01 02-DFHMD
+                                   5807+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5808+         PUNCH '           02  EPLOAN7C    PICTURE X.'             @L3A 02-DFHMD
+                                   5809+         PUNCH '           02  EPLOAN7H    PICTURE X.'             @L3A 02-DFHMD
+                                   5810+         PUNCH '           02  EPLOAN7O  PIC X(12).'           @BBD5E01 02-DFHMD
+                                   5811+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5812+         PUNCH '           02  EPYEARS7C    PICTURE X.'            @L3A 02-DFHMD
+                                   5813+         PUNCH '           02  EPYEARS7H    PICTURE X.'            @L3A 02-DFHMD
+                                   5814+         PUNCH '           02  EPYEARS7O  PIC X(2).'           @BBD5E01 02-DFHMD
+                                   5815+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5816+         PUNCH '           02  EPCMP8C    PICTURE X.'              @L3A 02-DFHMD
+i                                   5817+         PUNCH '           02  EPCMP8H    PICTURE X.'              @L3A 02-DFHMD
+                                                                                                               Page   15
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.50
+                                   5818+         PUNCH '           02  EPCMP8O  PIC X(24).'            @BBD5E01 02-DFHMD
+                                   5819+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5820+         PUNCH '           02  EPPHN8C    PICTURE X.'              @L3A 02-DFHMD
+                                   5821+         PUNCH '           02  EPPHN8H    PICTURE X.'              @L3A 02-DFHMD
+                                   5822+         PUNCH '           02  EPPHN8O  PIC X(13).'            @BBD5E01 02-DFHMD
+                                   5823+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5824+         PUNCH '           02  EPRATE8C    PICTURE X.'             @L3A 02-DFHMD
+                                   5825+         PUNCH '           02  EPRATE8H    PICTURE X.'             @L3A 02-DFHMD
+                                   5826+         PUNCH '           02  EPRATE8O  PIC X(5).'            @BBD5E01 02-DFHMD
+                                   5827+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5828+         PUNCH '           02  EPLOAN8C    PICTURE X.'             @L3A 02-DFHMD
+                                   5829+         PUNCH '           02  EPLOAN8H    PICTURE X.'             @L3A 02-DFHMD
+                                   5830+         PUNCH '           02  EPLOAN8O  PIC X(12).'           @BBD5E01 02-DFHMD
+                                   5831+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5832+         PUNCH '           02  EPYEARS8C    PICTURE X.'            @L3A 02-DFHMD
+                                   5833+         PUNCH '           02  EPYEARS8H    PICTURE X.'            @L3A 02-DFHMD
+                                   5834+         PUNCH '           02  EPYEARS8O  PIC X(2).'           @BBD5E01 02-DFHMD
+                                   5835+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   5836+         PUNCH '           02  MSGERRC    PICTURE X.'              @L3A 02-DFHMD
+                                   5837+         PUNCH '           02  MSGERRH    PICTURE X.'              @L3A 02-DFHMD
+                                   5838+         PUNCH '           02  MSGERRO  PIC X(40).'            @BBD5E01 02-DFHMD
+                                   5932         END
+»
+                                          Macro and Copy Code Source Summary                                   Page   16
+ Con Source                                        Volume    Members                        HLASM R6.0  2026/08/24 11.50
+  L1 DFH610.CICS.SDFHMAC                           D5C610    DFHANRAT DFHANRWC DFHCOPYR DFHGDEFS DFHMDF   DFHMDI
+                                                             DFHMSD   DFHPRMCK DFHSYS
+»
+                                   General Purpose Register Cross Reference                                    Page   17
+ Register  References (M=modified, B=branch, U=USING, D=DROP, N=index)                      HLASM R6.0  2026/08/24 11.50
+    0(0)    (no references identified)
+    1(1)    (no references identified)
+    2(2)    (no references identified)
+    3(3)    (no references identified)
+    4(4)    (no references identified)
+    5(5)    (no references identified)
+    6(6)    (no references identified)
+    7(7)    (no references identified)
+    8(8)    (no references identified)
+    9(9)    (no references identified)
+   10(A)    (no references identified)
+   11(B)    (no references identified)
+   12(C)    (no references identified)
+   13(D)    (no references identified)
+   14(E)    (no references identified)
+   15(F)    (no references identified)
+»
+                                  Diagnostic Cross Reference and Assembler Summary                             Page   18
+                                                                                            HLASM R6.0  2026/08/24 11.50
+Statements Flagged
+    482(L1:DFHMDF,2152), 483(L1:DFHMDF,2153), 585(L1:DFHMDF,2152), 586(L1:DFHMDF,2153), 688(L1:DFHMDF,2152),
+    689(L1:DFHMDF,2153), 791(L1:DFHMDF,2152), 792(L1:DFHMDF,2153), 894(L1:DFHMDF,2152), 895(L1:DFHMDF,2153),
+    997(L1:DFHMDF,2152), 998(L1:DFHMDF,2153), 1102(L1:DFHMDF,2152), 1103(L1:DFHMDF,2153), 1207(L1:DFHMDF,2152),
+    1208(L1:DFHMDF,2153), 1311(L1:DFHMDF,2152), 1312(L1:DFHMDF,2153), 1414(L1:DFHMDF,2152), 1415(L1:DFHMDF,2153),
+    1518(L1:DFHMDF,2152), 1519(L1:DFHMDF,2153), 1623(L1:DFHMDF,2152), 1624(L1:DFHMDF,2153), 1728(L1:DFHMDF,2152),
+    1729(L1:DFHMDF,2153), 1832(L1:DFHMDF,2152), 1833(L1:DFHMDF,2153), 1935(L1:DFHMDF,2152), 1936(L1:DFHMDF,2153),
+    2039(L1:DFHMDF,2152), 2040(L1:DFHMDF,2153), 2144(L1:DFHMDF,2152), 2145(L1:DFHMDF,2153), 2249(L1:DFHMDF,2152),
+    2250(L1:DFHMDF,2153), 2353(L1:DFHMDF,2152), 2354(L1:DFHMDF,2153), 2456(L1:DFHMDF,2152), 2457(L1:DFHMDF,2153),
+    2560(L1:DFHMDF,2152), 2561(L1:DFHMDF,2153), 2665(L1:DFHMDF,2152), 2666(L1:DFHMDF,2153), 2770(L1:DFHMDF,2152),
+    2771(L1:DFHMDF,2153), 2874(L1:DFHMDF,2152), 2875(L1:DFHMDF,2153), 2977(L1:DFHMDF,2152), 2978(L1:DFHMDF,2153),
+    3081(L1:DFHMDF,2152), 3082(L1:DFHMDF,2153), 3186(L1:DFHMDF,2152), 3187(L1:DFHMDF,2153), 3291(L1:DFHMDF,2152),
+    3292(L1:DFHMDF,2153), 3395(L1:DFHMDF,2152), 3396(L1:DFHMDF,2153), 3498(L1:DFHMDF,2152), 3499(L1:DFHMDF,2153),
+    3602(L1:DFHMDF,2152), 3603(L1:DFHMDF,2153), 3707(L1:DFHMDF,2152), 3708(L1:DFHMDF,2153), 3812(L1:DFHMDF,2152),
+    3813(L1:DFHMDF,2153), 3916(L1:DFHMDF,2152), 3917(L1:DFHMDF,2153), 4019(L1:DFHMDF,2152), 4020(L1:DFHMDF,2153),
+    4123(L1:DFHMDF,2152), 4124(L1:DFHMDF,2153), 4228(L1:DFHMDF,2152), 4229(L1:DFHMDF,2153), 4333(L1:DFHMDF,2152),
+    4334(L1:DFHMDF,2153), 4437(L1:DFHMDF,2152), 4438(L1:DFHMDF,2153), 4540(L1:DFHMDF,2152), 4541(L1:DFHMDF,2153),
+    4644(L1:DFHMDF,2152), 4645(L1:DFHMDF,2153), 4749(L1:DFHMDF,2152), 4750(L1:DFHMDF,2153), 4854(L1:DFHMDF,2152),
+    4855(L1:DFHMDF,2153), 4958(L1:DFHMDF,2152), 4959(L1:DFHMDF,2153), 5061(L1:DFHMDF,2152), 5062(L1:DFHMDF,2153),
+    5158(L1:DFHMDF,2152), 5159(L1:DFHMDF,2153), 5262(L1:DFHMDF,2152), 5263(L1:DFHMDF,2153), 5359(L1:DFHMDF,2152),
+    5360(L1:DFHMDF,2153), 5458(L1:DFHMDF,2152), 5459(L1:DFHMDF,2153)
+
+     98 Statements Flagged in this Assembly        0 was Highest Severity Code
+HIGH LEVEL ASSEMBLER, 5696-234, RELEASE 6.0, PTF UI90738
+SYSTEM: z/OS 02.05.00              JOBNAME: B0270863    STEPNAME: *OMVSEX    PROCSTEP: (NOPROC)
+Unicode Module:   ASMA047C   From Page     1148   To Page    17584           ECECP: International 1
+Data Sets Allocated for this Assembly
+ Con DDname   Data Set Name                                Volume  Member
+  P1 SYSIN    B027086.DBB.BMS                              IN0001  EPSMLIS
+  L1 SYSLIB   DFH610.CICS.SDFHMAC                          D5C610
+  L2          SYS1.MACLIB                                  D5RES1
+     SYSPRINT SYS26236.T115052.RA000.B0270863.R0102083
+     SYSPUNCH B027086.DBB.BMS.COPY                         IN0002  EPSMLIS
+
+1059720K allocated to Buffer Pool       Storage required    1316K
+    112 Primary Input Records Read         6959 Library Records Read                  0 Work File Reads
+      0 ASMAOPT Records Read                854 Primary Print Records Written         0 Work File Writes
+    464 Object Records Written                0 ADATA Records Written
+Assembly Start Time: 11.50.52 Stop Time: 11.50.52 Processor Time: 01.11.34.9672
+Return Code 000

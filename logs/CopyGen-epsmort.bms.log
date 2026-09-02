@@ -1,0 +1,269 @@
+»
+                                         High Level Assembler Option Summary                   (PTF UI90738)   Page    1
+                                                                                            HLASM R6.0  2026/08/24 11.36
+  No Overriding ASMAOPT Parameters
+  Overriding Parameters-  SYSPARM(DSECT),DECK,NOOBJECT
+  No Process Statements
+
+
+  Options for this Assembly
+                    NOADATA
+                      ALIGN
+                    NOASA
+                      ASCII(00819)
+                      BATCH
+                      CA(LOCAL)
+                      CE(LOCAL)
+                      CODEPAGE(01148)
+                    NOCOMPAT
+                      CU(LOCAL)
+                    NODATAMAP
+                    NODBCS
+3 PARM/OPTION         DECK
+                      DXREF
+                      EBCDIC(00037)
+                      ESD
+                    NOEXIT
+                      FAIL(NOMSG,NOMNOTE,MAXERRS(500))
+                      FLAG(0,ALIGN,CONT,EXLITW,NOIMPLEN,NOLONGER,NOPAGE0,PUSH,RECORD,RENT,NOSIGNED,NOSUBSTR,NOTRUNC,
+                           USING0)
+                    NOFOLD
+                    NOGOFF
+                      ILMA
+                    NOINFO
+                      LANGUAGE(EN)
+                    NOLIBMAC
+                      LINECOUNT(60)
+                      LIST(121)
+                      MACHINE(,NOLIST)
+                      MXREF(SOURCE)
+3 PARM/OPTION       NOOBJECT
+                      OPTABLE(UNI,NOLIST)
+                    NOPCONTROL
+                    NOPESTOP
+                    NOPROFILE
+                    NORA2
+                    NORENT
+                      RLD
+                      RXREF
+                      SECTALGN(8)
+                      SIZE(MAX)
+                    NOSUPRWARN
+3 PARM/OPTION         SYSPARM(DSECT)
+                    NOTERM
+                    NOTEST
+                      THREAD
+                    NOTRANSLATE
+                      TYPECHECK(MAGNITUDE,REGISTER,SIGNED)
+                      UNICODE(01200)
+»
+                                         High Level Assembler Option Summary                   (PTF UI90738)   Page    2
+                                                                                            HLASM R6.0  2026/08/24 11.36
+                      USING(NOLIMIT,MAP,WARN(15))
+                    NOWORKFILE
+                      XREF(SHORT,UNREFS)
+
+  No Overriding DD Names
+»
+                                                                                                               Page    3
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.36
+                                      1 *********************************************************************** 00010000
+                                      2 EPSMORT    DFHMSD TYPE=&SYSPARM,MODE=INOUT,LANG=COBOL,              @P3CX0008000
+                                                       STORAGE=AUTO,TIOAPFX=YES,DSATTS=(COLOR,HILIGHT),        X00090000
+                                                       MAPATTS=(COLOR,HILIGHT)                                  00091000
+                                    100 *       MENU MAP..
+                                    101 EPMENU  DFHMDI SIZE=(24,80),CTRL=(PRINT,FREEKB)                         00110000
+                                    195+         PUNCH '       01  EPMENUI.'                                  @ 01-DFHMD
+                                    196+         PUNCH '           02  FILLER PIC X(12).'              @BB6D00T 01-DFHMD
+                                    197 LITLOAN  DFHMDF POS=(8,15),LENGTH=23,INITIAL='Amount of Loan:',        *
+                                                       ATTRB=(ASKIP,NORM)
+                                    292+         PUNCH '           02  LITLOANL    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                    293+         PUNCH '           02  LITLOANF    PICTURE X.'         @BBD5E01 01-DFHMD
+                                    294+         PUNCH '           02  FILLER REDEFINES LITLOANF.'     @BM13780 01-DFHMD
+                                    295+         PUNCH '             03 LITLOANA    PICTURE X.'        @BM13780 01-DFHMD
+                                    296+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                    297+         PUNCH '           02  LITLOANI  PIC X(23).'           @BBD5E01 01-DFHMD
+                                    298 EPLOAN   DFHMDF POS=(8,42),LENGTH=12,INITIAL='999999999.99',           *
+                                                       ATTRB=(NUM,FSET,IC,NORM)
+                                    393+         PUNCH '           02  EPLOANL    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                    394+         PUNCH '           02  EPLOANF    PICTURE X.'          @BBD5E01 01-DFHMD
+                                    395+         PUNCH '           02  FILLER REDEFINES EPLOANF.'      @BM13780 01-DFHMD
+                                    396+         PUNCH '             03 EPLOANA    PICTURE X.'         @BM13780 01-DFHMD
+                                    397+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                    398+         PUNCH '           02  EPLOANI  PIC X(12).'            @BBD5E01 01-DFHMD
+                                    399          DFHMDF POS=(8,55),                                            *
+                                                       ATTRB=ASKIP
+                                    494 LITYEARS DFHMDF POS=(9,15),LENGTH=24,                                  *
+                                                       INITIAL='Length of Loan in Years:',                     *
+                                                       ATTRB=(PROT,NORM)
+                                    589+         PUNCH '           02  LITYEARSL    COMP  PIC  S9(4). '        X01-DFHMD
+                                       +                                                               @BBD5E01
+                                    590+         PUNCH '           02  LITYEARSF    PICTURE X.'        @BBD5E01 01-DFHMD
+                                    591+         PUNCH '           02  FILLER REDEFINES LITYEARSF.'    @BM13780 01-DFHMD
+                                    592+         PUNCH '             03 LITYEARSA    PICTURE X.'       @BM13780 01-DFHMD
+                                    593+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                    594+         PUNCH '           02  LITYEARSI  PIC X(24).'          @BBD5E01 01-DFHMD
+                                    595 EPYEARS  DFHMDF POS=(9,42),LENGTH=2,INITIAL='99',                      *
+                                                       ATTRB=(NUM,FSET,NORM),COLOR=GREEN
+                                    691+         PUNCH '           02  EPYEARSL    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                    692+         PUNCH '           02  EPYEARSF    PICTURE X.'         @BBD5E01 01-DFHMD
+                                    693+         PUNCH '           02  FILLER REDEFINES EPYEARSF.'     @BM13780 01-DFHMD
+                                    694+         PUNCH '             03 EPYEARSA    PICTURE X.'        @BM13780 01-DFHMD
+                                    695+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                    696+         PUNCH '           02  EPYEARSI  PIC X(2).'            @BBD5E01 01-DFHMD
+                                    697          DFHMDF POS=(9,45),LENGTH=0,                                   *
+                                                       ATTRB=ASKIP
+                                    792 EPDIFF1  DFHMDF POS=(10,15),LENGTH=22,INITIAL='Interest Rate: ',       *
+                                                       ATTRB=(PROT,NORM)
+                                    887+         PUNCH '           02  EPDIFF1L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                    888+         PUNCH '           02  EPDIFF1F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                    889+         PUNCH '           02  FILLER REDEFINES EPDIFF1F.'     @BM13780 01-DFHMD
+                                    890+         PUNCH '             03 EPDIFF1A    PICTURE X.'        @BM13780 01-DFHMD
+                                    891+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                    892+         PUNCH '           02  EPDIFF1I  PIC X(22).'           @BBD5E01 01-DFHMD
+i                                    893 EPRATE   DFHMDF POS=(10,42),LENGTH=5,INITIAL='99.99',                  *
+                                                                                                               Page    4
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.36
+                                                       ATTRB=(NUM,FSET,NORM),COLOR=GREEN
+                                    989+         PUNCH '           02  EPRATEL    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                    990+         PUNCH '           02  EPRATEF    PICTURE X.'          @BBD5E01 01-DFHMD
+                                    991+         PUNCH '           02  FILLER REDEFINES EPRATEF.'      @BM13780 01-DFHMD
+                                    992+         PUNCH '             03 EPRATEA    PICTURE X.'         @BM13780 01-DFHMD
+                                    993+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                    994+         PUNCH '           02  EPRATEI  PIC X(5).'             @BBD5E01 01-DFHMD
+                                    995          DFHMDF POS=(15,7),LENGTH=60,                                  *
+                                                       INITIAL='Press PF9 to see companies that can match'     *
+                                                         '  or be at this rate',                               *
+                                                       ATTRB=(ASKIP,NORM),HILIGHT=OFF,COLOR=BLUE
+                                   1090          DFHMDF POS=(14,15),LENGTH=43,                                 *
+                                                       INITIAL='Press F3 to quit or Enter to calculate loan',  *
+                                                       ATTRB=(ASKIP,NORM),HILIGHT=OFF,COLOR=BLUE
+** ASMA254I *** MNOTE ***          1184+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1185+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1189 EPDIFF2  DFHMDF POS=(17,15),LENGTH=22,INITIAL='Monthly Payment: ',     *
+                                                       ATTRB=(PROT,NORM)
+                                   1284+         PUNCH '           02  EPDIFF2L    COMP  PIC  S9(4). ' @BBD5E01 01-DFHMD
+                                   1285+         PUNCH '           02  EPDIFF2F    PICTURE X.'         @BBD5E01 01-DFHMD
+                                   1286+         PUNCH '           02  FILLER REDEFINES EPDIFF2F.'     @BM13780 01-DFHMD
+                                   1287+         PUNCH '             03 EPDIFF2A    PICTURE X.'        @BM13780 01-DFHMD
+                                   1288+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1289+         PUNCH '           02  EPDIFF2I  PIC X(22).'           @BBD5E01 01-DFHMD
+                                   1290 EPPAYMNT DFHMDF POS=(17,42),LENGTH=12,                                 *
+                                                       ATTRB=(PROT,NORM),HILIGHT=OFF,COLOR=YELLOW
+                                   1387+         PUNCH '           02  EPPAYMNTL    COMP  PIC  S9(4). '        X01-DFHMD
+                                       +                                                               @BBD5E01
+                                   1388+         PUNCH '           02  EPPAYMNTF    PICTURE X.'        @BBD5E01 01-DFHMD
+                                   1389+         PUNCH '           02  FILLER REDEFINES EPPAYMNTF.'    @BM13780 01-DFHMD
+                                   1390+         PUNCH '             03 EPPAYMNTA    PICTURE X.'       @BM13780 01-DFHMD
+                                   1391+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1392+         PUNCH '           02  EPPAYMNTI  PIC X(12).'          @BBD5E01 01-DFHMD
+                                   1393 MSGERR  DFHMDF POS=(24,15),ATTRB=(PROT,DRK),LENGTH=40,                 X00340000
+                                                       INITIAL='INVALID KEY PRESSED'                            00350000
+                                   1488+         PUNCH '           02  MSGERRL    COMP  PIC  S9(4). '  @BBD5E01 01-DFHMD
+                                   1489+         PUNCH '           02  MSGERRF    PICTURE X.'          @BBD5E01 01-DFHMD
+                                   1490+         PUNCH '           02  FILLER REDEFINES MSGERRF.'      @BM13780 01-DFHMD
+                                   1491+         PUNCH '             03 MSGERRA    PICTURE X.'         @BM13780 01-DFHMD
+                                   1492+         PUNCH '           02  FILLER   PICTURE X(2).'             @L3C 01-DFHMD
+                                   1493+         PUNCH '           02  MSGERRI  PIC X(40).'            @BBD5E01 01-DFHMD
+                                   1494          DFHMDF POS=(2,48),LENGTH=0,                                   *
+                                                       ATTRB=ASKIP
+** ASMA254I *** MNOTE ***          1588+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1589+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1591          DFHMDF POS=(5,25),LENGTH=26,INITIAL='EPS MORTGAGE CALCULATOR',*
+                                                       ATTRB=(ASKIP,BRT)
+** ASMA254I *** MNOTE ***          1685+     0,PERFORMANCE OF INPUT MAPPING IS BETTER                           01-DFHMD
+** ASMA254I *** MNOTE ***          1686+     0,WHEN THE FIELDS ARE IN ASCENDING SEQUENCE                        01-DFHMD
+                                   1688 EPSMORT  DFHMSD TYPE=FINAL                                               0036000
+                                   1874+         PUNCH '       01  EPMENUO REDEFINES EPMENUI.'                @ 02-DFHMD
+                                   1875+         PUNCH '           02  FILLER PIC X(12).'              @BB6D00T 02-DFHMD
+                                   1876+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   1877+         PUNCH '           02  LITLOANC    PICTURE X.'             @L3A 02-DFHMD
+i                                   1878+         PUNCH '           02  LITLOANH    PICTURE X.'             @L3A 02-DFHMD
+                                                                                                               Page    5
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2026/08/24 11.36
+                                   1879+         PUNCH '           02  LITLOANO  PIC X(23).'           @BBD5E01 02-DFHMD
+                                   1880+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   1881+         PUNCH '           02  EPLOANC    PICTURE X.'              @L3A 02-DFHMD
+                                   1882+         PUNCH '           02  EPLOANH    PICTURE X.'              @L3A 02-DFHMD
+                                   1883+         PUNCH '           02  EPLOANO  PIC X(12).'            @BBD5E01 02-DFHMD
+                                   1884+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   1885+         PUNCH '           02  LITYEARSC    PICTURE X.'            @L3A 02-DFHMD
+                                   1886+         PUNCH '           02  LITYEARSH    PICTURE X.'            @L3A 02-DFHMD
+                                   1887+         PUNCH '           02  LITYEARSO  PIC X(24).'          @BBD5E01 02-DFHMD
+                                   1888+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   1889+         PUNCH '           02  EPYEARSC    PICTURE X.'             @L3A 02-DFHMD
+                                   1890+         PUNCH '           02  EPYEARSH    PICTURE X.'             @L3A 02-DFHMD
+                                   1891+         PUNCH '           02  EPYEARSO  PIC X(2).'            @BBD5E01 02-DFHMD
+                                   1892+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   1893+         PUNCH '           02  EPDIFF1C    PICTURE X.'             @L3A 02-DFHMD
+                                   1894+         PUNCH '           02  EPDIFF1H    PICTURE X.'             @L3A 02-DFHMD
+                                   1895+         PUNCH '           02  EPDIFF1O  PIC X(22).'           @BBD5E01 02-DFHMD
+                                   1896+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   1897+         PUNCH '           02  EPRATEC    PICTURE X.'              @L3A 02-DFHMD
+                                   1898+         PUNCH '           02  EPRATEH    PICTURE X.'              @L3A 02-DFHMD
+                                   1899+         PUNCH '           02  EPRATEO  PIC X(5).'             @BBD5E01 02-DFHMD
+                                   1900+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   1901+         PUNCH '           02  EPDIFF2C    PICTURE X.'             @L3A 02-DFHMD
+                                   1902+         PUNCH '           02  EPDIFF2H    PICTURE X.'             @L3A 02-DFHMD
+                                   1903+         PUNCH '           02  EPDIFF2O  PIC X(22).'           @BBD5E01 02-DFHMD
+                                   1904+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   1905+         PUNCH '           02  EPPAYMNTC    PICTURE X.'            @L3A 02-DFHMD
+                                   1906+         PUNCH '           02  EPPAYMNTH    PICTURE X.'            @L3A 02-DFHMD
+                                   1907+         PUNCH '           02  EPPAYMNTO  PIC X(12).'          @BBD5E01 02-DFHMD
+                                   1908+         PUNCH '           02  FILLER PICTURE X(3).'           @BM13780 02-DFHMD
+                                   1909+         PUNCH '           02  MSGERRC    PICTURE X.'              @L3A 02-DFHMD
+                                   1910+         PUNCH '           02  MSGERRH    PICTURE X.'              @L3A 02-DFHMD
+                                   1911+         PUNCH '           02  MSGERRO  PIC X(40).'            @BBD5E01 02-DFHMD
+                                   2005         END                                                             00370000
+»
+                                          Macro and Copy Code Source Summary                                   Page    6
+ Con Source                                        Volume    Members                        HLASM R6.0  2026/08/24 11.36
+  L1 DFH610.CICS.SDFHMAC                           D5C610    DFHANRAT DFHANRWC DFHCOPYR DFHGDEFS DFHMDF   DFHMDI
+                                                             DFHMSD   DFHPRMCK DFHSYS
+»
+                                   General Purpose Register Cross Reference                                    Page    7
+ Register  References (M=modified, B=branch, U=USING, D=DROP, N=index)                      HLASM R6.0  2026/08/24 11.36
+    0(0)    (no references identified)
+    1(1)    (no references identified)
+    2(2)    (no references identified)
+    3(3)    (no references identified)
+    4(4)    (no references identified)
+    5(5)    (no references identified)
+    6(6)    (no references identified)
+    7(7)    (no references identified)
+    8(8)    (no references identified)
+    9(9)    (no references identified)
+   10(A)    (no references identified)
+   11(B)    (no references identified)
+   12(C)    (no references identified)
+   13(D)    (no references identified)
+   14(E)    (no references identified)
+   15(F)    (no references identified)
+»
+                                  Diagnostic Cross Reference and Assembler Summary                             Page    8
+                                                                                            HLASM R6.0  2026/08/24 11.36
+Statements Flagged
+    1184(L1:DFHMDF,2152), 1185(L1:DFHMDF,2153), 1588(L1:DFHMDF,2152), 1589(L1:DFHMDF,2153), 1685(L1:DFHMDF,2152),
+    1686(L1:DFHMDF,2153)
+
+      6 Statements Flagged in this Assembly        0 was Highest Severity Code
+HIGH LEVEL ASSEMBLER, 5696-234, RELEASE 6.0, PTF UI90738
+SYSTEM: z/OS 02.05.00              JOBNAME: B0270863    STEPNAME: *OMVSEX    PROCSTEP: (NOPROC)
+Unicode Module:   ASMA047C   From Page     1148   To Page    17584           ECECP: International 1
+Data Sets Allocated for this Assembly
+ Con DDname   Data Set Name                                Volume  Member
+  P1 SYSIN    B027086.DBB.BMS                              IN0001  EPSMORT
+  L1 SYSLIB   DFH610.CICS.SDFHMAC                          D5C610
+  L2          SYS1.MACLIB                                  D5RES1
+     SYSPRINT SYS26236.T113623.RA000.B0270863.R0102036
+     SYSPUNCH B027086.DBB.BMS.COPY                         IN0002  EPSMORT
+
+1059720K allocated to Buffer Pool       Storage required     956K
+     42 Primary Input Records Read         6959 Library Records Read                  0 Work File Reads
+      0 ASMAOPT Records Read                269 Primary Print Records Written         0 Work File Writes
+     94 Object Records Written                0 ADATA Records Written
+Assembly Start Time: 11.36.24 Stop Time: 11.36.24 Processor Time: 01.11.34.9672
+Return Code 000

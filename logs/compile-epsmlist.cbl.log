@@ -1,0 +1,1503 @@
+PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221                 Date 08/27/2026  Time 13:52:38   Page     1
+
+Invocation parameters:
+ CICS
+
+Options in effect:
+ NOADATA
+   ADV
+   AFP(NOVOLATILE)
+   QUOTE
+   ARCH(10)
+   ARITH(COMPAT)
+ NOAWO
+ NOBLOCK0
+   BUFSIZE(4096)
+   CICS
+   CODEPAGE(1140)
+ NOCOMPILE(S)
+   CONDCOMP(NOSKIPSRC)
+ NOCOPYLOC
+ NOCOPYRIGHT
+ NOCURRENCY
+   DATA(31)
+   DBCS
+ NODECK
+ NODEFINE
+ NODIAGTRUNC
+   DISPSIGN(COMPAT)
+ NODLL
+ NODUMP
+ NODYNAM
+ NOEXIT
+ NOEXPORTALL
+ NOFASTSRT
+   FLAG(I,I)
+ NOFLAGSTD
+   HGPR(PRESERVE)
+ NOINITCHECK
+ NOINITIAL
+   INLINE
+   INTDATE(ANSI)
+ NOINVDATA
+ NOJAVAIOP
+   LANGUAGE(EN)
+   LINECOUNT(60)
+ NOLIST
+   LP(32)
+ NOMAP
+   MAXPCF(100000)
+ NOMDECK
+ NONAME
+   NSYMBOL(NATIONAL)
+ NONUMBER
+ NONUMCHECK
+   NUMPROC(NOPFD)
+   OBJECT
+ NOOFFSET
+   OPTIMIZE(0)
+   OUTDD(SYSOUT)
+ NOPARMCHECKPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221                 Date 08/27/2026  Time 13:52:38   Page     2
+
+   PGMNAME(COMPAT)
+   QUALIFY(COMPAT)
+   RENT
+   RMODE(AUTO)
+ NORULES
+ NOSERVICE
+   SEQUENCE
+   SMARTBIN
+   SOURCE(DEC)
+   SPACE(1)
+ NOSQL
+   SQLCCSID
+ NOSQLIMS
+ NOSSRANGE
+ NOSTGOPT
+   SUPPRESS
+ NOTERM
+ NOTEST(NODWARF,NOSOURCE,NOSEPARATE)
+ NOTHREAD
+   TRUNC(STD)
+   TUNE(10)
+ NOVBREF
+   VLR(STANDARD)
+   VSAMOPENFS(COMPAT)
+ NOWORD
+   XMLPARSE(XMLSS)
+   XREF(FULL)
+   ZWB
+
+
+CICS Options in effect:
+ CICS
+ DEBUG
+ EDF
+ NATLANG(EN)
+ APOST
+ NOSYSEIB
+ NOFEPI
+ NOCPSM
+ LINKAGE
+ LENGTH
+ COBOL2PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page     3
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000001                ID DIVISION.
+  000002                PROGRAM-ID. EPSMLIST.
+  000003               *    THIS DEMONSTRATES CICS/DEBUG           - EPSDEMOS 2008
+  000004               *
+  000005               *    THIS PROGRAM WILL RECEIVE A DATE AND COVERT THE DATE TO
+  000006               *    AN INTEGER IN A CALLED PROGRAM TO DETERMINE DAYS FROM
+  000007               *    CURRENT DATE.
+  000008               *
+  000009               *    (C) 2008 IBM.
+  000010                ENVIRONMENT DIVISION.
+  000011                CONFIGURATION SECTION.
+  000012                SOURCE-COMPUTER. IBM-FLEX-ES.
+  000013                OBJECT-COMPUTER. IBM-FLEX-ES.
+  000014               *
+  000015                DATA DIVISION.
+  000016                WORKING-STORAGE SECTION.
+  000017               *
+  000018                01  W-FLAGS.
+  000019                    10  W-SEND-FLAG                    PIC X.
+  000020                        88  SEND-ERASE                   VALUE '1'.
+  000021                        88  SEND-DATAONLY                VALUE '2'.
+  000022                        88  SEND-MAPONLY                 VALUE '3'.
+  000023                        88  SEND-DATAONLY-ALARM          VALUE '4'.
+  000024
+  000025                01 W-CONVERSIONS.
+  000026                    05  W-PMT-CNVRT     PIC X(12).
+  000027                    05  W-PMT-NUMBER
+  000028                        REDEFINES W-PMT-CNVRT                                             26
+  000029                                        PIC 9(10)V99.
+  000030                    05  WS-FORMAT-NUMBER PIC Z,ZZZ,ZZ9.99.
+  000031                    05  W-PRINC-CNVRT   PIC X(12).
+  000032                    05  W-PRINC-NUMBER
+  000033                        REDEFINES W-PRINC-CNVRT                                           31
+  000034                                        PIC 9(10)V99.
+  000035
+  000036                01 W-CALL-PROGRAM                      PIC X(8).
+  000037                01 RESPONSE                            PIC S9(8) COMP.
+  000038                01 INTERNAL-PROGRAM-VARIABLES.
+  000039                    05 RID-LENGTH                      PIC S9(9) COMP.
+  000040                    05 DISP-COUNT                      PIC S9(4) COMP.
+  000041                    05 MAX-LOOP                        PIC S9(4) COMP
+  000042                                                       VALUE IS 8.
+  000043                    05 END-OF-FILE                     PIC X.
+  000044                    05 CLOSE-FILE                      PIC X.
+  000045               *
+  000046                01 W-RETIREMENT-WA                     PIC 9(4).
+  000047                01 W-COMAREA-LENGTH                    PIC 9(4) COMP.
+  000048
+  000049                01 SAVE-COMM-AREA.
+  000050                   COPY EPSMTCOM.
+  000051C                  10  PROCESS-INDICATOR               PIC X.
+  000052C
+  000053C                  COPY EPSMTINP.
+  000054C              * INPUT
+  000055C                  10 EPSPCOM-PRINCIPLE-DATA   PIC S9(9)V99 COMP.
+  000056C                  10 EPSPCOM-NUMBER-OF-YEARS  PIC S9(4)    COMP.
+  000057C                  10 EPSPCOM-NUMBER-OF-MONTHS PIC S9(4)    COMP.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page     4
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000058C                  10 EPSPCOM-QUOTED-INTEREST-RATE
+  000059C                                                PIC S9(2)v9(3) COMP.
+  000060C                  10 EPSPCOM-YEAR-MONTH-IND   PIC X.
+  000061C                  COPY EPSMTOUT.
+  000062C              * OUTPUT
+  000063C                  10 EPSPCOM-RETURN-MONTH-PAYMENT
+  000064C                                              PIC S9(7)V99 COMP.
+  000065C                  10 EPSPCOM-ERRMSG           PIC X(80).
+  000066C                  10 EPSPCOM-PROGRAM-RETCODE  PIC 9(4).
+  000067C                     88 EPS02-REQUEST-SUCCESS VALUE 0.
+  000068C                  10 EPSPCOM-PROGRAM-RETCODE-RDF
+  000069C                          REDEFINES EPSPCOM-PROGRAM-RETCODE                              66
+  000070C                                              PIC X(4).
+  000071
+  000072                01  END-OF-TRANS-MSG                 PIC X(30)
+  000073                      VALUE 'END OF TRANSACTION - THANK YOU'.
+  000074                    COPY DFHAID.
+  000075C              *****************************************************************
+  000076C              *                                                               *
+  000077C              *                                                               *
+  000078C              *                                                               *
+  000079C              *     Licensed Materials - Property of VALT                     *
+  000080C              *                                                               *
+  000081C              *     "Restricted Materials of IBM"                             *
+  000082C              *                                                               *
+  000083C              *     5655-YA1                                                  *
+  000084C              *                                                               *
+  000085C              *     (C) Copyright IBM Corp. 1988, 2022"                       *
+  000086C              *                                                               *
+  000087C              *                                                               *
+  000088C              *                                                               *
+  000089C              *                                                               *
+  000090C              *   STATUS = 7.4.0                                              *
+  000091C              *                                                               *
+  000092C              * CHANGE ACTIVITY :                                             *
+  000093C              *                                                               *
+  000094C              *   $SEG(DFHAID),COMP(BMS),PROD(CICS TS ):                      *
+  000095C              *                                                               *
+  000096C              *  PN= REASON REL YYMMDD HDXXIII : REMARKS                      *
+  000097C              * $D1= I07991 670 100820 HDIGPG  : Translate unprintable char   *
+  000098C              * $L0= Base   210 88     HD1MA   : Base                         *
+  000099C              *     R169962 740 220304 HDPJEM  : Fix special chars            *
+  000100C              *                                                               *
+  000101C              *****************************************************************
+  000102C              *
+  000103C              *
+  000104C               01    DFHAID.
+  000105C                 02  DFHNULL   PIC  X  VALUE IS X'00'.
+  000106C                 02  DFHENTER  PIC  X  VALUE IS ''''.
+  000107C                 02  DFHCLEAR  PIC  X  VALUE IS '_'.
+  000108C                 02  DFHCLRP   PIC  X  VALUE IS X'6A'.
+  000109C              * UPDATED DFHCLRP TO USE CHAR CODE      @R169962C
+  000110C                 02  DFHPEN    PIC  X  VALUE IS '='.
+  000111C                 02  DFHOPID   PIC  X  VALUE IS 'W'.
+  000112C                 02  DFHMSRE   PIC  X  VALUE IS 'X'.
+  000113C                 02  DFHSTRF   PIC  X  VALUE IS 'h'.
+  000114C                 02  DFHTRIG   PIC  X  VALUE IS '"'.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page     5
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000115C                 02  DFHPA1    PIC  X  VALUE IS '%'.
+  000116C                 02  DFHPA2    PIC  X  VALUE IS '>'.
+  000117C                 02  DFHPA3    PIC  X  VALUE IS ','.
+  000118C                 02  DFHPF1    PIC  X  VALUE IS '1'.
+  000119C                 02  DFHPF2    PIC  X  VALUE IS '2'.
+  000120C                 02  DFHPF3    PIC  X  VALUE IS '3'.
+  000121C                 02  DFHPF4    PIC  X  VALUE IS '4'.
+  000122C                 02  DFHPF5    PIC  X  VALUE IS '5'.
+  000123C                 02  DFHPF6    PIC  X  VALUE IS '6'.
+  000124C                 02  DFHPF7    PIC  X  VALUE IS '7'.
+  000125C                 02  DFHPF8    PIC  X  VALUE IS '8'.
+  000126C                 02  DFHPF9    PIC  X  VALUE IS '9'.
+  000127C                 02  DFHPF10   PIC  X  VALUE IS ':'.
+  000128C                 02  DFHPF11   PIC  X  VALUE IS '#'.
+  000129C                 02  DFHPF12   PIC  X  VALUE IS '@'.
+  000130C                 02  DFHPF13   PIC  X  VALUE IS 'A'.
+  000131C                 02  DFHPF14   PIC  X  VALUE IS 'B'.
+  000132C                 02  DFHPF15   PIC  X  VALUE IS 'C'.
+  000133C                 02  DFHPF16   PIC  X  VALUE IS 'D'.
+  000134C                 02  DFHPF17   PIC  X  VALUE IS 'E'.
+  000135C                 02  DFHPF18   PIC  X  VALUE IS 'F'.
+  000136C                 02  DFHPF19   PIC  X  VALUE IS 'G'.
+  000137C                 02  DFHPF20   PIC  X  VALUE IS 'H'.
+  000138C                 02  DFHPF21   PIC  X  VALUE IS 'I'.
+  000139C                 02  DFHPF22   PIC  X  VALUE IS X'4A'.
+  000140C              * UPDATED DFHPF22 TO USE CHAR CODE      @R169962C
+  000141C                 02  DFHPF23   PIC  X  VALUE IS '.'.
+  000142C                 02  DFHPF24   PIC  X  VALUE IS '<'.
+  000143               *    COPY DFHEIBLK.
+  000144
+  000145                    COPY EPSMLIS.
+  000146C               01  EPSMLISI.
+  000147C                   02  FILLER PIC X(12).
+  000148C                   02  LITCOMPL    COMP  PIC  S9(4).
+  000149C                   02  LITCOMPF    PICTURE X.
+  000150C                   02  FILLER REDEFINES LITCOMPF.                                        149
+  000151C                     03 LITCOMPA    PICTURE X.
+  000152C                   02  FILLER   PICTURE X(2).
+  000153C                   02  LITCOMPI  PIC X(24).
+  000154C                   02  LITPHNL    COMP  PIC  S9(4).
+  000155C                   02  LITPHNF    PICTURE X.
+  000156C                   02  FILLER REDEFINES LITPHNF.                                         155
+  000157C                     03 LITPHNA    PICTURE X.
+  000158C                   02  FILLER   PICTURE X(2).
+  000159C                   02  LITPHNI  PIC X(13).
+  000160C                   02  EPDIFF1L    COMP  PIC  S9(4).
+  000161C                   02  EPDIFF1F    PICTURE X.
+  000162C                   02  FILLER REDEFINES EPDIFF1F.                                        161
+  000163C                     03 EPDIFF1A    PICTURE X.
+  000164C                   02  FILLER   PICTURE X(2).
+  000165C                   02  EPDIFF1I  PIC X(13).
+  000166C                   02  EPDIFF2L    COMP  PIC  S9(4).
+  000167C                   02  EPDIFF2F    PICTURE X.
+  000168C                   02  FILLER REDEFINES EPDIFF2F.                                        167
+  000169C                     03 EPDIFF2A    PICTURE X.
+  000170C                   02  FILLER   PICTURE X(2).
+  000171C                   02  EPDIFF2I  PIC X(16).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page     6
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000172C                   02  LITPHN1L    COMP  PIC  S9(4).
+  000173C                   02  LITPHN1F    PICTURE X.
+  000174C                   02  FILLER REDEFINES LITPHN1F.                                        173
+  000175C                     03 LITPHN1A    PICTURE X.
+  000176C                   02  FILLER   PICTURE X(2).
+  000177C                   02  LITPHN1I  PIC X(7).
+  000178C                   02  EPCMP1L    COMP  PIC  S9(4).
+  000179C                   02  EPCMP1F    PICTURE X.
+  000180C                   02  FILLER REDEFINES EPCMP1F.                                         179
+  000181C                     03 EPCMP1A    PICTURE X.
+  000182C                   02  FILLER   PICTURE X(2).
+  000183C                   02  EPCMP1I  PIC X(24).
+  000184C                   02  EPPHN1L    COMP  PIC  S9(4).
+  000185C                   02  EPPHN1F    PICTURE X.
+  000186C                   02  FILLER REDEFINES EPPHN1F.                                         185
+  000187C                     03 EPPHN1A    PICTURE X.
+  000188C                   02  FILLER   PICTURE X(2).
+  000189C                   02  EPPHN1I  PIC X(13).
+  000190C                   02  EPRATE1L    COMP  PIC  S9(4).
+  000191C                   02  EPRATE1F    PICTURE X.
+  000192C                   02  FILLER REDEFINES EPRATE1F.                                        191
+  000193C                     03 EPRATE1A    PICTURE X.
+  000194C                   02  FILLER   PICTURE X(2).
+  000195C                   02  EPRATE1I  PIC X(5).
+  000196C                   02  EPLOAN1L    COMP  PIC  S9(4).
+  000197C                   02  EPLOAN1F    PICTURE X.
+  000198C                   02  FILLER REDEFINES EPLOAN1F.                                        197
+  000199C                     03 EPLOAN1A    PICTURE X.
+  000200C                   02  FILLER   PICTURE X(2).
+  000201C                   02  EPLOAN1I  PIC X(12).
+  000202C                   02  EPYEARS1L    COMP  PIC  S9(4).
+  000203C                   02  EPYEARS1F    PICTURE X.
+  000204C                   02  FILLER REDEFINES EPYEARS1F.                                       203
+  000205C                     03 EPYEARS1A    PICTURE X.
+  000206C                   02  FILLER   PICTURE X(2).
+  000207C                   02  EPYEARS1I  PIC X(2).
+  000208C                   02  EPCMP2L    COMP  PIC  S9(4).
+  000209C                   02  EPCMP2F    PICTURE X.
+  000210C                   02  FILLER REDEFINES EPCMP2F.                                         209
+  000211C                     03 EPCMP2A    PICTURE X.
+  000212C                   02  FILLER   PICTURE X(2).
+  000213C                   02  EPCMP2I  PIC X(24).
+  000214C                   02  EPPHN2L    COMP  PIC  S9(4).
+  000215C                   02  EPPHN2F    PICTURE X.
+  000216C                   02  FILLER REDEFINES EPPHN2F.                                         215
+  000217C                     03 EPPHN2A    PICTURE X.
+  000218C                   02  FILLER   PICTURE X(2).
+  000219C                   02  EPPHN2I  PIC X(13).
+  000220C                   02  EPRATE2L    COMP  PIC  S9(4).
+  000221C                   02  EPRATE2F    PICTURE X.
+  000222C                   02  FILLER REDEFINES EPRATE2F.                                        221
+  000223C                     03 EPRATE2A    PICTURE X.
+  000224C                   02  FILLER   PICTURE X(2).
+  000225C                   02  EPRATE2I  PIC X(5).
+  000226C                   02  EPLOAN2L    COMP  PIC  S9(4).
+  000227C                   02  EPLOAN2F    PICTURE X.
+  000228C                   02  FILLER REDEFINES EPLOAN2F.                                        227PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page     7
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000229C                     03 EPLOAN2A    PICTURE X.
+  000230C                   02  FILLER   PICTURE X(2).
+  000231C                   02  EPLOAN2I  PIC X(12).
+  000232C                   02  EPYEARS2L    COMP  PIC  S9(4).
+  000233C                   02  EPYEARS2F    PICTURE X.
+  000234C                   02  FILLER REDEFINES EPYEARS2F.                                       233
+  000235C                     03 EPYEARS2A    PICTURE X.
+  000236C                   02  FILLER   PICTURE X(2).
+  000237C                   02  EPYEARS2I  PIC X(2).
+  000238C                   02  EPCMP3L    COMP  PIC  S9(4).
+  000239C                   02  EPCMP3F    PICTURE X.
+  000240C                   02  FILLER REDEFINES EPCMP3F.                                         239
+  000241C                     03 EPCMP3A    PICTURE X.
+  000242C                   02  FILLER   PICTURE X(2).
+  000243C                   02  EPCMP3I  PIC X(24).
+  000244C                   02  EPPHN3L    COMP  PIC  S9(4).
+  000245C                   02  EPPHN3F    PICTURE X.
+  000246C                   02  FILLER REDEFINES EPPHN3F.                                         245
+  000247C                     03 EPPHN3A    PICTURE X.
+  000248C                   02  FILLER   PICTURE X(2).
+  000249C                   02  EPPHN3I  PIC X(13).
+  000250C                   02  EPRATE3L    COMP  PIC  S9(4).
+  000251C                   02  EPRATE3F    PICTURE X.
+  000252C                   02  FILLER REDEFINES EPRATE3F.                                        251
+  000253C                     03 EPRATE3A    PICTURE X.
+  000254C                   02  FILLER   PICTURE X(2).
+  000255C                   02  EPRATE3I  PIC X(5).
+  000256C                   02  EPLOAN3L    COMP  PIC  S9(4).
+  000257C                   02  EPLOAN3F    PICTURE X.
+  000258C                   02  FILLER REDEFINES EPLOAN3F.                                        257
+  000259C                     03 EPLOAN3A    PICTURE X.
+  000260C                   02  FILLER   PICTURE X(2).
+  000261C                   02  EPLOAN3I  PIC X(12).
+  000262C                   02  EPYEARS3L    COMP  PIC  S9(4).
+  000263C                   02  EPYEARS3F    PICTURE X.
+  000264C                   02  FILLER REDEFINES EPYEARS3F.                                       263
+  000265C                     03 EPYEARS3A    PICTURE X.
+  000266C                   02  FILLER   PICTURE X(2).
+  000267C                   02  EPYEARS3I  PIC X(2).
+  000268C                   02  EPCMP4L    COMP  PIC  S9(4).
+  000269C                   02  EPCMP4F    PICTURE X.
+  000270C                   02  FILLER REDEFINES EPCMP4F.                                         269
+  000271C                     03 EPCMP4A    PICTURE X.
+  000272C                   02  FILLER   PICTURE X(2).
+  000273C                   02  EPCMP4I  PIC X(24).
+  000274C                   02  EPPHN4L    COMP  PIC  S9(4).
+  000275C                   02  EPPHN4F    PICTURE X.
+  000276C                   02  FILLER REDEFINES EPPHN4F.                                         275
+  000277C                     03 EPPHN4A    PICTURE X.
+  000278C                   02  FILLER   PICTURE X(2).
+  000279C                   02  EPPHN4I  PIC X(13).
+  000280C                   02  EPRATE4L    COMP  PIC  S9(4).
+  000281C                   02  EPRATE4F    PICTURE X.
+  000282C                   02  FILLER REDEFINES EPRATE4F.                                        281
+  000283C                     03 EPRATE4A    PICTURE X.
+  000284C                   02  FILLER   PICTURE X(2).
+  000285C                   02  EPRATE4I  PIC X(5).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page     8
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000286C                   02  EPLOAN4L    COMP  PIC  S9(4).
+  000287C                   02  EPLOAN4F    PICTURE X.
+  000288C                   02  FILLER REDEFINES EPLOAN4F.                                        287
+  000289C                     03 EPLOAN4A    PICTURE X.
+  000290C                   02  FILLER   PICTURE X(2).
+  000291C                   02  EPLOAN4I  PIC X(12).
+  000292C                   02  EPYEARS4L    COMP  PIC  S9(4).
+  000293C                   02  EPYEARS4F    PICTURE X.
+  000294C                   02  FILLER REDEFINES EPYEARS4F.                                       293
+  000295C                     03 EPYEARS4A    PICTURE X.
+  000296C                   02  FILLER   PICTURE X(2).
+  000297C                   02  EPYEARS4I  PIC X(2).
+  000298C                   02  EPCMP5L    COMP  PIC  S9(4).
+  000299C                   02  EPCMP5F    PICTURE X.
+  000300C                   02  FILLER REDEFINES EPCMP5F.                                         299
+  000301C                     03 EPCMP5A    PICTURE X.
+  000302C                   02  FILLER   PICTURE X(2).
+  000303C                   02  EPCMP5I  PIC X(24).
+  000304C                   02  EPPHN5L    COMP  PIC  S9(4).
+  000305C                   02  EPPHN5F    PICTURE X.
+  000306C                   02  FILLER REDEFINES EPPHN5F.                                         305
+  000307C                     03 EPPHN5A    PICTURE X.
+  000308C                   02  FILLER   PICTURE X(2).
+  000309C                   02  EPPHN5I  PIC X(13).
+  000310C                   02  EPRATE5L    COMP  PIC  S9(4).
+  000311C                   02  EPRATE5F    PICTURE X.
+  000312C                   02  FILLER REDEFINES EPRATE5F.                                        311
+  000313C                     03 EPRATE5A    PICTURE X.
+  000314C                   02  FILLER   PICTURE X(2).
+  000315C                   02  EPRATE5I  PIC X(5).
+  000316C                   02  EPLOAN5L    COMP  PIC  S9(4).
+  000317C                   02  EPLOAN5F    PICTURE X.
+  000318C                   02  FILLER REDEFINES EPLOAN5F.                                        317
+  000319C                     03 EPLOAN5A    PICTURE X.
+  000320C                   02  FILLER   PICTURE X(2).
+  000321C                   02  EPLOAN5I  PIC X(12).
+  000322C                   02  EPYEARS5L    COMP  PIC  S9(4).
+  000323C                   02  EPYEARS5F    PICTURE X.
+  000324C                   02  FILLER REDEFINES EPYEARS5F.                                       323
+  000325C                     03 EPYEARS5A    PICTURE X.
+  000326C                   02  FILLER   PICTURE X(2).
+  000327C                   02  EPYEARS5I  PIC X(2).
+  000328C                   02  EPCMP6L    COMP  PIC  S9(4).
+  000329C                   02  EPCMP6F    PICTURE X.
+  000330C                   02  FILLER REDEFINES EPCMP6F.                                         329
+  000331C                     03 EPCMP6A    PICTURE X.
+  000332C                   02  FILLER   PICTURE X(2).
+  000333C                   02  EPCMP6I  PIC X(24).
+  000334C                   02  EPPHN6L    COMP  PIC  S9(4).
+  000335C                   02  EPPHN6F    PICTURE X.
+  000336C                   02  FILLER REDEFINES EPPHN6F.                                         335
+  000337C                     03 EPPHN6A    PICTURE X.
+  000338C                   02  FILLER   PICTURE X(2).
+  000339C                   02  EPPHN6I  PIC X(13).
+  000340C                   02  EPRATE6L    COMP  PIC  S9(4).
+  000341C                   02  EPRATE6F    PICTURE X.
+  000342C                   02  FILLER REDEFINES EPRATE6F.                                        341PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page     9
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000343C                     03 EPRATE6A    PICTURE X.
+  000344C                   02  FILLER   PICTURE X(2).
+  000345C                   02  EPRATE6I  PIC X(5).
+  000346C                   02  EPLOAN6L    COMP  PIC  S9(4).
+  000347C                   02  EPLOAN6F    PICTURE X.
+  000348C                   02  FILLER REDEFINES EPLOAN6F.                                        347
+  000349C                     03 EPLOAN6A    PICTURE X.
+  000350C                   02  FILLER   PICTURE X(2).
+  000351C                   02  EPLOAN6I  PIC X(12).
+  000352C                   02  EPYEARS6L    COMP  PIC  S9(4).
+  000353C                   02  EPYEARS6F    PICTURE X.
+  000354C                   02  FILLER REDEFINES EPYEARS6F.                                       353
+  000355C                     03 EPYEARS6A    PICTURE X.
+  000356C                   02  FILLER   PICTURE X(2).
+  000357C                   02  EPYEARS6I  PIC X(2).
+  000358C                   02  EPCMP7L    COMP  PIC  S9(4).
+  000359C                   02  EPCMP7F    PICTURE X.
+  000360C                   02  FILLER REDEFINES EPCMP7F.                                         359
+  000361C                     03 EPCMP7A    PICTURE X.
+  000362C                   02  FILLER   PICTURE X(2).
+  000363C                   02  EPCMP7I  PIC X(24).
+  000364C                   02  EPPHN7L    COMP  PIC  S9(4).
+  000365C                   02  EPPHN7F    PICTURE X.
+  000366C                   02  FILLER REDEFINES EPPHN7F.                                         365
+  000367C                     03 EPPHN7A    PICTURE X.
+  000368C                   02  FILLER   PICTURE X(2).
+  000369C                   02  EPPHN7I  PIC X(13).
+  000370C                   02  EPRATE7L    COMP  PIC  S9(4).
+  000371C                   02  EPRATE7F    PICTURE X.
+  000372C                   02  FILLER REDEFINES EPRATE7F.                                        371
+  000373C                     03 EPRATE7A    PICTURE X.
+  000374C                   02  FILLER   PICTURE X(2).
+  000375C                   02  EPRATE7I  PIC X(5).
+  000376C                   02  EPLOAN7L    COMP  PIC  S9(4).
+  000377C                   02  EPLOAN7F    PICTURE X.
+  000378C                   02  FILLER REDEFINES EPLOAN7F.                                        377
+  000379C                     03 EPLOAN7A    PICTURE X.
+  000380C                   02  FILLER   PICTURE X(2).
+  000381C                   02  EPLOAN7I  PIC X(12).
+  000382C                   02  EPYEARS7L    COMP  PIC  S9(4).
+  000383C                   02  EPYEARS7F    PICTURE X.
+  000384C                   02  FILLER REDEFINES EPYEARS7F.                                       383
+  000385C                     03 EPYEARS7A    PICTURE X.
+  000386C                   02  FILLER   PICTURE X(2).
+  000387C                   02  EPYEARS7I  PIC X(2).
+  000388C                   02  EPCMP8L    COMP  PIC  S9(4).
+  000389C                   02  EPCMP8F    PICTURE X.
+  000390C                   02  FILLER REDEFINES EPCMP8F.                                         389
+  000391C                     03 EPCMP8A    PICTURE X.
+  000392C                   02  FILLER   PICTURE X(2).
+  000393C                   02  EPCMP8I  PIC X(24).
+  000394C                   02  EPPHN8L    COMP  PIC  S9(4).
+  000395C                   02  EPPHN8F    PICTURE X.
+  000396C                   02  FILLER REDEFINES EPPHN8F.                                         395
+  000397C                     03 EPPHN8A    PICTURE X.
+  000398C                   02  FILLER   PICTURE X(2).
+  000399C                   02  EPPHN8I  PIC X(13).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    10
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000400C                   02  EPRATE8L    COMP  PIC  S9(4).
+  000401C                   02  EPRATE8F    PICTURE X.
+  000402C                   02  FILLER REDEFINES EPRATE8F.                                        401
+  000403C                     03 EPRATE8A    PICTURE X.
+  000404C                   02  FILLER   PICTURE X(2).
+  000405C                   02  EPRATE8I  PIC X(5).
+  000406C                   02  EPLOAN8L    COMP  PIC  S9(4).
+  000407C                   02  EPLOAN8F    PICTURE X.
+  000408C                   02  FILLER REDEFINES EPLOAN8F.                                        407
+  000409C                     03 EPLOAN8A    PICTURE X.
+  000410C                   02  FILLER   PICTURE X(2).
+  000411C                   02  EPLOAN8I  PIC X(12).
+  000412C                   02  EPYEARS8L    COMP  PIC  S9(4).
+  000413C                   02  EPYEARS8F    PICTURE X.
+  000414C                   02  FILLER REDEFINES EPYEARS8F.                                       413
+  000415C                     03 EPYEARS8A    PICTURE X.
+  000416C                   02  FILLER   PICTURE X(2).
+  000417C                   02  EPYEARS8I  PIC X(2).
+  000418C                   02  MSGERRL    COMP  PIC  S9(4).
+  000419C                   02  MSGERRF    PICTURE X.
+  000420C                   02  FILLER REDEFINES MSGERRF.                                         419
+  000421C                     03 MSGERRA    PICTURE X.
+  000422C                   02  FILLER   PICTURE X(2).
+  000423C                   02  MSGERRI  PIC X(40).
+  000424C               01  EPSMLISO REDEFINES EPSMLISI.                                          146
+  000425C                   02  FILLER PIC X(12).
+  000426C                   02  FILLER PICTURE X(3).
+  000427C                   02  LITCOMPC    PICTURE X.
+  000428C                   02  LITCOMPH    PICTURE X.
+  000429C                   02  LITCOMPO  PIC X(24).
+  000430C                   02  FILLER PICTURE X(3).
+  000431C                   02  LITPHNC    PICTURE X.
+  000432C                   02  LITPHNH    PICTURE X.
+  000433C                   02  LITPHNO  PIC X(13).
+  000434C                   02  FILLER PICTURE X(3).
+  000435C                   02  EPDIFF1C    PICTURE X.
+  000436C                   02  EPDIFF1H    PICTURE X.
+  000437C                   02  EPDIFF1O  PIC X(13).
+  000438C                   02  FILLER PICTURE X(3).
+  000439C                   02  EPDIFF2C    PICTURE X.
+  000440C                   02  EPDIFF2H    PICTURE X.
+  000441C                   02  EPDIFF2O  PIC X(16).
+  000442C                   02  FILLER PICTURE X(3).
+  000443C                   02  LITPHN1C    PICTURE X.
+  000444C                   02  LITPHN1H    PICTURE X.
+  000445C                   02  LITPHN1O  PIC X(7).
+  000446C                   02  FILLER PICTURE X(3).
+  000447C                   02  EPCMP1C    PICTURE X.
+  000448C                   02  EPCMP1H    PICTURE X.
+  000449C                   02  EPCMP1O  PIC X(24).
+  000450C                   02  FILLER PICTURE X(3).
+  000451C                   02  EPPHN1C    PICTURE X.
+  000452C                   02  EPPHN1H    PICTURE X.
+  000453C                   02  EPPHN1O  PIC X(13).
+  000454C                   02  FILLER PICTURE X(3).
+  000455C                   02  EPRATE1C    PICTURE X.
+  000456C                   02  EPRATE1H    PICTURE X.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    11
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000457C                   02  EPRATE1O  PIC X(5).
+  000458C                   02  FILLER PICTURE X(3).
+  000459C                   02  EPLOAN1C    PICTURE X.
+  000460C                   02  EPLOAN1H    PICTURE X.
+  000461C                   02  EPLOAN1O  PIC X(12).
+  000462C                   02  FILLER PICTURE X(3).
+  000463C                   02  EPYEARS1C    PICTURE X.
+  000464C                   02  EPYEARS1H    PICTURE X.
+  000465C                   02  EPYEARS1O  PIC X(2).
+  000466C                   02  FILLER PICTURE X(3).
+  000467C                   02  EPCMP2C    PICTURE X.
+  000468C                   02  EPCMP2H    PICTURE X.
+  000469C                   02  EPCMP2O  PIC X(24).
+  000470C                   02  FILLER PICTURE X(3).
+  000471C                   02  EPPHN2C    PICTURE X.
+  000472C                   02  EPPHN2H    PICTURE X.
+  000473C                   02  EPPHN2O  PIC X(13).
+  000474C                   02  FILLER PICTURE X(3).
+  000475C                   02  EPRATE2C    PICTURE X.
+  000476C                   02  EPRATE2H    PICTURE X.
+  000477C                   02  EPRATE2O  PIC X(5).
+  000478C                   02  FILLER PICTURE X(3).
+  000479C                   02  EPLOAN2C    PICTURE X.
+  000480C                   02  EPLOAN2H    PICTURE X.
+  000481C                   02  EPLOAN2O  PIC X(12).
+  000482C                   02  FILLER PICTURE X(3).
+  000483C                   02  EPYEARS2C    PICTURE X.
+  000484C                   02  EPYEARS2H    PICTURE X.
+  000485C                   02  EPYEARS2O  PIC X(2).
+  000486C                   02  FILLER PICTURE X(3).
+  000487C                   02  EPCMP3C    PICTURE X.
+  000488C                   02  EPCMP3H    PICTURE X.
+  000489C                   02  EPCMP3O  PIC X(24).
+  000490C                   02  FILLER PICTURE X(3).
+  000491C                   02  EPPHN3C    PICTURE X.
+  000492C                   02  EPPHN3H    PICTURE X.
+  000493C                   02  EPPHN3O  PIC X(13).
+  000494C                   02  FILLER PICTURE X(3).
+  000495C                   02  EPRATE3C    PICTURE X.
+  000496C                   02  EPRATE3H    PICTURE X.
+  000497C                   02  EPRATE3O  PIC X(5).
+  000498C                   02  FILLER PICTURE X(3).
+  000499C                   02  EPLOAN3C    PICTURE X.
+  000500C                   02  EPLOAN3H    PICTURE X.
+  000501C                   02  EPLOAN3O  PIC X(12).
+  000502C                   02  FILLER PICTURE X(3).
+  000503C                   02  EPYEARS3C    PICTURE X.
+  000504C                   02  EPYEARS3H    PICTURE X.
+  000505C                   02  EPYEARS3O  PIC X(2).
+  000506C                   02  FILLER PICTURE X(3).
+  000507C                   02  EPCMP4C    PICTURE X.
+  000508C                   02  EPCMP4H    PICTURE X.
+  000509C                   02  EPCMP4O  PIC X(24).
+  000510C                   02  FILLER PICTURE X(3).
+  000511C                   02  EPPHN4C    PICTURE X.
+  000512C                   02  EPPHN4H    PICTURE X.
+  000513C                   02  EPPHN4O  PIC X(13).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    12
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000514C                   02  FILLER PICTURE X(3).
+  000515C                   02  EPRATE4C    PICTURE X.
+  000516C                   02  EPRATE4H    PICTURE X.
+  000517C                   02  EPRATE4O  PIC X(5).
+  000518C                   02  FILLER PICTURE X(3).
+  000519C                   02  EPLOAN4C    PICTURE X.
+  000520C                   02  EPLOAN4H    PICTURE X.
+  000521C                   02  EPLOAN4O  PIC X(12).
+  000522C                   02  FILLER PICTURE X(3).
+  000523C                   02  EPYEARS4C    PICTURE X.
+  000524C                   02  EPYEARS4H    PICTURE X.
+  000525C                   02  EPYEARS4O  PIC X(2).
+  000526C                   02  FILLER PICTURE X(3).
+  000527C                   02  EPCMP5C    PICTURE X.
+  000528C                   02  EPCMP5H    PICTURE X.
+  000529C                   02  EPCMP5O  PIC X(24).
+  000530C                   02  FILLER PICTURE X(3).
+  000531C                   02  EPPHN5C    PICTURE X.
+  000532C                   02  EPPHN5H    PICTURE X.
+  000533C                   02  EPPHN5O  PIC X(13).
+  000534C                   02  FILLER PICTURE X(3).
+  000535C                   02  EPRATE5C    PICTURE X.
+  000536C                   02  EPRATE5H    PICTURE X.
+  000537C                   02  EPRATE5O  PIC X(5).
+  000538C                   02  FILLER PICTURE X(3).
+  000539C                   02  EPLOAN5C    PICTURE X.
+  000540C                   02  EPLOAN5H    PICTURE X.
+  000541C                   02  EPLOAN5O  PIC X(12).
+  000542C                   02  FILLER PICTURE X(3).
+  000543C                   02  EPYEARS5C    PICTURE X.
+  000544C                   02  EPYEARS5H    PICTURE X.
+  000545C                   02  EPYEARS5O  PIC X(2).
+  000546C                   02  FILLER PICTURE X(3).
+  000547C                   02  EPCMP6C    PICTURE X.
+  000548C                   02  EPCMP6H    PICTURE X.
+  000549C                   02  EPCMP6O  PIC X(24).
+  000550C                   02  FILLER PICTURE X(3).
+  000551C                   02  EPPHN6C    PICTURE X.
+  000552C                   02  EPPHN6H    PICTURE X.
+  000553C                   02  EPPHN6O  PIC X(13).
+  000554C                   02  FILLER PICTURE X(3).
+  000555C                   02  EPRATE6C    PICTURE X.
+  000556C                   02  EPRATE6H    PICTURE X.
+  000557C                   02  EPRATE6O  PIC X(5).
+  000558C                   02  FILLER PICTURE X(3).
+  000559C                   02  EPLOAN6C    PICTURE X.
+  000560C                   02  EPLOAN6H    PICTURE X.
+  000561C                   02  EPLOAN6O  PIC X(12).
+  000562C                   02  FILLER PICTURE X(3).
+  000563C                   02  EPYEARS6C    PICTURE X.
+  000564C                   02  EPYEARS6H    PICTURE X.
+  000565C                   02  EPYEARS6O  PIC X(2).
+  000566C                   02  FILLER PICTURE X(3).
+  000567C                   02  EPCMP7C    PICTURE X.
+  000568C                   02  EPCMP7H    PICTURE X.
+  000569C                   02  EPCMP7O  PIC X(24).
+  000570C                   02  FILLER PICTURE X(3).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    13
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000571C                   02  EPPHN7C    PICTURE X.
+  000572C                   02  EPPHN7H    PICTURE X.
+  000573C                   02  EPPHN7O  PIC X(13).
+  000574C                   02  FILLER PICTURE X(3).
+  000575C                   02  EPRATE7C    PICTURE X.
+  000576C                   02  EPRATE7H    PICTURE X.
+  000577C                   02  EPRATE7O  PIC X(5).
+  000578C                   02  FILLER PICTURE X(3).
+  000579C                   02  EPLOAN7C    PICTURE X.
+  000580C                   02  EPLOAN7H    PICTURE X.
+  000581C                   02  EPLOAN7O  PIC X(12).
+  000582C                   02  FILLER PICTURE X(3).
+  000583C                   02  EPYEARS7C    PICTURE X.
+  000584C                   02  EPYEARS7H    PICTURE X.
+  000585C                   02  EPYEARS7O  PIC X(2).
+  000586C                   02  FILLER PICTURE X(3).
+  000587C                   02  EPCMP8C    PICTURE X.
+  000588C                   02  EPCMP8H    PICTURE X.
+  000589C                   02  EPCMP8O  PIC X(24).
+  000590C                   02  FILLER PICTURE X(3).
+  000591C                   02  EPPHN8C    PICTURE X.
+  000592C                   02  EPPHN8H    PICTURE X.
+  000593C                   02  EPPHN8O  PIC X(13).
+  000594C                   02  FILLER PICTURE X(3).
+  000595C                   02  EPRATE8C    PICTURE X.
+  000596C                   02  EPRATE8H    PICTURE X.
+  000597C                   02  EPRATE8O  PIC X(5).
+  000598C                   02  FILLER PICTURE X(3).
+  000599C                   02  EPLOAN8C    PICTURE X.
+  000600C                   02  EPLOAN8H    PICTURE X.
+  000601C                   02  EPLOAN8O  PIC X(12).
+  000602C                   02  FILLER PICTURE X(3).
+  000603C                   02  EPYEARS8C    PICTURE X.
+  000604C                   02  EPYEARS8H    PICTURE X.
+  000605C                   02  EPYEARS8O  PIC X(2).
+  000606C                   02  FILLER PICTURE X(3).
+  000607C                   02  MSGERRC    PICTURE X.
+  000608C                   02  MSGERRH    PICTURE X.
+  000609C                   02  MSGERRO  PIC X(40).
+  000610                01  OUTMAP REDEFINES EPSMLISI.                                            146
+  000611                    03 FILLER PIC X(110).
+  000612                    03 OUTMAP-REPEATE OCCURS 8 TIMES.
+  000613                       05 FILLER                    PIC X(5).
+  000614                       05 OUTMAP-COMPANY            PIC X(24).
+  000615                       05 FILLER                    PIC X(5).
+  000616                       05 OUTMAP-PHONE-NUM          PIC X(13).
+  000617                       05 FILLER                    PIC X(5).
+  000618                       05 OUTMAP-RATE               PIC X(5).
+  000619                       05 FILLER                    PIC X(5).
+  000620                       05 OUTMAP-LOAN               PIC X(12).
+  000621                       05 FILLER                    PIC X(5).
+  000622                       05 OUTMAP-YEARS              PIC X(2).
+  000623                    03 FILLER                       PIC X(5).
+  000624                    03 OUTMAP-MSG                   PIC X(40).
+  000625
+  000626                    COPY EPSNBRPM.
+  000627C               01  EPS-NUMBER-VALIDATION.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    14
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000628C              * INPUT
+  000629C                   03 EPSPARM-VALIDATE-DATA     PIC X(13).
+  000630C                   03 EPSPARM-MAX-LENGTH        PIC 99.
+  000631C              * OUTPUT
+  000632C                   03 EPSPARM-NUMBER            PIC 9(13).
+  000633C                   03 EPSPARM-DECIMAL           PIC V9(13).
+  000634C                   03 EPSPARM-BINARY-NUMBER     PIC 9(9)V99 COMP.
+  000635C                   03 EPSPARM-RETURN-ERROR      PIC X(80).
+  000636C
+  000637
+  000638                    COPY EPSMORTF.
+  000639C        000100 01  MORTGAGE-COMPANY-INFO.
+  000640C        000200     03 MORT-FILE-COMPANY               PIC X(24).
+  000641C        000300     03 MORT-FILE-PHONE-NUM             PIC X(13).
+  000642C        000400     03 MORT-FILE-RATE                  PIC 9(3)V99.
+  000643C        000401     03 MORT-FILE-RATE-RDF    REDEFINES MORT-FILE-RATE                     642
+  000644C        000403                                        PIC X(5).
+  000645C        000500     03 MORT-FILE-LOAN                  PIC 9(10)V99.
+  000646C        000501     03 MORT-FILE-LOAN-RDF    REDEFINES MORT-FILE-LOAN                     645
+  000647C        000503                                        PIC X(12).
+  000648C        000600     03 MORT-FILE-YEARS                 PIC 9(2).
+  000649C
+  000650
+  000651                01  W-COMMUNICATION-AREA.
+  000652                    COPY EPSMTCOM.
+  000653C                  10  PROCESS-INDICATOR               PIC X.
+  000654C
+  000655C                  COPY EPSMTINP.
+  000656C              * INPUT
+  000657C                  10 EPSPCOM-PRINCIPLE-DATA   PIC S9(9)V99 COMP.
+  000658C                  10 EPSPCOM-NUMBER-OF-YEARS  PIC S9(4)    COMP.
+  000659C                  10 EPSPCOM-NUMBER-OF-MONTHS PIC S9(4)    COMP.
+  000660C                  10 EPSPCOM-QUOTED-INTEREST-RATE
+  000661C                                                PIC S9(2)v9(3) COMP.
+  000662C                  10 EPSPCOM-YEAR-MONTH-IND   PIC X.
+  000663C                  COPY EPSMTOUT.
+  000664C              * OUTPUT
+  000665C                  10 EPSPCOM-RETURN-MONTH-PAYMENT
+  000666C                                              PIC S9(7)V99 COMP.
+  000667C                  10 EPSPCOM-ERRMSG           PIC X(80).
+  000668C                  10 EPSPCOM-PROGRAM-RETCODE  PIC 9(4).
+  000669C                     88 EPS02-REQUEST-SUCCESS VALUE 0.
+  000670C                  10 EPSPCOM-PROGRAM-RETCODE-RDF
+  000671C                          REDEFINES EPSPCOM-PROGRAM-RETCODE                              668
+  000672C                                              PIC X(4).
+  000673
+  000674                LINKAGE SECTION.
+  000675
+  000676                01 DFHCOMMAREA.
+  000677                COPY EPSMTCOM.
+  000678C                  10  PROCESS-INDICATOR               PIC X.
+  000679C
+  000680C                  COPY EPSMTINP.
+  000681C              * INPUT
+  000682C                  10 EPSPCOM-PRINCIPLE-DATA   PIC S9(9)V99 COMP.
+  000683C                  10 EPSPCOM-NUMBER-OF-YEARS  PIC S9(4)    COMP.
+  000684C                  10 EPSPCOM-NUMBER-OF-MONTHS PIC S9(4)    COMP.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    15
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000685C                  10 EPSPCOM-QUOTED-INTEREST-RATE
+  000686C                                                PIC S9(2)v9(3) COMP.
+  000687C                  10 EPSPCOM-YEAR-MONTH-IND   PIC X.
+  000688C                  COPY EPSMTOUT.
+  000689C              * OUTPUT
+  000690C                  10 EPSPCOM-RETURN-MONTH-PAYMENT
+  000691C                                              PIC S9(7)V99 COMP.
+  000692C                  10 EPSPCOM-ERRMSG           PIC X(80).
+  000693C                  10 EPSPCOM-PROGRAM-RETCODE  PIC 9(4).
+  000694C                     88 EPS02-REQUEST-SUCCESS VALUE 0.
+  000695C                  10 EPSPCOM-PROGRAM-RETCODE-RDF
+  000696C                          REDEFINES EPSPCOM-PROGRAM-RETCODE                              693
+  000697C                                              PIC X(4).
+  000698
+  000699                PROCEDURE DIVISION USING DFHCOMMAREA.                                     676
+  000700
+  000701               * JPH - DO I need this for files
+  000702               * EXEC CICS HANDLE CONDITION H900-NOT-FOUND
+  000703
+  000704
+  000705                EPSCMORT-MAINLINE.
+  000706                    MOVE LENGTH OF DFHCOMMAREA to W-COMAREA-LENGTH.                       IMP 676 47
+  000707                    MOVE DFHCOMMAREA           TO SAVE-COMM-AREA.                         676 49
+  000708                    EVALUATE TRUE
+  000709                        WHEN EIBCALEN = ZERO                                              IMP IMP
+  000710               * First time in - Show Screen
+  000711      1                     PERFORM A100-PROCESS-MAP                                      733
+  000712                        WHEN EIBAID = DFHCLEAR                                            IMP 107
+  000713               * Process CLEAR key
+  000714      1                     EXEC CICS
+  000715      1                          RETURN
+  000716>>    1                     END-EXEC                                                      EXT
+  000717                        WHEN EIBAID = DFHPF3 OR DFHPF12                                   IMP 120 129
+  000718               * Process END/RETURN keys
+  000719      1                     EXEC CICS
+  000720      1                          RETURN
+  000721>>    1                     END-EXEC                                                      EXT
+  000722                        WHEN EIBAID = DFHENTER                                            IMP 106
+  000723               * Process ENTER Key
+  000724      1                     PERFORM A100-PROCESS-MAP                                      733
+  000725                        WHEN OTHER
+  000726               * Present Invalid Key
+  000727      1                     PERFORM A100-PROCESS-MAP                                      733
+  000728                    END-EVALUATE
+  000729                    .
+  000730                    MOVE SAVE-COMM-AREA TO DFHCOMMAREA.                                   49 676
+  000731>>                  EXEC CICS RETURN END-EXEC.                                            EXT
+  000732
+  000733                A100-PROCESS-MAP.
+  000734
+  000735                    PERFORM A310-ERASE-MAP.                                               812
+  000736
+  000737                    MOVE 0      TO RID-LENGTH.                                            39
+  000738                    MOVE 'N'    TO CLOSE-FILE.                                            44
+  000739                    MOVE 'N'    TO END-OF-FILE.                                           43
+  000740
+  000741                    EXEC CICS STARTBR DATASET('EPSMORTF')PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    16
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000742                              RIDFLD(RID-LENGTH) RBA
+  000743                              EQUAL
+  000744>>                            RESP(RESPONSE) END-EXEC.                                    EXT 37
+  000745
+  000746                    IF (RESPONSE = DFHRESP(NORMAL))                                       37
+  000747      1                MOVE 'Y' TO CLOSE-FILE                                             44
+  000748      1                MOVE 1   TO DISP-COUNT                                             40
+  000749      1                PERFORM A150-PROCESS-FILE                                          766
+  000750      1                        UNTIL END-OF-FILE = 'Y'                                    43
+  000751      1                        OR    DISP-COUNT  > MAX-LOOP                               40 41
+  000752                    ELSE
+  000753      1                MOVE 'ERROR WITH START'         TO EPCMP1O                         449
+  000754      1                MOVE RESPONSE                   TO EPLOAN1O                        37 461
+  000755                    END-IF
+  000756                    .
+  000757
+  000758
+  000759                    IF CLOSE-FILE = 'Y'                                                   44
+  000760>>    1              EXEC CICS ENDBR FILE('EPSMORTF') END-EXEC                            EXT
+  000761                    END-IF
+  000762                    .
+  000763
+  000764                    PERFORM A300-SEND-MAP.                                                805
+  000765
+  000766                A150-PROCESS-FILE.
+  000767
+  000768                    EXEC CICS READNEXT FILE('EPSMORTF')
+  000769                             INTO(MORTGAGE-COMPANY-INFO)
+  000770                             RIDFLD(RID-LENGTH)
+  000771                             RBA RESP(RESPONSE)
+  000772>>                  END-EXEC                                                              EXT 37
+  000773                    .
+  000774                    IF (RESPONSE = DFHRESP(NORMAL))                                       37
+  000775      1                IF  EPSPCOM-PRINCIPLE-DATA OF SAVE-COMM-AREA                       55 49
+  000776      1                                            < MORT-FILE-LOAN                       645
+  000777      1                AND EPSPCOM-QUOTED-INTEREST-RATE OF SAVE-COMM-AREA                 58 49
+  000778      1                                            > MORT-FILE-RATE                       642
+  000779      2                   MOVE MORT-FILE-COMPANY                                          640
+  000780      2                                         TO OUTMAP-COMPANY(DISP-COUNT)             614 40
+  000781      2                   MOVE MORT-FILE-PHONE-NUM                                        641
+  000782      2                                         TO OUTMAP-PHONE-NUM(DISP-COUNT)           616 40
+  000783      2                   PERFORM A600-CALCULATE-MORTGAGE                                 822
+  000784      2                   MOVE MORT-FILE-RATE                                             642
+  000785      2                                         TO WS-FORMAT-NUMBER                       30
+  000786      2                   MOVE WS-FORMAT-NUMBER(7:5)                                      30
+  000787      2                                         TO OUTMAP-RATE(DISP-COUNT)                618 40
+  000788      2                   MOVE EPSPCOM-RETURN-MONTH-PAYMENT OF DFHCOMMAREA                690 676
+  000789      2                                         TO WS-FORMAT-NUMBER                       30
+  000790      2                   MOVE WS-FORMAT-NUMBER TO OUTMAP-LOAN(DISP-COUNT)                30 620 40
+  000791      2                   MOVE MORT-FILE-YEARS                                            648
+  000792      2                                         TO OUTMAP-YEARS(DISP-COUNT)               622 40
+  000793      2                   ADD 1                 TO DISP-COUNT                             40
+  000794      1                END-IF
+  000795                    ELSE
+  000796      1                IF (RESPONSE NOT = DFHRESP(ENDFILE))                               37
+  000797      2                   MOVE 'ERROR WITH READ NEXT' TO EPCMP1O                          449
+  000798      2                   MOVE RESPONSE               TO EPLOAN1O                         37 461PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    17
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000799      1                ELSE
+  000800      2                   MOVE 'Y' TO END-OF-FILE                                         43
+  000801      1                END-IF
+  000802                    END-IF
+  000803                    .
+  000804
+  000805                A300-SEND-MAP.
+  000806                            EXEC CICS
+  000807                              SEND MAP ('EPSMLIS')
+  000808                                  MAPSET('EPSMLIS')
+  000809                                  FROM(EPSMLISO)
+  000810>>                          END-EXEC.                                                     EXT
+  000811
+  000812                A310-ERASE-MAP.
+  000813                     MOVE LOW-VALUES TO EPSMLISO.                                         IMP 424
+  000814                     EXEC CICS
+  000815                         SEND MAP ('EPSMLIS')
+  000816                              MAPSET('EPSMLIS')
+  000817                              FROM(EPSMLISO)
+  000818                              ERASE
+  000819>>                   END-EXEC.                                                            EXT
+  000820
+  000821
+  000822                A600-CALCULATE-MORTGAGE.
+  000823                    MOVE SAVE-COMM-AREA   TO DFHCOMMAREA.                                 49 676
+  000824                    MOVE 'Y' TO EPSPCOM-YEAR-MONTH-IND                                    687
+  000825                                          OF DFHCOMMAREA.                                 676
+  000826                    MOVE MORT-FILE-RATE   TO EPSPCOM-QUOTED-INTEREST-RATE                 642 685
+  000827                                          OF DFHCOMMAREA.                                 676
+  000828                    MOVE MORT-FILE-YEARS  TO EPSPCOM-NUMBER-OF-YEARS                      648 683
+  000829                                          OF DFHCOMMAREA.                                 676
+  000830                    MOVE 'EPSCSMRT' TO W-CALL-PROGRAM                                     36
+  000831                    EXEC CICS LINK PROGRAM( W-CALL-PROGRAM )
+  000832                                   COMMAREA( DFHCOMMAREA )
+  000833>>                  END-EXEC                                                              EXT
+  000834                    MOVE EPSPCOM-RETURN-MONTH-PAYMENT                                     690
+  000835                                          OF DFHCOMMAREA                                  676
+  000836                                          TO WS-FORMAT-NUMBER.                            30
+  000837                    MOVE WS-FORMAT-NUMBER TO OUTMAP-LOAN(DISP-COUNT).                     30 620 40PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    18
+
+An "M" preceding a data-name reference indicates that the data-name is modified by this reference.
+
+ Defined   Cross-reference of data names   References
+
+      44   CLOSE-FILE . . . . . . . . . .  M738 M747 759
+     104   DFHAID
+     107   DFHCLEAR . . . . . . . . . . .  712
+     108   DFHCLRP
+     676   DFHCOMMAREA. . . . . . . . . .  699 706 707 M730 788 M823 825 827 829 835
+     106   DFHENTER . . . . . . . . . . .  722
+     112   DFHMSRE
+     105   DFHNULL
+     111   DFHOPID
+     115   DFHPA1
+     116   DFHPA2
+     117   DFHPA3
+     110   DFHPEN
+     118   DFHPF1
+     127   DFHPF10
+     128   DFHPF11
+     129   DFHPF12. . . . . . . . . . . .  717
+     130   DFHPF13
+     131   DFHPF14
+     132   DFHPF15
+     133   DFHPF16
+     134   DFHPF17
+     135   DFHPF18
+     136   DFHPF19
+     119   DFHPF2
+     137   DFHPF20
+     138   DFHPF21
+     139   DFHPF22
+     141   DFHPF23
+     142   DFHPF24
+     120   DFHPF3 . . . . . . . . . . . .  717
+     121   DFHPF4
+     122   DFHPF5
+     123   DFHPF6
+     124   DFHPF7
+     125   DFHPF8
+     126   DFHPF9
+     113   DFHSTRF
+     114   DFHTRIG
+      40   DISP-COUNT . . . . . . . . . .  M748 751 780 782 787 790 792 M793 837
+       0   EIBAID . . . . . . . . . . . .  712 717 722
+       0   EIBCALEN . . . . . . . . . . .  709
+      43   END-OF-FILE. . . . . . . . . .  M739 750 M800
+      72   END-OF-TRANS-MSG
+     181   EPCMP1A
+     447   EPCMP1C
+     179   EPCMP1F. . . . . . . . . . . .  180
+     448   EPCMP1H
+     183   EPCMP1I
+     178   EPCMP1L
+     449   EPCMP1O. . . . . . . . . . . .  M753 M797
+     211   EPCMP2A
+     467   EPCMP2C
+     209   EPCMP2F. . . . . . . . . . . .  210PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    19
+
+ Defined   Cross-reference of data names   References
+
+
+     468   EPCMP2H
+     213   EPCMP2I
+     208   EPCMP2L
+     469   EPCMP2O
+     241   EPCMP3A
+     487   EPCMP3C
+     239   EPCMP3F. . . . . . . . . . . .  240
+     488   EPCMP3H
+     243   EPCMP3I
+     238   EPCMP3L
+     489   EPCMP3O
+     271   EPCMP4A
+     507   EPCMP4C
+     269   EPCMP4F. . . . . . . . . . . .  270
+     508   EPCMP4H
+     273   EPCMP4I
+     268   EPCMP4L
+     509   EPCMP4O
+     301   EPCMP5A
+     527   EPCMP5C
+     299   EPCMP5F. . . . . . . . . . . .  300
+     528   EPCMP5H
+     303   EPCMP5I
+     298   EPCMP5L
+     529   EPCMP5O
+     331   EPCMP6A
+     547   EPCMP6C
+     329   EPCMP6F. . . . . . . . . . . .  330
+     548   EPCMP6H
+     333   EPCMP6I
+     328   EPCMP6L
+     549   EPCMP6O
+     361   EPCMP7A
+     567   EPCMP7C
+     359   EPCMP7F. . . . . . . . . . . .  360
+     568   EPCMP7H
+     363   EPCMP7I
+     358   EPCMP7L
+     569   EPCMP7O
+     391   EPCMP8A
+     587   EPCMP8C
+     389   EPCMP8F. . . . . . . . . . . .  390
+     588   EPCMP8H
+     393   EPCMP8I
+     388   EPCMP8L
+     589   EPCMP8O
+     163   EPDIFF1A
+     435   EPDIFF1C
+     161   EPDIFF1F . . . . . . . . . . .  162
+     436   EPDIFF1H
+     165   EPDIFF1I
+     160   EPDIFF1L
+     437   EPDIFF1O
+     169   EPDIFF2A
+     439   EPDIFF2CPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    20
+
+ Defined   Cross-reference of data names   References
+
+
+     167   EPDIFF2F . . . . . . . . . . .  168
+     440   EPDIFF2H
+     171   EPDIFF2I
+     166   EPDIFF2L
+     441   EPDIFF2O
+     199   EPLOAN1A
+     459   EPLOAN1C
+     197   EPLOAN1F . . . . . . . . . . .  198
+     460   EPLOAN1H
+     201   EPLOAN1I
+     196   EPLOAN1L
+     461   EPLOAN1O . . . . . . . . . . .  M754 M798
+     229   EPLOAN2A
+     479   EPLOAN2C
+     227   EPLOAN2F . . . . . . . . . . .  228
+     480   EPLOAN2H
+     231   EPLOAN2I
+     226   EPLOAN2L
+     481   EPLOAN2O
+     259   EPLOAN3A
+     499   EPLOAN3C
+     257   EPLOAN3F . . . . . . . . . . .  258
+     500   EPLOAN3H
+     261   EPLOAN3I
+     256   EPLOAN3L
+     501   EPLOAN3O
+     289   EPLOAN4A
+     519   EPLOAN4C
+     287   EPLOAN4F . . . . . . . . . . .  288
+     520   EPLOAN4H
+     291   EPLOAN4I
+     286   EPLOAN4L
+     521   EPLOAN4O
+     319   EPLOAN5A
+     539   EPLOAN5C
+     317   EPLOAN5F . . . . . . . . . . .  318
+     540   EPLOAN5H
+     321   EPLOAN5I
+     316   EPLOAN5L
+     541   EPLOAN5O
+     349   EPLOAN6A
+     559   EPLOAN6C
+     347   EPLOAN6F . . . . . . . . . . .  348
+     560   EPLOAN6H
+     351   EPLOAN6I
+     346   EPLOAN6L
+     561   EPLOAN6O
+     379   EPLOAN7A
+     579   EPLOAN7C
+     377   EPLOAN7F . . . . . . . . . . .  378
+     580   EPLOAN7H
+     381   EPLOAN7I
+     376   EPLOAN7L
+     581   EPLOAN7O
+     409   EPLOAN8APP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    21
+
+ Defined   Cross-reference of data names   References
+
+
+     599   EPLOAN8C
+     407   EPLOAN8F . . . . . . . . . . .  408
+     600   EPLOAN8H
+     411   EPLOAN8I
+     406   EPLOAN8L
+     601   EPLOAN8O
+     187   EPPHN1A
+     451   EPPHN1C
+     185   EPPHN1F. . . . . . . . . . . .  186
+     452   EPPHN1H
+     189   EPPHN1I
+     184   EPPHN1L
+     453   EPPHN1O
+     217   EPPHN2A
+     471   EPPHN2C
+     215   EPPHN2F. . . . . . . . . . . .  216
+     472   EPPHN2H
+     219   EPPHN2I
+     214   EPPHN2L
+     473   EPPHN2O
+     247   EPPHN3A
+     491   EPPHN3C
+     245   EPPHN3F. . . . . . . . . . . .  246
+     492   EPPHN3H
+     249   EPPHN3I
+     244   EPPHN3L
+     493   EPPHN3O
+     277   EPPHN4A
+     511   EPPHN4C
+     275   EPPHN4F. . . . . . . . . . . .  276
+     512   EPPHN4H
+     279   EPPHN4I
+     274   EPPHN4L
+     513   EPPHN4O
+     307   EPPHN5A
+     531   EPPHN5C
+     305   EPPHN5F. . . . . . . . . . . .  306
+     532   EPPHN5H
+     309   EPPHN5I
+     304   EPPHN5L
+     533   EPPHN5O
+     337   EPPHN6A
+     551   EPPHN6C
+     335   EPPHN6F. . . . . . . . . . . .  336
+     552   EPPHN6H
+     339   EPPHN6I
+     334   EPPHN6L
+     553   EPPHN6O
+     367   EPPHN7A
+     571   EPPHN7C
+     365   EPPHN7F. . . . . . . . . . . .  366
+     572   EPPHN7H
+     369   EPPHN7I
+     364   EPPHN7L
+     573   EPPHN7OPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    22
+
+ Defined   Cross-reference of data names   References
+
+
+     397   EPPHN8A
+     591   EPPHN8C
+     395   EPPHN8F. . . . . . . . . . . .  396
+     592   EPPHN8H
+     399   EPPHN8I
+     394   EPPHN8L
+     593   EPPHN8O
+     193   EPRATE1A
+     455   EPRATE1C
+     191   EPRATE1F . . . . . . . . . . .  192
+     456   EPRATE1H
+     195   EPRATE1I
+     190   EPRATE1L
+     457   EPRATE1O
+     223   EPRATE2A
+     475   EPRATE2C
+     221   EPRATE2F . . . . . . . . . . .  222
+     476   EPRATE2H
+     225   EPRATE2I
+     220   EPRATE2L
+     477   EPRATE2O
+     253   EPRATE3A
+     495   EPRATE3C
+     251   EPRATE3F . . . . . . . . . . .  252
+     496   EPRATE3H
+     255   EPRATE3I
+     250   EPRATE3L
+     497   EPRATE3O
+     283   EPRATE4A
+     515   EPRATE4C
+     281   EPRATE4F . . . . . . . . . . .  282
+     516   EPRATE4H
+     285   EPRATE4I
+     280   EPRATE4L
+     517   EPRATE4O
+     313   EPRATE5A
+     535   EPRATE5C
+     311   EPRATE5F . . . . . . . . . . .  312
+     536   EPRATE5H
+     315   EPRATE5I
+     310   EPRATE5L
+     537   EPRATE5O
+     343   EPRATE6A
+     555   EPRATE6C
+     341   EPRATE6F . . . . . . . . . . .  342
+     556   EPRATE6H
+     345   EPRATE6I
+     340   EPRATE6L
+     557   EPRATE6O
+     373   EPRATE7A
+     575   EPRATE7C
+     371   EPRATE7F . . . . . . . . . . .  372
+     576   EPRATE7H
+     375   EPRATE7I
+     370   EPRATE7LPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    23
+
+ Defined   Cross-reference of data names   References
+
+
+     577   EPRATE7O
+     403   EPRATE8A
+     595   EPRATE8C
+     401   EPRATE8F . . . . . . . . . . .  402
+     596   EPRATE8H
+     405   EPRATE8I
+     400   EPRATE8L
+     597   EPRATE8O
+     627   EPS-NUMBER-VALIDATION
+     146   EPSMLISI . . . . . . . . . . .  424 610
+     424   EPSMLISO . . . . . . . . . . .  M813
+     634   EPSPARM-BINARY-NUMBER
+     633   EPSPARM-DECIMAL
+     630   EPSPARM-MAX-LENGTH
+     632   EPSPARM-NUMBER
+     635   EPSPARM-RETURN-ERROR
+     629   EPSPARM-VALIDATE-DATA
+      65   EPSPCOM-ERRMSG
+     667   EPSPCOM-ERRMSG
+     692   EPSPCOM-ERRMSG
+      57   EPSPCOM-NUMBER-OF-MONTHS
+     659   EPSPCOM-NUMBER-OF-MONTHS
+     684   EPSPCOM-NUMBER-OF-MONTHS
+      56   EPSPCOM-NUMBER-OF-YEARS
+     658   EPSPCOM-NUMBER-OF-YEARS
+     683   EPSPCOM-NUMBER-OF-YEARS. . . .  M828
+      55   EPSPCOM-PRINCIPLE-DATA . . . .  775
+     657   EPSPCOM-PRINCIPLE-DATA
+     682   EPSPCOM-PRINCIPLE-DATA
+      66   EPSPCOM-PROGRAM-RETCODE. . . .  69
+     668   EPSPCOM-PROGRAM-RETCODE. . . .  671
+     693   EPSPCOM-PROGRAM-RETCODE. . . .  696
+      68   EPSPCOM-PROGRAM-RETCODE-RDF
+     670   EPSPCOM-PROGRAM-RETCODE-RDF
+     695   EPSPCOM-PROGRAM-RETCODE-RDF
+      58   EPSPCOM-QUOTED-INTEREST-RATE .  777
+     660   EPSPCOM-QUOTED-INTEREST-RATE
+     685   EPSPCOM-QUOTED-INTEREST-RATE .  M826
+      63   EPSPCOM-RETURN-MONTH-PAYMENT
+     665   EPSPCOM-RETURN-MONTH-PAYMENT
+     690   EPSPCOM-RETURN-MONTH-PAYMENT .  788 834
+      60   EPSPCOM-YEAR-MONTH-IND
+     662   EPSPCOM-YEAR-MONTH-IND
+     687   EPSPCOM-YEAR-MONTH-IND . . . .  M824
+      67   EPS02-REQUEST-SUCCESS
+     669   EPS02-REQUEST-SUCCESS
+     694   EPS02-REQUEST-SUCCESS
+     205   EPYEARS1A
+     463   EPYEARS1C
+     203   EPYEARS1F. . . . . . . . . . .  204
+     464   EPYEARS1H
+     207   EPYEARS1I
+     202   EPYEARS1L
+     465   EPYEARS1O
+     235   EPYEARS2APP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    24
+
+ Defined   Cross-reference of data names   References
+
+
+     483   EPYEARS2C
+     233   EPYEARS2F. . . . . . . . . . .  234
+     484   EPYEARS2H
+     237   EPYEARS2I
+     232   EPYEARS2L
+     485   EPYEARS2O
+     265   EPYEARS3A
+     503   EPYEARS3C
+     263   EPYEARS3F. . . . . . . . . . .  264
+     504   EPYEARS3H
+     267   EPYEARS3I
+     262   EPYEARS3L
+     505   EPYEARS3O
+     295   EPYEARS4A
+     523   EPYEARS4C
+     293   EPYEARS4F. . . . . . . . . . .  294
+     524   EPYEARS4H
+     297   EPYEARS4I
+     292   EPYEARS4L
+     525   EPYEARS4O
+     325   EPYEARS5A
+     543   EPYEARS5C
+     323   EPYEARS5F. . . . . . . . . . .  324
+     544   EPYEARS5H
+     327   EPYEARS5I
+     322   EPYEARS5L
+     545   EPYEARS5O
+     355   EPYEARS6A
+     563   EPYEARS6C
+     353   EPYEARS6F. . . . . . . . . . .  354
+     564   EPYEARS6H
+     357   EPYEARS6I
+     352   EPYEARS6L
+     565   EPYEARS6O
+     385   EPYEARS7A
+     583   EPYEARS7C
+     383   EPYEARS7F. . . . . . . . . . .  384
+     584   EPYEARS7H
+     387   EPYEARS7I
+     382   EPYEARS7L
+     585   EPYEARS7O
+     415   EPYEARS8A
+     603   EPYEARS8C
+     413   EPYEARS8F. . . . . . . . . . .  414
+     604   EPYEARS8H
+     417   EPYEARS8I
+     412   EPYEARS8L
+     605   EPYEARS8O
+      38   INTERNAL-PROGRAM-VARIABLES
+     151   LITCOMPA
+     427   LITCOMPC
+     149   LITCOMPF . . . . . . . . . . .  150
+     428   LITCOMPH
+     153   LITCOMPI
+     148   LITCOMPLPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    25
+
+ Defined   Cross-reference of data names   References
+
+
+     429   LITCOMPO
+     157   LITPHNA
+     431   LITPHNC
+     155   LITPHNF. . . . . . . . . . . .  156
+     432   LITPHNH
+     159   LITPHNI
+     154   LITPHNL
+     433   LITPHNO
+     175   LITPHN1A
+     443   LITPHN1C
+     173   LITPHN1F . . . . . . . . . . .  174
+     444   LITPHN1H
+     177   LITPHN1I
+     172   LITPHN1L
+     445   LITPHN1O
+      41   MAX-LOOP . . . . . . . . . . .  751
+     640   MORT-FILE-COMPANY. . . . . . .  779
+     645   MORT-FILE-LOAN . . . . . . . .  646 776
+     646   MORT-FILE-LOAN-RDF
+     641   MORT-FILE-PHONE-NUM. . . . . .  781
+     642   MORT-FILE-RATE . . . . . . . .  643 778 784 826
+     643   MORT-FILE-RATE-RDF
+     648   MORT-FILE-YEARS. . . . . . . .  791 828
+     639   MORTGAGE-COMPANY-INFO
+     421   MSGERRA
+     607   MSGERRC
+     419   MSGERRF. . . . . . . . . . . .  420
+     608   MSGERRH
+     423   MSGERRI
+     418   MSGERRL
+     609   MSGERRO
+     610   OUTMAP
+     614   OUTMAP-COMPANY . . . . . . . .  M780
+     620   OUTMAP-LOAN. . . . . . . . . .  M790 M837
+     624   OUTMAP-MSG
+     616   OUTMAP-PHONE-NUM . . . . . . .  M782
+     618   OUTMAP-RATE. . . . . . . . . .  M787
+     612   OUTMAP-REPEATE
+     622   OUTMAP-YEARS . . . . . . . . .  M792
+      51   PROCESS-INDICATOR
+     653   PROCESS-INDICATOR
+     678   PROCESS-INDICATOR
+      37   RESPONSE . . . . . . . . . . .  M744 746 754 M772 774 796 798
+      39   RID-LENGTH . . . . . . . . . .  M737
+      49   SAVE-COMM-AREA . . . . . . . .  M707 730 775 777 823
+      21   SEND-DATAONLY
+      23   SEND-DATAONLY-ALARM
+      20   SEND-ERASE
+      22   SEND-MAPONLY
+      36   W-CALL-PROGRAM . . . . . . . .  M830
+      47   W-COMAREA-LENGTH . . . . . . .  M706
+     651   W-COMMUNICATION-AREA
+      25   W-CONVERSIONS
+      18   W-FLAGS
+      26   W-PMT-CNVRT. . . . . . . . . .  28PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    26
+
+ Defined   Cross-reference of data names   References
+
+
+      27   W-PMT-NUMBER
+      31   W-PRINC-CNVRT. . . . . . . . .  33
+      32   W-PRINC-NUMBER
+      46   W-RETIREMENT-WA
+      19   W-SEND-FLAG
+      30   WS-FORMAT-NUMBER . . . . . . .  M785 786 M789 790 M836 837PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    27
+
+Context usage is indicated by the letter preceding a procedure-name reference.
+These letters and their meanings are:
+    A = ALTER (procedure-name)
+    D = GO TO (procedure-name) DEPENDING ON
+    E = End of range of (PERFORM) through (procedure-name)
+    G = GO TO (procedure-name)
+    P = PERFORM (procedure-name)
+    T = (ALTER) TO PROCEED TO (procedure-name)
+    U = USE FOR DEBUGGING (procedure-name)
+
+ Defined   Cross-reference of procedures   References
+
+     733   A100-PROCESS-MAP . . . . . . .  P711 P724 P727
+     766   A150-PROCESS-FILE. . . . . . .  P749
+     805   A300-SEND-MAP. . . . . . . . .  P764
+     812   A310-ERASE-MAP . . . . . . . .  P735
+     822   A600-CALCULATE-MORTGAGE. . . .  P783
+     705   EPSCMORT-MAINLINEPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    28
+
+ Defined   Cross-reference of programs     References
+
+EXTERNAL   DFHEI1 . . . . . . . . . . . .  716 721 731 744 760 772 810 819 833
+       2   EPSMLISTPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/27/2026  Time 13:52:38   Page    29
+
+
+         COPY/BASIS cross-reference of text-names, library names and dataset information
+
+ Text-name Library   File name                                    Concat   ISPF statistics
+ (Member)  (DDNAME)  (Dataset name)                               Level    Created         Changed
+
+ DFHAID    SYSLIB    DFH610.CICS.SDFHCOB                            2     2026/02/11   2026/02/11 18:38:42
+ EPSMLIS   SYSLIB    B027086.DBB.COPY                               0
+ EPSMORTF  SYSLIB    B027086.DBB.COPY                               0
+ EPSMTCOM  SYSLIB    B027086.DBB.COPY                               0
+ EPSMTINP  SYSLIB    B027086.DBB.COPY                               0
+ EPSMTOUT  SYSLIB    B027086.DBB.COPY                               0
+ EPSNBRPM  SYSLIB    B027086.DBB.COPY                               0
+
+
+
+* Statistics for COBOL program EPSMLIST:
+*    Source records = 1003
+*    Data Division statements = 549
+*    Procedure Division statements = 60
+*    Generated COBOL statements = 31
+*    Program complexity factor = 92
+
+End of compilation 1,  program EPSMLIST,  no statements flagged.
+
+Return code 0

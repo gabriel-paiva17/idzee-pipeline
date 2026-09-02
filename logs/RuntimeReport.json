@@ -1,0 +1,12 @@
+{
+  "problems" : [ ],
+  "outcome" : {
+    "type" : "finish",
+    "details" : {
+      "startTime" : "31-Aug-2026 13:47:52",
+      "endTime" : "20260831.134825.119",
+      "duration" : "00 min, 32 sec",
+      "buildList" : [ "MortgageApplication/cobol/epsmlist.cbcw" ]
+    }
+  }
+}
