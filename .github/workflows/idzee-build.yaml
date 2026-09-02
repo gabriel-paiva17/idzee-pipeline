@@ -38,6 +38,7 @@ jobs:
             --port "$ZOS_PORT" \
             --base-path rseapi \
             --protocol https \
-            --reject-unauthorized false \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD"
+            --reject-unauthorized false 
+        #    \
+        #    --user "$ZOS_USER" \
+        #    --password "$ZOS_PASSWORD"
