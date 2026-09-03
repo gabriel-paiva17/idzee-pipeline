@@ -31,8 +31,8 @@ jobs:
           ZOS_USER: ${{ secrets.ZOS_USER }}
           ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
         run: |
-          '$DBB_HOME/bin/dbb build user --hlq B027086.DBB "/u/b027086/dbb/idzee-pipeline/cobol/epsmlist.cbcw"' \
-            --cwd "/u/b027086/dbb/MortgageApplication" \
+          'pwd' \
+            --cwd "/u/b027086" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --base-path rseapi \
