@@ -31,14 +31,8 @@ jobs:
           ZOS_USER: ${{ secrets.ZOS_USER }}
           ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
         run: |
-          'zowe rse-api-for-zowe-cli issue unix-shell --cwd /u/b090290/Development/postal "pwd"' \
-            --cwd "/u/b027086/dbb/MortgageApplication" \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --base-path rseapi \
-            --protocol https \
-            --reject-unauthorized false 
-       
+          'zowe rse-api-for-zowe-cli issue unix-shell --cwd /u/b090290/Development/postal "pwd"' 
+           
         #    \
         #    --user "$ZOS_USER" \
         #    --password "$ZOS_PASSWORD"
