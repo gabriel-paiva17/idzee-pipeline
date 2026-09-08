@@ -14,6 +14,12 @@ jobs:
       - Linux
       - ARM64
 
+    env:
+      ZOS_HOST: ${{ secrets.ZOS_HOST }}
+      ZOS_PORT: ${{ secrets.ZOS_PORT }}
+      ZOS_USER: ${{ secrets.ZOS_USER }}
+      ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,20 +30,24 @@ jobs:
           node --version
           zowe --version
 
-      - name: Executar build no z/OS
-        env:
-          ZOS_HOST: ${{ secrets.ZOS_HOST }}
-          ZOS_PORT: ${{ secrets.ZOS_PORT }}
-          ZOS_USER: ${{ secrets.ZOS_USER }}
-          ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
+      - name: Verificar acesso ao z/OS
         run: |
           zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd /u/b090290/Development/postal \
+            --cwd "/u/${ZOS_USER}/Development/postal" \
             "pwd" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-        #    \
-        #    --user "$ZOS_USER" \
-        #    --password "$ZOS_PASSWORD"
+
+      - name: Executar DBB Build
+        run: |
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "/u/${ZOS_USER}/Development/postal" \
+            ". ~/.profile && \
+             \$DBB_HOME/bin/dbb build full \
+             --hlq ${ZOS_USER}.DBB" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
