@@ -50,34 +50,12 @@ jobs:
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
 
-      - name: Verificar configuração SSL do Git no z/OS
-        run: |
-          zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}" \
-            ". ~/.profile && \
-             git config --show-origin --get-all http.sslCAInfo || true" \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD"
-
-      - name: Remover configuração SSL inválida do Git
-        run: |
-          zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}" \
-            ". ~/.profile && \
-             git config --global --unset-all http.sslCAInfo || true" \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD"
-
       - name: Sincronizar repositório no z/OS
         run: |
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}" \
             ". ~/.profile && \
-             git clone ${REPO_URL} ${APP_NAME}" \
+             git -c http.sslCAInfo= clone ${REPO_URL} ${APP_NAME}" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
