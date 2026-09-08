@@ -24,7 +24,6 @@ jobs:
       REPO_URL: https://github.com/gabriel-paiva17/idzee-pipeline.git
 
     steps:
-
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -46,6 +45,28 @@ jobs:
             --cwd "/u" \
             "mkdir -p ${DBB_ROOT}/logs && \
              rm -rf ${DBB_ROOT}/${APP_NAME}" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+      - name: Verificar configuração SSL do Git no z/OS
+        run: |
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}" \
+            ". ~/.profile && \
+             git config --show-origin --get-all http.sslCAInfo || true" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+      - name: Remover configuração SSL inválida do Git
+        run: |
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}" \
+            ". ~/.profile && \
+             git config --global --unset-all http.sslCAInfo || true" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
