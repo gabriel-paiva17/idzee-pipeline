@@ -20,6 +20,8 @@ jobs:
       ZOS_USER: ${{ secrets.ZOS_USER }}
       ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
 
+      APP_NAME: idzee-pipeline
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,11 +32,28 @@ jobs:
           node --version
           zowe --version
 
-      - name: Verificar acesso ao z/OS
+      - name: Definir workspace DBB
+        run: |
+          echo "USS_USER=${ZOS_USER,,}" >> "$GITHUB_ENV"
+          echo "DBB_HLQ=${ZOS_USER}.DBB" >> "$GITHUB_ENV"
+          echo "DBB_ROOT=/u/${ZOS_USER,,}/dbb" >> "$GITHUB_ENV"
+
+      - name: Preparar workspace no z/OS
         run: |
           zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "/u/${ZOS_USER}/Development/postal" \
-            "pwd" \
+            --cwd "/u" \
+            "mkdir -p ${DBB_ROOT}/logs && \
+             mkdir -p ${DBB_ROOT}/${APP_NAME}" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+      - name: Verificar workspace
+        run: |
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}" \
+            "pwd && ls -la" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -43,10 +62,10 @@ jobs:
       - name: Executar DBB Build
         run: |
           zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "/u/${ZOS_USER}/Development/postal" \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
              \$DBB_HOME/bin/dbb build full \
-             --hlq ${ZOS_USER}.DBB" \
+             --hlq ${DBB_HLQ}" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
