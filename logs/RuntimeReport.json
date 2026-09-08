@@ -3,10 +3,10 @@
   "outcome" : {
     "type" : "finish",
     "details" : {
-      "startTime" : "31-Aug-2026 13:47:52",
-      "endTime" : "20260831.134825.119",
-      "duration" : "00 min, 32 sec",
-      "buildList" : [ "MortgageApplication/cobol/epsmlist.cbcw" ]
+      "startTime" : "08-Sep-2026 15:07:39",
+      "endTime" : "20260908.150816.647",
+      "duration" : "00 min, 36 sec",
+      "buildList" : [ "idzee-pipeline/cobol/epsmlist.cbcw" ]
     }
   }
 }

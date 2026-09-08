@@ -57,7 +57,7 @@
     {
       "id": "DEPENDENCY_SET_1",
       "type": "DEPENDENCY_SET",
-      "file": "MortgageApplication/cobol/epsmlist.cbcw",
+      "file": "idzee-pipeline/cobol/epsmlist.cbcw",
       "dependencySet": [
         {
           "lname": "DFHAID",
@@ -71,7 +71,7 @@
           "library": "SYSLIB",
           "category": "COPY",
           "sourceDir": "/u/b027086/dbb/",
-          "file": "MortgageApplication/copybook/epsmlis.cpy",
+          "file": "idzee-pipeline/copybook/epsmlis.cpy",
           "resolved": true,
           "excluded": false
         },
@@ -80,7 +80,7 @@
           "library": "SYSLIB",
           "category": "COPY",
           "sourceDir": "/u/b027086/dbb/",
-          "file": "MortgageApplication/copybook/epsmortf.cpy",
+          "file": "idzee-pipeline/copybook/epsmortf.cpy",
           "resolved": true,
           "excluded": false
         },
@@ -89,7 +89,7 @@
           "library": "SYSLIB",
           "category": "COPY",
           "sourceDir": "/u/b027086/dbb/",
-          "file": "MortgageApplication/copybook/epsmtcom.cpy",
+          "file": "idzee-pipeline/copybook/epsmtcom.cpy",
           "resolved": true,
           "excluded": false
         },
@@ -98,7 +98,7 @@
           "library": "SYSLIB",
           "category": "COPY",
           "sourceDir": "/u/b027086/dbb/",
-          "file": "MortgageApplication/copybook/epsmtinp.cpy",
+          "file": "idzee-pipeline/copybook/epsmtinp.cpy",
           "resolved": true,
           "excluded": false
         },
@@ -107,7 +107,7 @@
           "library": "SYSLIB",
           "category": "COPY",
           "sourceDir": "/u/b027086/dbb/",
-          "file": "MortgageApplication/copybook/epsmtout.cpy",
+          "file": "idzee-pipeline/copybook/epsmtout.cpy",
           "resolved": true,
           "excluded": false
         },
@@ -116,7 +116,7 @@
           "library": "SYSLIB",
           "category": "COPY",
           "sourceDir": "/u/b027086/dbb/",
-          "file": "MortgageApplication/copybook/epsnbrpm.cpy",
+          "file": "idzee-pipeline/copybook/epsnbrpm.cpy",
           "resolved": true,
           "excluded": false
         }
@@ -125,49 +125,49 @@
     {
       "id": "COPY_TO_PDS_1",
       "type": "COPY_TO_PDS",
-      "source": "/u/b027086/dbb/MortgageApplication/cobol/epsmlist.cbcw",
+      "source": "/u/b027086/dbb/idzee-pipeline/cobol/epsmlist.cbcw",
       "destination": "B027086.DBB.COBOL(EPSMLIST)",
       "mode": "TEXT"
     },
     {
       "id": "COPY_TO_PDS_2",
       "type": "COPY_TO_PDS",
-      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsmlis.cpy",
+      "source": "/u/b027086/dbb/idzee-pipeline/copybook/epsmlis.cpy",
       "destination": "B027086.DBB.COPY(EPSMLIS)",
       "mode": "TEXT"
     },
     {
       "id": "COPY_TO_PDS_3",
       "type": "COPY_TO_PDS",
-      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsmortf.cpy",
+      "source": "/u/b027086/dbb/idzee-pipeline/copybook/epsmortf.cpy",
       "destination": "B027086.DBB.COPY(EPSMORTF)",
       "mode": "TEXT"
     },
     {
       "id": "COPY_TO_PDS_4",
       "type": "COPY_TO_PDS",
-      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsmtcom.cpy",
+      "source": "/u/b027086/dbb/idzee-pipeline/copybook/epsmtcom.cpy",
       "destination": "B027086.DBB.COPY(EPSMTCOM)",
       "mode": "TEXT"
     },
     {
       "id": "COPY_TO_PDS_5",
       "type": "COPY_TO_PDS",
-      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsmtinp.cpy",
+      "source": "/u/b027086/dbb/idzee-pipeline/copybook/epsmtinp.cpy",
       "destination": "B027086.DBB.COPY(EPSMTINP)",
       "mode": "TEXT"
     },
     {
       "id": "COPY_TO_PDS_6",
       "type": "COPY_TO_PDS",
-      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsmtout.cpy",
+      "source": "/u/b027086/dbb/idzee-pipeline/copybook/epsmtout.cpy",
       "destination": "B027086.DBB.COPY(EPSMTOUT)",
       "mode": "TEXT"
     },
     {
       "id": "COPY_TO_PDS_7",
       "type": "COPY_TO_PDS",
-      "source": "/u/b027086/dbb/MortgageApplication/copybook/epsnbrpm.cpy",
+      "source": "/u/b027086/dbb/idzee-pipeline/copybook/epsnbrpm.cpy",
       "destination": "B027086.DBB.COPY(EPSNBRPM)",
       "mode": "TEXT"
     },
@@ -177,7 +177,7 @@
       "command": "IGYCRCTL",
       "options": "CICS",
       "rc": 0,
-      "file": "MortgageApplication/cobol/epsmlist.cbcw",
+      "file": "idzee-pipeline/cobol/epsmlist.cbcw",
       "outputs": [
         {
           "dataset": "B027086.DBB.OBJ(EPSMLIST)"
@@ -187,14 +187,14 @@
         "B027086.DBB.COBOL(EPSMLIST)"
       ],
       "logs": [
-        "/u/b027086/dbb/MortgageApplication/logs/compile-epsmlist.cbcw.log"
+        "/u/b027086/dbb/idzee-pipeline/logs/compile-epsmlist.cbcw.log"
       ]
     },
     {
       "id": "COPY_TO_HFS_1",
       "type": "COPY_TO_HFS",
       "source": "SYSPRINT",
-      "destination": "/u/b027086/dbb/MortgageApplication/logs/compile-epsmlist.cbcw.log",
+      "destination": "/u/b027086/dbb/idzee-pipeline/logs/compile-epsmlist.cbcw.log",
       "mode": "TEXT"
     },
     {
@@ -203,7 +203,7 @@
       "command": "IEWBLINK",
       "options": "MAP,RENT",
       "rc": 0,
-      "file": "MortgageApplication/cobol/epsmlist.cbcw",
+      "file": "idzee-pipeline/cobol/epsmlist.cbcw",
       "outputs": [
         {
           "dataset": "B027086.DBB.LOAD(EPSMLIST)",
@@ -211,21 +211,21 @@
         }
       ],
       "logs": [
-        "/u/b027086/dbb/MortgageApplication/logs/linkEdit-epsmlist.cbcw.log"
+        "/u/b027086/dbb/idzee-pipeline/logs/linkEdit-epsmlist.cbcw.log"
       ]
     },
     {
       "id": "COPY_TO_HFS_2",
       "type": "COPY_TO_HFS",
       "source": "SYSPRINT",
-      "destination": "/u/b027086/dbb/MortgageApplication/logs/linkEdit-epsmlist.cbcw.log",
+      "destination": "/u/b027086/dbb/idzee-pipeline/logs/linkEdit-epsmlist.cbcw.log",
       "mode": "TEXT"
     },
     {
       "id": "BUILD_SUMMARY_1",
       "type": "BUILD_SUMMARY",
-      "duration": "00 min, 32 sec",
-      "startTime": "31-Aug-2026 13:47:52"
+      "duration": "00 min, 36 sec",
+      "startTime": "08-Sep-2026 15:07:39"
     }
   ]
 }

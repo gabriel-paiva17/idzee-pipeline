@@ -1,4 +1,4 @@
-PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221                 Date 08/31/2026  Time 13:48:20   Page     1
+PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221                 Date 09/08/2026  Time 15:08:10   Page     1
 
 Invocation parameters:
  CICS
@@ -57,7 +57,7 @@ Options in effect:
  NOOFFSET
    OPTIMIZE(0)
    OUTDD(SYSOUT)
- NOPARMCHECKPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221                 Date 08/31/2026  Time 13:48:20   Page     2
+ NOPARMCHECKPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221                 Date 09/08/2026  Time 15:08:10   Page     2
 
    PGMNAME(COMPAT)
    QUALIFY(COMPAT)
@@ -100,7 +100,7 @@ CICS Options in effect:
  NOCPSM
  LINKAGE
  LENGTH
- COBOL2PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page     3
+ COBOL2PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page     3
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000001                ID DIVISION.
@@ -159,7 +159,7 @@ CICS Options in effect:
   000054C              * INPUT
   000055C                  10 EPSPCOM-PRINCIPLE-DATA   PIC S9(9)V99 COMP.
   000056C                  10 EPSPCOM-NUMBER-OF-YEARS  PIC S9(4)    COMP.
-  000057C                  10 EPSPCOM-NUMBER-OF-MONTHS PIC S9(4)    COMP.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page     4
+  000057C                  10 EPSPCOM-NUMBER-OF-MONTHS PIC S9(4)    COMP.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page     4
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000058C                  10 EPSPCOM-QUOTED-INTEREST-RATE
@@ -218,7 +218,7 @@ CICS Options in effect:
   000111C                 02  DFHOPID   PIC  X  VALUE IS 'W'.
   000112C                 02  DFHMSRE   PIC  X  VALUE IS 'X'.
   000113C                 02  DFHSTRF   PIC  X  VALUE IS 'h'.
-  000114C                 02  DFHTRIG   PIC  X  VALUE IS '"'.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page     5
+  000114C                 02  DFHTRIG   PIC  X  VALUE IS '"'.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page     5
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000115C                 02  DFHPA1    PIC  X  VALUE IS '%'.
@@ -277,7 +277,7 @@ CICS Options in effect:
   000168C                   02  FILLER REDEFINES EPDIFF2F.                                        167
   000169C                     03 EPDIFF2A    PICTURE X.
   000170C                   02  FILLER   PICTURE X(2).
-  000171C                   02  EPDIFF2I  PIC X(16).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page     6
+  000171C                   02  EPDIFF2I  PIC X(16).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page     6
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000172C                   02  LITPHN1L    COMP  PIC  S9(4).
@@ -336,7 +336,7 @@ CICS Options in effect:
   000225C                   02  EPRATE2I  PIC X(5).
   000226C                   02  EPLOAN2L    COMP  PIC  S9(4).
   000227C                   02  EPLOAN2F    PICTURE X.
-  000228C                   02  FILLER REDEFINES EPLOAN2F.                                        227PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page     7
+  000228C                   02  FILLER REDEFINES EPLOAN2F.                                        227PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page     7
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000229C                     03 EPLOAN2A    PICTURE X.
@@ -395,7 +395,7 @@ CICS Options in effect:
   000282C                   02  FILLER REDEFINES EPRATE4F.                                        281
   000283C                     03 EPRATE4A    PICTURE X.
   000284C                   02  FILLER   PICTURE X(2).
-  000285C                   02  EPRATE4I  PIC X(5).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page     8
+  000285C                   02  EPRATE4I  PIC X(5).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page     8
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000286C                   02  EPLOAN4L    COMP  PIC  S9(4).
@@ -454,7 +454,7 @@ CICS Options in effect:
   000339C                   02  EPPHN6I  PIC X(13).
   000340C                   02  EPRATE6L    COMP  PIC  S9(4).
   000341C                   02  EPRATE6F    PICTURE X.
-  000342C                   02  FILLER REDEFINES EPRATE6F.                                        341PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page     9
+  000342C                   02  FILLER REDEFINES EPRATE6F.                                        341PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page     9
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000343C                     03 EPRATE6A    PICTURE X.
@@ -513,7 +513,7 @@ CICS Options in effect:
   000396C                   02  FILLER REDEFINES EPPHN8F.                                         395
   000397C                     03 EPPHN8A    PICTURE X.
   000398C                   02  FILLER   PICTURE X(2).
-  000399C                   02  EPPHN8I  PIC X(13).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    10
+  000399C                   02  EPPHN8I  PIC X(13).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    10
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000400C                   02  EPRATE8L    COMP  PIC  S9(4).
@@ -572,7 +572,7 @@ CICS Options in effect:
   000453C                   02  EPPHN1O  PIC X(13).
   000454C                   02  FILLER PICTURE X(3).
   000455C                   02  EPRATE1C    PICTURE X.
-  000456C                   02  EPRATE1H    PICTURE X.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    11
+  000456C                   02  EPRATE1H    PICTURE X.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    11
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000457C                   02  EPRATE1O  PIC X(5).
@@ -631,7 +631,7 @@ CICS Options in effect:
   000510C                   02  FILLER PICTURE X(3).
   000511C                   02  EPPHN4C    PICTURE X.
   000512C                   02  EPPHN4H    PICTURE X.
-  000513C                   02  EPPHN4O  PIC X(13).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    12
+  000513C                   02  EPPHN4O  PIC X(13).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    12
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000514C                   02  FILLER PICTURE X(3).
@@ -690,7 +690,7 @@ CICS Options in effect:
   000567C                   02  EPCMP7C    PICTURE X.
   000568C                   02  EPCMP7H    PICTURE X.
   000569C                   02  EPCMP7O  PIC X(24).
-  000570C                   02  FILLER PICTURE X(3).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    13
+  000570C                   02  FILLER PICTURE X(3).PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    13
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000571C                   02  EPPHN7C    PICTURE X.
@@ -749,7 +749,7 @@ CICS Options in effect:
   000624                    03 OUTMAP-MSG                   PIC X(40).
   000625
   000626                    COPY EPSNBRPM.
-  000627C               01  EPS-NUMBER-VALIDATION.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    14
+  000627C               01  EPS-NUMBER-VALIDATION.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    14
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000628C              * INPUT
@@ -808,7 +808,7 @@ CICS Options in effect:
   000681C              * INPUT
   000682C                  10 EPSPCOM-PRINCIPLE-DATA   PIC S9(9)V99 COMP.
   000683C                  10 EPSPCOM-NUMBER-OF-YEARS  PIC S9(4)    COMP.
-  000684C                  10 EPSPCOM-NUMBER-OF-MONTHS PIC S9(4)    COMP.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    15
+  000684C                  10 EPSPCOM-NUMBER-OF-MONTHS PIC S9(4)    COMP.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    15
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000685C                  10 EPSPCOM-QUOTED-INTEREST-RATE
@@ -867,7 +867,7 @@ CICS Options in effect:
   000738                    MOVE 'N'    TO CLOSE-FILE.                                            44
   000739                    MOVE 'N'    TO END-OF-FILE.                                           43
   000740
-  000741                    EXEC CICS STARTBR DATASET('EPSMORTF')PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    16
+  000741                    EXEC CICS STARTBR DATASET('EPSMORTF')PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    16
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000742                              RIDFLD(RID-LENGTH) RBA
@@ -926,7 +926,7 @@ CICS Options in effect:
   000795                    ELSE
   000796      1                IF (RESPONSE NOT = DFHRESP(ENDFILE))                               37
   000797      2                   MOVE 'ERROR WITH READ NEXT' TO EPCMP1O                          449
-  000798      2                   MOVE RESPONSE               TO EPLOAN1O                         37 461PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    17
+  000798      2                   MOVE RESPONSE               TO EPLOAN1O                         37 461PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    17
   LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
 
   000799      1                ELSE
@@ -967,7 +967,7 @@ CICS Options in effect:
   000834                    MOVE EPSPCOM-RETURN-MONTH-PAYMENT                                     690
   000835                                          OF DFHCOMMAREA                                  676
   000836                                          TO WS-FORMAT-NUMBER.                            30
-  000837                    MOVE WS-FORMAT-NUMBER TO OUTMAP-LOAN(DISP-COUNT).                     30 620 40PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    18
+  000837                    MOVE WS-FORMAT-NUMBER TO OUTMAP-LOAN(DISP-COUNT).                     30 620 40PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    18
 
 An "M" preceding a data-name reference indicates that the data-name is modified by this reference.
 
@@ -1026,7 +1026,7 @@ An "M" preceding a data-name reference indicates that the data-name is modified 
      449   EPCMP1O. . . . . . . . . . . .  M753 M797
      211   EPCMP2A
      467   EPCMP2C
-     209   EPCMP2F. . . . . . . . . . . .  210PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    19
+     209   EPCMP2F. . . . . . . . . . . .  210PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    19
 
  Defined   Cross-reference of data names   References
 
@@ -1085,7 +1085,7 @@ An "M" preceding a data-name reference indicates that the data-name is modified 
      160   EPDIFF1L
      437   EPDIFF1O
      169   EPDIFF2A
-     439   EPDIFF2CPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    20
+     439   EPDIFF2CPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    20
 
  Defined   Cross-reference of data names   References
 
@@ -1144,7 +1144,7 @@ An "M" preceding a data-name reference indicates that the data-name is modified 
      381   EPLOAN7I
      376   EPLOAN7L
      581   EPLOAN7O
-     409   EPLOAN8APP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    21
+     409   EPLOAN8APP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    21
 
  Defined   Cross-reference of data names   References
 
@@ -1203,7 +1203,7 @@ An "M" preceding a data-name reference indicates that the data-name is modified 
      572   EPPHN7H
      369   EPPHN7I
      364   EPPHN7L
-     573   EPPHN7OPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    22
+     573   EPPHN7OPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    22
 
  Defined   Cross-reference of data names   References
 
@@ -1262,7 +1262,7 @@ An "M" preceding a data-name reference indicates that the data-name is modified 
      371   EPRATE7F . . . . . . . . . . .  372
      576   EPRATE7H
      375   EPRATE7I
-     370   EPRATE7LPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    23
+     370   EPRATE7LPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    23
 
  Defined   Cross-reference of data names   References
 
@@ -1321,7 +1321,7 @@ An "M" preceding a data-name reference indicates that the data-name is modified 
      207   EPYEARS1I
      202   EPYEARS1L
      465   EPYEARS1O
-     235   EPYEARS2APP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    24
+     235   EPYEARS2APP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    24
 
  Defined   Cross-reference of data names   References
 
@@ -1380,7 +1380,7 @@ An "M" preceding a data-name reference indicates that the data-name is modified 
      149   LITCOMPF . . . . . . . . . . .  150
      428   LITCOMPH
      153   LITCOMPI
-     148   LITCOMPLPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    25
+     148   LITCOMPLPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    25
 
  Defined   Cross-reference of data names   References
 
@@ -1439,7 +1439,7 @@ An "M" preceding a data-name reference indicates that the data-name is modified 
      651   W-COMMUNICATION-AREA
       25   W-CONVERSIONS
       18   W-FLAGS
-      26   W-PMT-CNVRT. . . . . . . . . .  28PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    26
+      26   W-PMT-CNVRT. . . . . . . . . .  28PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    26
 
  Defined   Cross-reference of data names   References
 
@@ -1449,7 +1449,7 @@ An "M" preceding a data-name reference indicates that the data-name is modified 
       32   W-PRINC-NUMBER
       46   W-RETIREMENT-WA
       19   W-SEND-FLAG
-      30   WS-FORMAT-NUMBER . . . . . . .  M785 786 M789 790 M836 837PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    27
+      30   WS-FORMAT-NUMBER . . . . . . .  M785 786 M789 790 M836 837PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    27
 
 Context usage is indicated by the letter preceding a procedure-name reference.
 These letters and their meanings are:
@@ -1468,12 +1468,12 @@ These letters and their meanings are:
      805   A300-SEND-MAP. . . . . . . . .  P764
      812   A310-ERASE-MAP . . . . . . . .  P735
      822   A600-CALCULATE-MORTGAGE. . . .  P783
-     705   EPSCMORT-MAINLINEPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    28
+     705   EPSCMORT-MAINLINEPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    28
 
  Defined   Cross-reference of programs     References
 
 EXTERNAL   DFHEI1 . . . . . . . . . . . .  716 721 731 744 760 772 810 819 833
-       2   EPSMLISTPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 08/31/2026  Time 13:48:20   Page    29
+       2   EPSMLISTPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.4.0 P230221       EPSMLIST  Date 09/08/2026  Time 15:08:10   Page    29
 
 
          COPY/BASIS cross-reference of text-names, library names and dataset information

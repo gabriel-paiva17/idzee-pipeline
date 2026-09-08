@@ -24,6 +24,7 @@ jobs:
       REPO_URL: https://github.com/gabriel-paiva17/idzee-pipeline.git
 
     steps:
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -33,7 +34,7 @@ jobs:
           node --version
           zowe --version
 
-      - name: Definir workspace DBB
+      - name: Definir ambiente DBB
         run: |
           echo "USS_USER=${ZOS_USER,,}" >> "$GITHUB_ENV"
           echo "DBB_HLQ=${ZOS_USER}.DBB" >> "$GITHUB_ENV"
@@ -43,7 +44,8 @@ jobs:
         run: |
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "/u" \
-            "mkdir -p ${DBB_ROOT}/logs" \
+            "mkdir -p ${DBB_ROOT}/logs && \
+             rm -rf ${DBB_ROOT}/${APP_NAME}" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -54,29 +56,26 @@ jobs:
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}" \
             ". ~/.profile && \
-             if [ -d ${APP_NAME}/.git ]; then \
-               cd ${APP_NAME} && \
-               git fetch origin main && \
-               git reset --hard origin/main; \
-             else \
-               git clone ${REPO_URL} ${APP_NAME}; \
-             fi" \
+             git clone ${REPO_URL} ${APP_NAME}" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
 
-      - name: Verificar workspace
+      - name: Verificar repositório
         run: |
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
-            "pwd && git status && git log -1 --oneline" \
+            "pwd && \
+             git status && \
+             git log -1 --oneline && \
+             ls -la" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
 
-      - name: Executar DBB Build
+      - name: Executar DBB Full Build
         run: |
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
