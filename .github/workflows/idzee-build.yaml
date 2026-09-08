@@ -21,7 +21,6 @@ jobs:
       ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
 
       APP_NAME: idzee-pipeline
-      REPO_URL: https://github.com/gabriel-paiva17/idzee-pipeline.git
 
     steps:
       - name: Checkout
@@ -44,31 +43,31 @@ jobs:
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "/u" \
             "mkdir -p ${DBB_ROOT}/logs && \
-             rm -rf ${DBB_ROOT}/${APP_NAME}" \
+             rm -rf ${DBB_ROOT}/${APP_NAME} && \
+             mkdir -p ${DBB_ROOT}/${APP_NAME}" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
 
-      - name: Sincronizar repositório no z/OS
+      - name: Upload do repositório para o z/OS
         run: |
-          zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}" \
-            ". ~/.profile && \
-             git -c http.sslCAInfo= clone ${REPO_URL} ${APP_NAME}" \
+          zowe rse-api-for-zowe-cli upload dir-to-uss \
+            "." \
+            "${DBB_ROOT}/${APP_NAME}" \
+            --recursive \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
 
-      - name: Verificar repositório
+      - name: Verificar arquivos no USS
         run: |
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             "pwd && \
-             git status && \
-             git log -1 --oneline && \
-             ls -la" \
+             ls -la && \
+             test -f dbb-app.yaml && echo 'dbb-app.yaml encontrado'" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
