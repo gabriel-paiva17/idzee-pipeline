@@ -38,6 +38,14 @@ jobs:
           echo "DBB_HLQ=${ZOS_USER}.DBB" >> "$GITHUB_ENV"
           echo "DBB_ROOT=/u/${ZOS_USER,,}/dbb" >> "$GITHUB_ENV"
 
+      - name: Configurar upload
+        run: |
+          cat > .zosattributes <<'EOF'
+          .git/        -
+          .github/     -
+          .DS_Store    -
+          EOF
+
       - name: Preparar workspace no z/OS
         run: |
           zowe rse-api-for-zowe-cli issue unix-shell \
@@ -56,6 +64,8 @@ jobs:
             "." \
             "${DBB_ROOT}/${APP_NAME}" \
             --recursive \
+            --attributes .zosattributes \
+            --max-concurrent-requests 5 \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -67,7 +77,37 @@ jobs:
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             "pwd && \
              ls -la && \
-             test -f dbb-app.yaml && echo 'dbb-app.yaml encontrado'" \
+             test -f dbb-app.yaml && \
+             echo 'dbb-app.yaml encontrado'" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+      - name: Inicializar Git no USS
+        run: |
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             rm -rf .git && \
+             git init && \
+             git add . && \
+             git -c user.name='IDzEE Pipeline' \
+                 -c user.email='idzee-pipeline@local' \
+                 commit -m 'Pipeline workspace'" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+      - name: Verificar Git no USS
+        run: |
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             git status && \
+             git log -1 --oneline && \
+             git rev-parse HEAD" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
