@@ -21,6 +21,7 @@ jobs:
       ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
 
       APP_NAME: idzee-pipeline
+      REPO_URL: https://github.com/gabriel-paiva17/idzee-pipeline.git
 
     steps:
       - name: Checkout
@@ -42,8 +43,24 @@ jobs:
         run: |
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "/u" \
-            "mkdir -p ${DBB_ROOT}/logs && \
-             mkdir -p ${DBB_ROOT}/${APP_NAME}" \
+            "mkdir -p ${DBB_ROOT}/logs" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+      - name: Sincronizar repositório no z/OS
+        run: |
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}" \
+            ". ~/.profile && \
+             if [ -d ${APP_NAME}/.git ]; then \
+               cd ${APP_NAME} && \
+               git fetch origin main && \
+               git reset --hard origin/main; \
+             else \
+               git clone ${REPO_URL} ${APP_NAME}; \
+             fi" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -52,8 +69,8 @@ jobs:
       - name: Verificar workspace
         run: |
           zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}" \
-            "pwd && ls -la" \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            "pwd && git status && git log -1 --oneline" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
