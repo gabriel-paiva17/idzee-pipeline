@@ -1,0 +1,501 @@
+name: IDzEE Smart Build
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: "Tipo de build"
+        required: true
+        default: auto
+        type: choice
+        options:
+          - auto
+          - full
+          - user
+
+jobs:
+  build:
+    runs-on:
+      - self-hosted
+      - Linux
+      - ARM64
+
+    env:
+      ZOS_HOST: ${{ secrets.ZOS_HOST }}
+      ZOS_PORT: ${{ secrets.ZOS_PORT }}
+      ZOS_USER: ${{ secrets.ZOS_USER }}
+      ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
+
+      APP_NAME: idzee-pipeline
+      USER_BUILD_LIMIT: 10
+
+    steps:
+
+      # ============================================================
+      # 1. CHECKOUT
+      # ============================================================
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+
+      # ============================================================
+      # 2. VERIFICAR RUNNER
+      # ============================================================
+
+      - name: Verificar ambiente
+        run: |
+          echo "Hostname:"
+          hostname
+
+          echo
+          echo "Node:"
+          node --version
+
+          echo
+          echo "Zowe:"
+          zowe --version
+
+
+      # ============================================================
+      # 3. DEFINIR AMBIENTE DBB
+      # ============================================================
+
+      - name: Definir ambiente DBB
+        run: |
+          echo "USS_USER=${ZOS_USER,,}" >> "$GITHUB_ENV"
+          echo "DBB_HLQ=${ZOS_USER}.DBB" >> "$GITHUB_ENV"
+          echo "DBB_ROOT=/u/${ZOS_USER,,}/dbb" >> "$GITHUB_ENV"
+
+
+      # ============================================================
+      # 4. IDENTIFICAR ALTERAÇÕES E DECIDIR BUILD
+      # ============================================================
+
+      - name: Analisar alterações
+        shell: bash
+        run: |
+
+          echo "=========================================="
+          echo "ANÁLISE DAS ALTERAÇÕES"
+          echo "=========================================="
+
+          # --------------------------------------------------------
+          # Tipo solicitado
+          # --------------------------------------------------------
+
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            REQUESTED_BUILD="${{ github.event.inputs.build_type }}"
+          else
+            REQUESTED_BUILD="auto"
+          fi
+
+          echo "Modo solicitado: $REQUESTED_BUILD"
+
+
+          # --------------------------------------------------------
+          # Arquivos alterados
+          # --------------------------------------------------------
+
+          if git rev-parse HEAD^ >/dev/null 2>&1; then
+
+            git diff \
+              --name-only \
+              --diff-filter=ACMR \
+              HEAD^ HEAD > changed-files.txt
+
+          else
+
+            git ls-files > changed-files.txt
+
+          fi
+
+
+          echo
+          echo "Arquivos alterados:"
+          echo "------------------------------------------"
+
+          cat changed-files.txt || true
+
+          echo "------------------------------------------"
+
+
+          # --------------------------------------------------------
+          # Separar fontes compiláveis
+          # --------------------------------------------------------
+
+          grep -Ei '\.(cbl|cbcw|bms)$' \
+            changed-files.txt \
+            > changed-buildable-files.txt || true
+
+
+          # --------------------------------------------------------
+          # Separar copybooks
+          # --------------------------------------------------------
+
+          grep -Ei '\.cpy$' \
+            changed-files.txt \
+            > changed-copybooks.txt || true
+
+
+          # --------------------------------------------------------
+          # Contadores
+          # --------------------------------------------------------
+
+          SOURCE_COUNT=$(wc -l < changed-buildable-files.txt)
+          COPYBOOK_COUNT=$(wc -l < changed-copybooks.txt)
+
+          SOURCE_COUNT=$(echo "$SOURCE_COUNT" | tr -d ' ')
+          COPYBOOK_COUNT=$(echo "$COPYBOOK_COUNT" | tr -d ' ')
+
+
+          echo
+          echo "Fontes compiláveis alterados: $SOURCE_COUNT"
+          echo "Copybooks alterados:          $COPYBOOK_COUNT"
+
+
+          # --------------------------------------------------------
+          # Detectar configuração DBB
+          # --------------------------------------------------------
+
+          CONFIG_CHANGED=false
+
+          if grep -Eq \
+            '(^|/)(dbb-app\.yaml|dbb-build\.yaml)$' \
+            changed-files.txt; then
+
+            CONFIG_CHANGED=true
+
+          fi
+
+
+          echo "Configuração DBB alterada:    $CONFIG_CHANGED"
+
+
+          # ========================================================
+          # DECISÃO
+          # ========================================================
+
+          BUILD_TYPE="$REQUESTED_BUILD"
+          BUILD_REASON=""
+
+
+          if [[ "$BUILD_TYPE" == "auto" ]]; then
+
+            # ------------------------------------------------------
+            # REGRA 1
+            # Configuração DBB alterada
+            # ------------------------------------------------------
+
+            if [[ "$CONFIG_CHANGED" == "true" ]]; then
+
+              BUILD_TYPE="full"
+              BUILD_REASON="Configuração DBB alterada"
+
+
+            # ------------------------------------------------------
+            # REGRA 2
+            # Copybook alterado
+            #
+            # Por enquanto usamos FULL como fallback seguro.
+            # Depois podemos substituir por Impact Analysis.
+            # ------------------------------------------------------
+
+            elif [[ "$COPYBOOK_COUNT" -gt 0 ]]; then
+
+              BUILD_TYPE="full"
+              BUILD_REASON="Copybook alterado - Full Build utilizado como fallback para Impact Analysis"
+
+
+            # ------------------------------------------------------
+            # REGRA 3
+            # Mais de 10 fontes
+            # ------------------------------------------------------
+
+            elif [[ "$SOURCE_COUNT" -gt "$USER_BUILD_LIMIT" ]]; then
+
+              BUILD_TYPE="full"
+              BUILD_REASON="Mais de ${USER_BUILD_LIMIT} fontes alterados"
+
+
+            # ------------------------------------------------------
+            # REGRA 4
+            # Entre 1 e 10 fontes
+            # ------------------------------------------------------
+
+            elif [[ "$SOURCE_COUNT" -gt 0 ]]; then
+
+              BUILD_TYPE="user"
+              BUILD_REASON="${SOURCE_COUNT} fonte(s) alterado(s)"
+
+
+            # ------------------------------------------------------
+            # REGRA 5
+            # Nenhuma alteração relevante
+            # ------------------------------------------------------
+
+            else
+
+              BUILD_TYPE="none"
+              BUILD_REASON="Nenhum fonte relevante alterado"
+
+            fi
+
+          fi
+
+
+          # --------------------------------------------------------
+          # Proteção para USER manual sem fontes
+          # --------------------------------------------------------
+
+          if [[ "$BUILD_TYPE" == "user" ]] && \
+             [[ "$SOURCE_COUNT" -eq 0 ]]; then
+
+            echo
+            echo "WARNING:"
+            echo "USER BUILD solicitado, mas nenhum fonte foi encontrado."
+
+            BUILD_TYPE="none"
+            BUILD_REASON="User Build solicitado sem fonte compilável"
+
+          fi
+
+
+          echo
+          echo "=========================================="
+          echo "DECISÃO"
+          echo "=========================================="
+          echo "Build  : $BUILD_TYPE"
+          echo "Motivo : $BUILD_REASON"
+          echo "=========================================="
+
+
+          echo "BUILD_TYPE=$BUILD_TYPE" >> "$GITHUB_ENV"
+          echo "BUILD_REASON=$BUILD_REASON" >> "$GITHUB_ENV"
+          echo "SOURCE_COUNT=$SOURCE_COUNT" >> "$GITHUB_ENV"
+          echo "COPYBOOK_COUNT=$COPYBOOK_COUNT" >> "$GITHUB_ENV"
+
+
+      # ============================================================
+      # 5. MOSTRAR PLANO
+      # ============================================================
+
+      - name: Plano de execução
+        run: |
+          echo "=========================================="
+          echo "IDzEE SMART BUILD"
+          echo "=========================================="
+          echo "Aplicação : $APP_NAME"
+          echo "Usuário   : $ZOS_USER"
+          echo "HLQ       : $DBB_HLQ"
+          echo "USS       : $DBB_ROOT/$APP_NAME"
+          echo
+          echo "Fontes    : $SOURCE_COUNT"
+          echo "Copybooks : $COPYBOOK_COUNT"
+          echo
+          echo "Build     : $BUILD_TYPE"
+          echo "Motivo    : $BUILD_REASON"
+          echo "=========================================="
+
+
+      # ============================================================
+      # 6. CONFIGURAR UPLOAD
+      # ============================================================
+
+      - name: Configurar upload
+        if: env.BUILD_TYPE != 'none'
+        run: |
+          cat > .zosattributes <<'EOF'
+          .git/        -
+          .github/     -
+          .DS_Store    -
+          EOF
+
+
+      # ============================================================
+      # 7. PREPARAR WORKSPACE NO Z/OS
+      # ============================================================
+
+      - name: Preparar workspace no z/OS
+        if: env.BUILD_TYPE != 'none'
+        run: |
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "/u" \
+            "mkdir -p ${DBB_ROOT}/logs && \
+             rm -rf ${DBB_ROOT}/${APP_NAME} && \
+             mkdir -p ${DBB_ROOT}/${APP_NAME}" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ============================================================
+      # 8. UPLOAD DO REPOSITÓRIO
+      # ============================================================
+
+      - name: Upload do repositório para o z/OS
+        if: env.BUILD_TYPE != 'none'
+        run: |
+          zowe rse-api-for-zowe-cli upload dir-to-uss \
+            "." \
+            "${DBB_ROOT}/${APP_NAME}" \
+            --recursive \
+            --attributes .zosattributes \
+            --max-concurrent-requests 5 \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ============================================================
+      # 9. VERIFICAR WORKSPACE
+      # ============================================================
+
+      - name: Verificar arquivos no USS
+        if: env.BUILD_TYPE != 'none'
+        run: |
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            "pwd && \
+             ls -la && \
+             test -f dbb-app.yaml && \
+             echo 'dbb-app.yaml encontrado'" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ============================================================
+      # 10. INICIALIZAR GIT NO USS
+      # ============================================================
+
+      - name: Inicializar Git no USS
+        if: env.BUILD_TYPE != 'none'
+        run: |
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             rm -rf .git && \
+             git init && \
+             git add . && \
+             git -c user.name='IDzEE Pipeline' \
+                 -c user.email='idzee-pipeline@local' \
+                 commit -m 'Pipeline workspace'" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ============================================================
+      # 11. FULL BUILD
+      # ============================================================
+
+      - name: Executar DBB Full Build
+        if: env.BUILD_TYPE == 'full'
+        run: |
+
+          echo "=========================================="
+          echo "FULL BUILD"
+          echo "Motivo: $BUILD_REASON"
+          echo "=========================================="
+
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             \$DBB_HOME/bin/dbb build full \
+             --hlq ${DBB_HLQ}" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ============================================================
+      # 12. USER BUILD
+      # ============================================================
+
+      - name: Executar DBB User Build
+        if: env.BUILD_TYPE == 'user'
+        shell: bash
+        run: |
+
+          echo "=========================================="
+          echo "USER BUILD"
+          echo "$SOURCE_COUNT arquivo(s)"
+          echo "=========================================="
+
+
+          while IFS= read -r FILE
+          do
+
+            [[ -z "$FILE" ]] && continue
+
+
+            REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
+
+
+            echo
+            echo "=========================================="
+            echo "Compilando:"
+            echo "$FILE"
+            echo "=========================================="
+
+
+            zowe rse-api-for-zowe-cli issue unix-shell \
+              --cwd "${DBB_ROOT}/${APP_NAME}" \
+              ". ~/.profile && \
+               \$DBB_HOME/bin/dbb build user \
+               --hlq ${DBB_HLQ} \
+               '${REMOTE_FILE}'" \
+              --host "$ZOS_HOST" \
+              --port "$ZOS_PORT" \
+              --user "$ZOS_USER" \
+              --password "$ZOS_PASSWORD"
+
+
+          done < changed-buildable-files.txt
+
+
+      # ============================================================
+      # 13. NENHUM BUILD
+      # ============================================================
+
+      - name: Nenhum build necessário
+        if: env.BUILD_TYPE == 'none'
+        run: |
+          echo "=========================================="
+          echo "BUILD IGNORADO"
+          echo "=========================================="
+          echo "$BUILD_REASON"
+
+
+      # ============================================================
+      # 14. RESUMO
+      # ============================================================
+
+      - name: Resumo da execução
+        if: always()
+        run: |
+          echo "=========================================="
+          echo "RESUMO - IDzEE SMART BUILD"
+          echo "=========================================="
+          echo "Aplicação : $APP_NAME"
+          echo "Commit    : $GITHUB_SHA"
+          echo "Branch    : $GITHUB_REF_NAME"
+          echo "Usuário   : $ZOS_USER"
+          echo
+          echo "Fontes    : ${SOURCE_COUNT:-N/A}"
+          echo "Copybooks : ${COPYBOOK_COUNT:-N/A}"
+          echo "Build     : ${BUILD_TYPE:-N/A}"
+          echo "Motivo    : ${BUILD_REASON:-N/A}"
+          echo "=========================================="
