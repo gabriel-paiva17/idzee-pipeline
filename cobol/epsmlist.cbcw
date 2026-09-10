@@ -12,6 +12,7 @@
        SOURCE-COMPUTER. IBM-FLEX-ES.
        OBJECT-COMPUTER. IBM-FLEX-ES.
       *
+      *
        DATA DIVISION.
        WORKING-STORAGE SECTION.
       *
