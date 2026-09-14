@@ -329,6 +329,35 @@ Isso permitirá que a pipeline combine o versionamento em **Git/GitHub** com as 
 
 ---
 
+# Alternativa de Arquitetura: Git Clone / Pull Remoto no USS
+
+Atualmente, o fluxo de sincronização dos fontes com o z/OS utiliza o runner para fazer o upload dos arquivos via Zowe CLI (`dir-to-uss`) e recriar/atualizar o Git localmente no USS.
+
+Uma decisão/alternativa arquitetural válida é **manter o runner orquestrando toda a esteira**, mas, em vez de transferir arquivos via upload HTTP/REST, ele instrui o z/OS a executar o `git clone` ou `git pull` diretamente no USS.
+
+```text
+GitHub Actions (Runner)
+       |
+       | Dispara comando remoto (RSE API / Zowe CLI)
+       v
+   z/OS USS
+       |
+       +---> Executa 'git clone / git pull' direto do GitHub
+       |
+       +---> Executa 'dbb build'
+```
+
+### Vantagens dessa abordagem:
+- **Histórico nativo do Git**: Preserva os commits e branches originais no USS, permitindo que ferramentas e scripts no mainframe utilizem metadados reais do Git.
+- **Manutenção da orquestração centralizada**: O runner continua sendo o ponto central de controle, execução e logs do pipeline.
+
+### Requisitos:
+- Conectividade de rede entre o z/OS e o GitHub (direta ou via proxy corporativo).
+- Autenticação configurada no z/OS (chaves SSH ou Token) para acesso ao repositório.
+- Git for z/OS instalado e disponível no PATH do USS.
+
+---
+
 # Resumo
 
 Os dois workflows atendem objetivos diferentes:
