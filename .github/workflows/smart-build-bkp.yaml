@@ -1,9 +1,9 @@
-name: IDzEE Smart Build
+name: IDzEE Smart Build Backup
 
 on:
-  push:
-    branches:
-      - main
+# push:
+#   branches:
+#     - main
 
   workflow_dispatch:
     inputs:
@@ -325,17 +325,11 @@ jobs:
       - name: Preparar workspace no z/OS
         if: env.BUILD_TYPE != 'none'
         run: |
-          if [ "${{ env.BUILD_TYPE }}" = "full" ]; then
-            echo "Full build detectado: limpando workspace completo..."
-            PREP_CMD="mkdir -p ${DBB_ROOT}/logs && rm -rf ${DBB_ROOT}/${APP_NAME} && mkdir -p ${DBB_ROOT}/${APP_NAME}"
-          else
-            echo "User build detectado: preservando workspace existente..."
-            PREP_CMD="mkdir -p ${DBB_ROOT}/logs && mkdir -p ${DBB_ROOT}/${APP_NAME}"
-          fi
-
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "/u" \
-            "$PREP_CMD" \
+            "mkdir -p ${DBB_ROOT}/logs && \
+             rm -rf ${DBB_ROOT}/${APP_NAME} && \
+             mkdir -p ${DBB_ROOT}/${APP_NAME}" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
