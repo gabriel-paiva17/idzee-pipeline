@@ -354,6 +354,76 @@ GitHub Actions (Runner)
 
 ---
 
+# Vantagens da Pipeline
+
+A arquitetura **GitHub + GitHub Actions + RSE API + IBM DBB** moderniza o processo de desenvolvimento e build no z/OS, utilizando Git como SCM e separando claramente versionamento, orquestração e compilação.
+
+## Principais vantagens
+
+* **Git como fonte de verdade:** código, histórico, branches e versões são gerenciados no GitHub, aproximando o desenvolvimento mainframe das práticas utilizadas em ambientes distribuídos.
+
+* **Pipeline as Code:** toda a lógica de CI/CD fica definida em YAML e versionada junto ao projeto, facilitando manutenção, auditoria e evolução da esteira.
+
+* **Build inteligente e incremental:** o Smart Build identifica as alterações do commit e decide automaticamente entre User Build, Full Build ou nenhuma compilação.
+
+* **Transferência incremental:** em User Builds, somente os arquivos modificados são enviados do runner para o USS, reduzindo transferência e processamento desnecessários.
+
+* **Rastreabilidade:** cada execução pode ser associada diretamente ao commit, branch, arquivos alterados, tipo de build e resultado da compilação.
+
+* **Análise de dependências:** o DBB permite evoluir a pipeline para utilizar Impact Analysis, recompilando apenas os componentes afetados por alterações em dependências como copybooks.
+
+* **Integração DevOps:** Pull Requests, Code Review, branches, automações e futuras etapas de testes, quality gates e deploy podem fazer parte do mesmo fluxo.
+
+* **Separação de responsabilidades:** Git/GitHub gerencia o código, GitHub Actions orquestra a esteira e o DBB executa o processo de build no z/OS.
+
+---
+
+# Vantagens em relação a um SCM clássico
+
+Em um SCM mainframe tradicional, como o Endevor, diversas responsabilidades do ciclo de desenvolvimento ficam concentradas em uma solução específica do ambiente mainframe.
+
+Nesta arquitetura, essas responsabilidades são desacopladas:
+
+| Responsabilidade               | Arquitetura proposta        |
+| ------------------------------ | --------------------------- |
+| Versionamento                  | Git / GitHub                |
+| Branching e merge              | Git                         |
+| Code Review                    | Pull Requests               |
+| CI/CD                          | GitHub Actions              |
+| Build                          | IBM DBB                     |
+| Dependências / Impact Analysis | IBM DBB                     |
+| Compilação                     | Ferramentas nativas do z/OS |
+| Segurança                      | RACF                        |
+
+As principais vantagens desse modelo são a **padronização com o ecossistema DevOps corporativo**, maior flexibilidade de branching e colaboração, Pipeline as Code, integração simplificada com outras ferramentas e menor acoplamento entre o SCM e o processo de build.
+
+A arquitetura também permite que aplicações mainframe utilizem um fluxo semelhante ao de aplicações distribuídas:
+
+```text
+Desenvolvedor
+     |
+     v
+Git / GitHub
+     |
+     v
+Pull Request / Code Review
+     |
+     v
+GitHub Actions
+     |
+     v
+RSE API
+     |
+     v
+IBM DBB
+     |
+     v
+z/OS
+
+```
+
+---
+
 # Resumo
 
 Os dois workflows atendem objetivos diferentes:
