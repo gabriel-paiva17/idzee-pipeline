@@ -14,9 +14,8 @@ on:
         type: choice
         options:
           - auto
+          - impact
           - full
-          - user
-
 
 jobs:
 
@@ -35,10 +34,6 @@ jobs:
       ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
 
       APP_NAME: idzee-pipeline
-
-      # Acima deste número de fontes alterados,
-      # o pipeline utiliza Full Build.
-      USER_BUILD_LIMIT: 10
 
 
     steps:
@@ -65,15 +60,8 @@ jobs:
           echo "AMBIENTE DO RUNNER"
           echo "=========================================="
 
-          echo "Hostname:"
           hostname
-
-          echo
-          echo "Node:"
           node --version
-
-          echo
-          echo "Zowe:"
           zowe --version
 
 
@@ -106,37 +94,32 @@ jobs:
           echo "ANÁLISE DAS ALTERAÇÕES"
           echo "=========================================="
 
+
           # --------------------------------------------------------
-          # Tipo de build solicitado
+          # Build solicitado
           # --------------------------------------------------------
 
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-
             REQUESTED_BUILD="${{ github.event.inputs.build_type }}"
-
           else
-
             REQUESTED_BUILD="auto"
-
           fi
 
           echo "Modo solicitado: $REQUESTED_BUILD"
 
 
           # --------------------------------------------------------
-          # Identificar arquivos
+          # Identificar arquivos alterados
           # --------------------------------------------------------
 
           if git rev-parse HEAD^ >/dev/null 2>&1; then
 
-            # Arquivos adicionados, copiados, modificados ou renomeados
             git diff \
               --name-only \
               --diff-filter=ACMR \
               HEAD^ HEAD \
               > changed-files.txt
 
-            # Arquivos removidos
             git diff \
               --name-only \
               --diff-filter=D \
@@ -145,7 +128,6 @@ jobs:
 
           else
 
-            # Primeiro commit / histórico indisponível
             git ls-files > changed-files.txt
             : > deleted-files.txt
 
@@ -155,61 +137,52 @@ jobs:
           echo
           echo "Arquivos adicionados/modificados:"
           echo "------------------------------------------"
-
           cat changed-files.txt || true
-
           echo "------------------------------------------"
 
           echo
           echo "Arquivos removidos:"
           echo "------------------------------------------"
-
           cat deleted-files.txt || true
-
           echo "------------------------------------------"
 
 
           # --------------------------------------------------------
-          # Separar fontes compiláveis
+          # Arquivos relevantes para build
+          #
+          # Esses arquivos justificam Impact Build.
           # --------------------------------------------------------
 
-          grep -Ei '\.(cbl|cbcw|bms)$' \
+          grep -Ei '\.(cbl|cbcw|cpy|bms|lnk)$' \
             changed-files.txt \
-            > changed-buildable-files.txt || true
+            > changed-build-files.txt || true
 
-
-          # --------------------------------------------------------
-          # Separar copybooks
-          # --------------------------------------------------------
-
-          grep -Ei '\.cpy$' \
-            changed-files.txt \
-            > changed-copybooks.txt || true
+          grep -Ei '\.(cbl|cbcw|cpy|bms|lnk)$' \
+            deleted-files.txt \
+            > deleted-build-files.txt || true
 
 
           # --------------------------------------------------------
           # Contadores
           # --------------------------------------------------------
 
-          SOURCE_COUNT=$(wc -l < changed-buildable-files.txt)
-          COPYBOOK_COUNT=$(wc -l < changed-copybooks.txt)
-          CHANGED_COUNT=$(wc -l < changed-files.txt)
-          DELETED_COUNT=$(wc -l < deleted-files.txt)
+          CHANGED_COUNT=$(wc -l < changed-files.txt | tr -d ' ')
+          DELETED_COUNT=$(wc -l < deleted-files.txt | tr -d ' ')
 
-          SOURCE_COUNT=$(echo "$SOURCE_COUNT" | tr -d ' ')
-          COPYBOOK_COUNT=$(echo "$COPYBOOK_COUNT" | tr -d ' ')
-          CHANGED_COUNT=$(echo "$CHANGED_COUNT" | tr -d ' ')
-          DELETED_COUNT=$(echo "$DELETED_COUNT" | tr -d ' ')
+          CHANGED_BUILD_COUNT=$(wc -l < changed-build-files.txt | tr -d ' ')
+          DELETED_BUILD_COUNT=$(wc -l < deleted-build-files.txt | tr -d ' ')
+
+          RELEVANT_COUNT=$((CHANGED_BUILD_COUNT + DELETED_BUILD_COUNT))
+
 
           echo
-          echo "Arquivos alterados : $CHANGED_COUNT"
-          echo "Arquivos removidos : $DELETED_COUNT"
-          echo "Fontes compiláveis : $SOURCE_COUNT"
-          echo "Copybooks alterados: $COPYBOOK_COUNT"
+          echo "Arquivos alterados        : $CHANGED_COUNT"
+          echo "Arquivos removidos        : $DELETED_COUNT"
+          echo "Alterações relevantes DBB : $RELEVANT_COUNT"
 
 
           # --------------------------------------------------------
-          # Detectar alteração de configuração DBB
+          # Verificar alteração de configuração DBB
           # --------------------------------------------------------
 
           CONFIG_CHANGED=false
@@ -222,11 +195,22 @@ jobs:
 
           fi
 
-          echo "Configuração DBB alterada: $CONFIG_CHANGED"
+
+          # Também considera remoção de configuração
+          if grep -Eq \
+            '(^|/)(dbb-app\.yaml|dbb-build\.yaml)$' \
+            deleted-files.txt; then
+
+            CONFIG_CHANGED=true
+
+          fi
+
+
+          echo "Configuração DBB alterada : $CONFIG_CHANGED"
 
 
           # ========================================================
-          # DECISÃO DO BUILD
+          # DECISÃO
           # ========================================================
 
           BUILD_TYPE="$REQUESTED_BUILD"
@@ -235,9 +219,7 @@ jobs:
 
           if [[ "$BUILD_TYPE" == "auto" ]]; then
 
-
             # ------------------------------------------------------
-            # REGRA 1
             # Configuração DBB alterada
             # ------------------------------------------------------
 
@@ -248,82 +230,25 @@ jobs:
 
 
             # ------------------------------------------------------
-            # REGRA 2
-            # Copybook alterado
-            #
-            # Full utilizado como fallback seguro até implementação
-            # de Impact Analysis.
+            # Fonte ou dependência alterado/removido
             # ------------------------------------------------------
 
-            elif [[ "$COPYBOOK_COUNT" -gt 0 ]]; then
+            elif [[ "$RELEVANT_COUNT" -gt 0 ]]; then
 
-              BUILD_TYPE="full"
-              BUILD_REASON="Copybook alterado - Full Build utilizado como fallback para Impact Analysis"
+              BUILD_TYPE="impact"
+              BUILD_REASON="${RELEVANT_COUNT} alteração(ões) relevante(s) para o build"
 
 
             # ------------------------------------------------------
-            # REGRA 3
-            # Arquivo removido
-            #
-            # Full garante reconstrução consistente após remoção.
-            # ------------------------------------------------------
-
-            elif [[ "$DELETED_COUNT" -gt 0 ]]; then
-
-              BUILD_TYPE="full"
-              BUILD_REASON="Arquivo removido do repositório"
-
-
-            # ------------------------------------------------------
-            # REGRA 4
-            # Muitos fontes alterados
-            # ------------------------------------------------------
-
-            elif [[ "$SOURCE_COUNT" -gt "$USER_BUILD_LIMIT" ]]; then
-
-              BUILD_TYPE="full"
-              BUILD_REASON="Mais de ${USER_BUILD_LIMIT} fontes alterados"
-
-
-            # ------------------------------------------------------
-            # REGRA 5
-            # Entre 1 e USER_BUILD_LIMIT fontes
-            # ------------------------------------------------------
-
-            elif [[ "$SOURCE_COUNT" -gt 0 ]]; then
-
-              BUILD_TYPE="user"
-              BUILD_REASON="${SOURCE_COUNT} fonte(s) alterado(s)"
-
-
-            # ------------------------------------------------------
-            # REGRA 6
-            # Nenhuma alteração compilável
+            # Nenhuma alteração relevante
             # ------------------------------------------------------
 
             else
 
               BUILD_TYPE="none"
-              BUILD_REASON="Nenhum fonte relevante alterado"
+              BUILD_REASON="Nenhuma alteração relevante para build"
 
             fi
-
-          fi
-
-
-          # --------------------------------------------------------
-          # Proteção para USER manual sem fontes
-          # --------------------------------------------------------
-
-          if [[ "$BUILD_TYPE" == "user" ]] && \
-             [[ "$SOURCE_COUNT" -eq 0 ]]; then
-
-            echo
-            echo "WARNING:"
-            echo "USER BUILD solicitado, mas nenhum fonte foi encontrado."
-
-            BUILD_TYPE="none"
-            BUILD_REASON="User Build solicitado sem fonte compilável"
 
           fi
 
@@ -340,14 +265,64 @@ jobs:
           echo "BUILD_TYPE=$BUILD_TYPE" >> "$GITHUB_ENV"
           echo "BUILD_REASON=$BUILD_REASON" >> "$GITHUB_ENV"
 
-          echo "SOURCE_COUNT=$SOURCE_COUNT" >> "$GITHUB_ENV"
-          echo "COPYBOOK_COUNT=$COPYBOOK_COUNT" >> "$GITHUB_ENV"
           echo "CHANGED_COUNT=$CHANGED_COUNT" >> "$GITHUB_ENV"
           echo "DELETED_COUNT=$DELETED_COUNT" >> "$GITHUB_ENV"
+          echo "CHANGED_BUILD_COUNT=$CHANGED_BUILD_COUNT" >> "$GITHUB_ENV"
+          echo "DELETED_BUILD_COUNT=$DELETED_BUILD_COUNT" >> "$GITHUB_ENV"
+          echo "RELEVANT_COUNT=$RELEVANT_COUNT" >> "$GITHUB_ENV"
 
 
       # ============================================================
-      # 5. MOSTRAR PLANO
+      # 5. VERIFICAR BASELINE NO USS
+      #
+      # Impact Build depende de histórico Git.
+      # Se ainda não existir Git no workspace, fazemos Full.
+      # ============================================================
+
+      - name: Verificar baseline no USS
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+
+          echo "=========================================="
+          echo "VERIFICANDO BASELINE"
+          echo "=========================================="
+
+          RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "/u" \
+            "if [ -d '${DBB_ROOT}/${APP_NAME}/.git' ]; then \
+               echo BASELINE_EXISTS; \
+             else \
+               echo BASELINE_MISSING; \
+             fi" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD")
+
+          echo "$RESULT"
+
+
+          if echo "$RESULT" | grep -q "BASELINE_EXISTS"; then
+
+            echo "BASELINE_EXISTS=true" >> "$GITHUB_ENV"
+
+          else
+
+            echo "BASELINE_EXISTS=false" >> "$GITHUB_ENV"
+
+            echo
+            echo "Baseline Git inexistente."
+            echo "Forçando Full Build inicial."
+
+            echo "BUILD_TYPE=full" >> "$GITHUB_ENV"
+            echo "BUILD_REASON=Baseline Git inexistente - Full Build inicial" >> "$GITHUB_ENV"
+
+          fi
+
+
+      # ============================================================
+      # 6. PLANO DE EXECUÇÃO
       # ============================================================
 
       - name: Plano de execução
@@ -364,20 +339,22 @@ jobs:
           echo "USS       : $DBB_ROOT/$APP_NAME"
 
           echo
-          echo "Alterados : $CHANGED_COUNT"
-          echo "Removidos : $DELETED_COUNT"
-          echo "Fontes    : $SOURCE_COUNT"
-          echo "Copybooks : $COPYBOOK_COUNT"
+          echo "Alterados        : $CHANGED_COUNT"
+          echo "Removidos        : $DELETED_COUNT"
+          echo "Relevantes DBB   : $RELEVANT_COUNT"
 
           echo
-          echo "Build     : $BUILD_TYPE"
-          echo "Motivo    : $BUILD_REASON"
+          echo "Build  : $BUILD_TYPE"
+          echo "Motivo : $BUILD_REASON"
 
           echo "=========================================="
 
 
       # ============================================================
-      # 6. CONFIGURAR UPLOAD
+      # 7. CONFIGURAR UPLOAD
+      #
+      # O .git do runner NÃO é enviado.
+      # O Git do USS é próprio e persistente.
       # ============================================================
 
       - name: Configurar upload
@@ -393,7 +370,10 @@ jobs:
 
 
       # ============================================================
-      # 7. PREPARAR WORKSPACE NO Z/OS
+      # 8. PREPARAR WORKSPACE USS
+      #
+      # Não removemos mais o diretório da aplicação.
+      # Precisamos preservar .git.
       # ============================================================
 
       - name: Preparar workspace no z/OS
@@ -402,35 +382,13 @@ jobs:
         run: |
 
           echo "=========================================="
-          echo "PREPARANDO WORKSPACE"
+          echo "PREPARANDO WORKSPACE USS"
           echo "=========================================="
-
-
-          if [[ "$BUILD_TYPE" == "full" ]]; then
-
-            echo "Full Build:"
-            echo "Workspace será recriado."
-
-            PREP_CMD="\
-              mkdir -p '${DBB_ROOT}/logs' && \
-              rm -rf '${DBB_ROOT}/${APP_NAME}' && \
-              mkdir -p '${DBB_ROOT}/${APP_NAME}'"
-
-          else
-
-            echo "User Build:"
-            echo "Workspace existente será preservado."
-
-            PREP_CMD="\
-              mkdir -p '${DBB_ROOT}/logs' && \
-              mkdir -p '${DBB_ROOT}/${APP_NAME}'"
-
-          fi
-
 
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "/u" \
-            "$PREP_CMD" \
+            "mkdir -p '${DBB_ROOT}/logs' && \
+             mkdir -p '${DBB_ROOT}/${APP_NAME}'" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -438,7 +396,9 @@ jobs:
 
 
       # ============================================================
-      # 8A. FULL - UPLOAD COMPLETO
+      # 9A. FULL UPLOAD
+      #
+      # Para Full Build sincronizamos o repositório completo.
       # ============================================================
 
       - name: Upload completo para o z/OS
@@ -449,10 +409,6 @@ jobs:
           echo "=========================================="
           echo "FULL UPLOAD"
           echo "=========================================="
-
-          echo "Enviando repositório completo para:"
-          echo "$DBB_ROOT/$APP_NAME"
-
 
           zowe rse-api-for-zowe-cli upload dir-to-uss \
             "." \
@@ -467,47 +423,30 @@ jobs:
 
 
       # ============================================================
-      # 8B. USER - UPLOAD INCREMENTAL
+      # 9B. IMPACT UPLOAD
+      #
+      # No Impact Build enviamos somente arquivos alterados.
       # ============================================================
 
       - name: Upload incremental para o z/OS
-        if: env.BUILD_TYPE == 'user'
+        if: env.BUILD_TYPE == 'impact'
         shell: bash
         run: |
 
           echo "=========================================="
-          echo "INCREMENTAL UPLOAD"
+          echo "IMPACT - UPLOAD INCREMENTAL"
           echo "=========================================="
-
-          echo "Arquivos que serão sincronizados:"
-          cat changed-files.txt
-
-          echo
-
 
           while IFS= read -r FILE
           do
 
             [[ -z "$FILE" ]] && continue
 
-
             LOCAL_FILE="$FILE"
             REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
             REMOTE_DIR=$(dirname "$REMOTE_FILE")
 
-
-            echo "------------------------------------------"
-            echo "Arquivo:"
-            echo "$LOCAL_FILE"
-            echo
-            echo "Destino:"
-            echo "$REMOTE_FILE"
-            echo "------------------------------------------"
-
-
-            # ------------------------------------------------------
-            # Criar estrutura de diretórios no USS
-            # ------------------------------------------------------
+            echo "Sincronizando: $FILE"
 
             zowe rse-api-for-zowe-cli issue unix-shell \
               --cwd "${DBB_ROOT}/${APP_NAME}" \
@@ -517,11 +456,6 @@ jobs:
               --user "$ZOS_USER" \
               --password "$ZOS_PASSWORD"
 
-
-            # ------------------------------------------------------
-            # Upload do arquivo
-            # ------------------------------------------------------
-
             zowe rse-api-for-zowe-cli upload file-to-uss \
               "$LOCAL_FILE" \
               "$REMOTE_FILE" \
@@ -530,39 +464,33 @@ jobs:
               --user "$ZOS_USER" \
               --password "$ZOS_PASSWORD"
 
-
           done < changed-files.txt
 
 
       # ============================================================
-      # 9. REMOVER ARQUIVOS DELETADOS DO USS
+      # 10. SINCRONIZAR DELEÇÕES
       #
-      # Normalmente será utilizado apenas se futuramente permitirmos
-      # remoções sem Full Build. Mantido para garantir sincronização.
+      # O arquivo precisa desaparecer do USS antes do commit.
+      # Assim o Git local registra a deleção.
       # ============================================================
 
       - name: Remover arquivos deletados do USS
-        if: env.BUILD_TYPE == 'user' && env.DELETED_COUNT != '0'
+        if: env.BUILD_TYPE != 'none' && env.DELETED_COUNT != '0'
         shell: bash
         run: |
 
           echo "=========================================="
-          echo "REMOVENDO ARQUIVOS DO USS"
+          echo "SINCRONIZANDO DELEÇÕES"
           echo "=========================================="
-
 
           while IFS= read -r FILE
           do
 
             [[ -z "$FILE" ]] && continue
 
-
             REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
 
-
-            echo "Removendo:"
-            echo "$REMOTE_FILE"
-
+            echo "Removendo: $FILE"
 
             zowe rse-api-for-zowe-cli issue unix-shell \
               --cwd "${DBB_ROOT}/${APP_NAME}" \
@@ -572,23 +500,76 @@ jobs:
               --user "$ZOS_USER" \
               --password "$ZOS_PASSWORD"
 
-
           done < deleted-files.txt
 
 
       # ============================================================
-      # 10. VERIFICAR WORKSPACE
+      # 11. ATUALIZAR GIT LOCAL DO USS
+      #
+      # Primeira execução:
+      #
+      #   git init
+      #   git add -A
+      #   git commit
+      #
+      # Próximas execuções:
+      #
+      #   git add -A
+      #   git commit
+      #
+      # O .git nunca é removido.
       # ============================================================
 
-      - name: Verificar arquivos no USS
+      - name: Atualizar Git local no USS
         if: env.BUILD_TYPE != 'none'
         shell: bash
         run: |
 
+          echo "=========================================="
+          echo "ATUALIZANDO GIT LOCAL DO USS"
+          echo "=========================================="
+
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             if [ ! -d .git ]; then \
+               echo 'Inicializando Git local'; \
+               git init; \
+             fi && \
+             git add -A && \
+             git -c user.name='IDzEE Pipeline' \
+                 -c user.email='idzee-pipeline@local' \
+                 commit -m 'GitHub ${GITHUB_SHA}' || true && \
+             echo && \
+             echo 'Últimos commits:' && \
+             git log --oneline -5" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ============================================================
+      # 12. VERIFICAR WORKSPACE
+      # ============================================================
+
+      - name: Verificar workspace no USS
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+
+          echo "=========================================="
+          echo "WORKSPACE USS"
+          echo "=========================================="
+
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             "pwd && \
-             ls -la && \
+             echo && \
+             git status && \
+             echo && \
+             git log --oneline -3 && \
+             echo && \
              test -f dbb-app.yaml && \
              echo 'dbb-app.yaml encontrado'" \
             --host "$ZOS_HOST" \
@@ -598,39 +579,15 @@ jobs:
 
 
       # ============================================================
-      # 11. INICIALIZAR GIT NO USS
+      # 13. FULL BUILD
       #
-      # DBB utiliza o workspace como um repositório Git local.
-      # Não existe conexão USS -> GitHub.
-      # ============================================================
-
-      - name: Inicializar Git no USS
-        if: env.BUILD_TYPE != 'none'
-        shell: bash
-        run: |
-
-          echo "=========================================="
-          echo "INICIALIZANDO GIT LOCAL NO USS"
-          echo "=========================================="
-
-
-          zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            ". ~/.profile && \
-             rm -rf .git && \
-             git init && \
-             git add . && \
-             git -c user.name='IDzEE Pipeline' \
-                 -c user.email='idzee-pipeline@local' \
-                 commit -m 'Pipeline workspace'" \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD"
-
-
-      # ============================================================
-      # 12. FULL BUILD
+      # Utilizado para:
+      #
+      # - Primeiro build
+      # - Configuração DBB alterada
+      # - Execução manual Full
+      #
+      # Também popula o Metadata Store e estabelece o baseline.
       # ============================================================
 
       - name: Executar DBB Full Build
@@ -639,11 +596,10 @@ jobs:
         run: |
 
           echo "=========================================="
-          echo "FULL BUILD"
+          echo "DBB FULL BUILD"
           echo "=========================================="
           echo "Motivo: $BUILD_REASON"
           echo "=========================================="
-
 
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
@@ -657,54 +613,46 @@ jobs:
 
 
       # ============================================================
-      # 13. USER BUILD
+      # 14. IMPACT BUILD
+      #
+      # Fluxo padrão da Smart Pipeline.
+      #
+      # O DBB:
+      #
+      # 1. compara Git baseline x Git atual
+      # 2. identifica changed/deleted/renamed
+      # 3. consulta Metadata Store
+      # 4. identifica programas impactados
+      # 5. monta SOURCE_LIST
+      # 6. compila somente o necessário
+      #
+      # Não precisamos informar --baselineRef.
       # ============================================================
 
-      - name: Executar DBB User Build
-        if: env.BUILD_TYPE == 'user'
+      - name: Executar DBB Impact Build
+        if: env.BUILD_TYPE == 'impact'
         shell: bash
         run: |
 
           echo "=========================================="
-          echo "USER BUILD"
+          echo "DBB IMPACT BUILD"
           echo "=========================================="
-          echo "$SOURCE_COUNT arquivo(s)"
+          echo "Motivo: $BUILD_REASON"
           echo "=========================================="
 
-
-          while IFS= read -r FILE
-          do
-
-            [[ -z "$FILE" ]] && continue
-
-
-            REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
-
-
-            echo
-            echo "=========================================="
-            echo "Compilando:"
-            echo "$FILE"
-            echo "=========================================="
-
-
-            zowe rse-api-for-zowe-cli issue unix-shell \
-              --cwd "${DBB_ROOT}/${APP_NAME}" \
-              ". ~/.profile && \
-               \$DBB_HOME/bin/dbb build user \
-               --hlq ${DBB_HLQ} \
-               '${REMOTE_FILE}'" \
-              --host "$ZOS_HOST" \
-              --port "$ZOS_PORT" \
-              --user "$ZOS_USER" \
-              --password "$ZOS_PASSWORD"
-
-
-          done < changed-buildable-files.txt
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             \$DBB_HOME/bin/dbb build impact \
+             --hlq ${DBB_HLQ}" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
 
 
       # ============================================================
-      # 14. NENHUM BUILD
+      # 15. NENHUM BUILD
       # ============================================================
 
       - name: Nenhum build necessário
@@ -716,10 +664,11 @@ jobs:
           echo "BUILD IGNORADO"
           echo "=========================================="
           echo "$BUILD_REASON"
+          echo "=========================================="
 
 
       # ============================================================
-      # 15. RESUMO
+      # 16. RESUMO
       # ============================================================
 
       - name: Resumo da execução
@@ -737,13 +686,12 @@ jobs:
           echo "Usuário   : $ZOS_USER"
 
           echo
-          echo "Alterados : ${CHANGED_COUNT:-N/A}"
-          echo "Removidos : ${DELETED_COUNT:-N/A}"
-          echo "Fontes    : ${SOURCE_COUNT:-N/A}"
-          echo "Copybooks : ${COPYBOOK_COUNT:-N/A}"
+          echo "Alterados      : ${CHANGED_COUNT:-N/A}"
+          echo "Removidos      : ${DELETED_COUNT:-N/A}"
+          echo "Relevantes DBB : ${RELEVANT_COUNT:-N/A}"
 
           echo
-          echo "Build     : ${BUILD_TYPE:-N/A}"
-          echo "Motivo    : ${BUILD_REASON:-N/A}"
+          echo "Build  : ${BUILD_TYPE:-N/A}"
+          echo "Motivo : ${BUILD_REASON:-N/A}"
 
           echo "=========================================="
