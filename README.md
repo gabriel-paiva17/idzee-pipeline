@@ -347,10 +347,6 @@ GitHub Actions (Runner)
        +---> Executa 'dbb build'
 ```
 
-### Vantagens dessa abordagem:
-- **Histórico nativo do Git**: Preserva os commits e branches originais no USS, permitindo que ferramentas e scripts no mainframe utilizem metadados reais do Git.
-- **Manutenção da orquestração centralizada**: O runner continua sendo o ponto central de controle, execução e logs do pipeline.
-
 ### Requisitos:
 - Conectividade de rede entre o z/OS e o GitHub (direta ou via proxy corporativo).
 - Autenticação configurada no z/OS (chaves SSH ou Token) para acesso ao repositório.
