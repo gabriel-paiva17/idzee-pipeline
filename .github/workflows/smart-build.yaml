@@ -322,10 +322,10 @@ jobs:
         shell: bash
         run: |
           cat > .zosattributes <<'EOF'
-.git/        -
-.github/     -
-.DS_Store    -
-EOF
+             - .git/
+             - .github/
+             - .DS_Store
+             EOF
 
           echo "Arquivo .zosattributes criado."
 
