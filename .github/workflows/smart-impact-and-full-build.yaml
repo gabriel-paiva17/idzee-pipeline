@@ -36,7 +36,7 @@ jobs:
 
       APP_NAME: idzee-pipeline
 
-      # Acima deste número de arquivos alterados,
+      # Acima deste número de arquivos relevantes alterados,
       # o pipeline utiliza Full Build.
       IMPACT_BUILD_LIMIT: 10
 
@@ -172,7 +172,10 @@ jobs:
           # --------------------------------------------------------
           # Arquivos relevantes para o build
           #
-          # Inclui fontes, copybooks e BMS.
+          # COBOL
+          # Compuware COBOL
+          # Copybook
+          # BMS
           # --------------------------------------------------------
 
           grep -Ei '\.(cbl|cbcw|cpy|bms)$' \
@@ -191,6 +194,7 @@ jobs:
           BUILD_FILE_COUNT=$(echo "$BUILD_FILE_COUNT" | tr -d ' ')
           CHANGED_COUNT=$(echo "$CHANGED_COUNT" | tr -d ' ')
           DELETED_COUNT=$(echo "$DELETED_COUNT" | tr -d ' ')
+
 
           echo
           echo "Arquivos alterados : $CHANGED_COUNT"
@@ -222,6 +226,10 @@ jobs:
           BUILD_TYPE="$REQUESTED_BUILD"
           BUILD_REASON=""
 
+
+          # --------------------------------------------------------
+          # Modo automático
+          # --------------------------------------------------------
 
           if [[ "$BUILD_TYPE" == "auto" ]]; then
 
@@ -256,12 +264,12 @@ jobs:
             elif [[ "$BUILD_FILE_COUNT" -gt "$IMPACT_BUILD_LIMIT" ]]; then
 
               BUILD_TYPE="full"
-              BUILD_REASON="Mais de ${IMPACT_BUILD_LIMIT} arquivos de build alterados"
+              BUILD_REASON="Mais de ${IMPACT_BUILD_LIMIT} arquivos relevantes alterados"
 
 
             # ------------------------------------------------------
             # REGRA 4
-            # Alterações que podem utilizar Impact Analysis
+            # Alterações para Impact Analysis
             # ------------------------------------------------------
 
             elif [[ "$BUILD_FILE_COUNT" -gt 0 ]]; then
@@ -272,7 +280,7 @@ jobs:
 
             # ------------------------------------------------------
             # REGRA 5
-            # Nenhuma alteração relevante
+            # Nada relevante
             # ------------------------------------------------------
 
             else
@@ -281,6 +289,24 @@ jobs:
               BUILD_REASON="Nenhum arquivo relevante para build alterado"
 
             fi
+
+
+          # --------------------------------------------------------
+          # Full solicitado manualmente
+          # --------------------------------------------------------
+
+          elif [[ "$BUILD_TYPE" == "full" ]]; then
+
+            BUILD_REASON="Full Build solicitado manualmente"
+
+
+          # --------------------------------------------------------
+          # Impact solicitado manualmente
+          # --------------------------------------------------------
+
+          elif [[ "$BUILD_TYPE" == "impact" ]]; then
+
+            BUILD_REASON="Impact Build solicitado manualmente"
 
           fi
 
@@ -303,7 +329,7 @@ jobs:
 
 
       # ============================================================
-      # 5. MOSTRAR PLANO
+      # 5. PLANO DE EXECUÇÃO
       # ============================================================
 
       - name: Plano de execução
@@ -320,9 +346,9 @@ jobs:
           echo "USS       : $DBB_ROOT/$APP_NAME"
 
           echo
-          echo "Alterados : $CHANGED_COUNT"
-          echo "Removidos : $DELETED_COUNT"
-          echo "Build files: $BUILD_FILE_COUNT"
+          echo "Alterados   : $CHANGED_COUNT"
+          echo "Removidos   : $DELETED_COUNT"
+          echo "Build files : $BUILD_FILE_COUNT"
 
           echo
           echo "Build     : $BUILD_TYPE"
@@ -350,8 +376,9 @@ jobs:
       # ============================================================
       # 7. PREPARAR WORKSPACE NO Z/OS
       #
-      # O workspace agora é persistente.
-      # Não removemos o workspace durante Impact Build.
+      # IMPORTANTE:
+      # O workspace não é removido.
+      # Impact Build depende da baseline Git existente.
       # ============================================================
 
       - name: Preparar workspace no z/OS
@@ -414,7 +441,7 @@ jobs:
         run: |
 
           echo "=========================================="
-          echo "IMPACT - INCREMENTAL UPLOAD"
+          echo "IMPACT - UPLOAD INCREMENTAL"
           echo "=========================================="
 
           echo "Arquivos que serão sincronizados:"
@@ -431,15 +458,21 @@ jobs:
             REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
             REMOTE_DIR=$(dirname "$REMOTE_FILE")
 
+
             echo "------------------------------------------"
             echo "Arquivo:"
             echo "$LOCAL_FILE"
+
             echo
             echo "Destino:"
             echo "$REMOTE_FILE"
             echo "------------------------------------------"
 
+
+            # ------------------------------------------------------
             # Criar diretório remoto
+            # ------------------------------------------------------
+
             zowe rse-api-for-zowe-cli issue unix-shell \
               --cwd "${DBB_ROOT}/${APP_NAME}" \
               "mkdir -p '${REMOTE_DIR}'" \
@@ -448,7 +481,11 @@ jobs:
               --user "$ZOS_USER" \
               --password "$ZOS_PASSWORD"
 
+
+            # ------------------------------------------------------
             # Upload do arquivo
+            # ------------------------------------------------------
+
             zowe rse-api-for-zowe-cli upload file-to-uss \
               "$LOCAL_FILE" \
               "$REMOTE_FILE" \
@@ -456,6 +493,7 @@ jobs:
               --port "$ZOS_PORT" \
               --user "$ZOS_USER" \
               --password "$ZOS_PASSWORD"
+
 
           done < changed-files.txt
 
@@ -468,6 +506,10 @@ jobs:
         if: env.BUILD_TYPE != 'none'
         shell: bash
         run: |
+
+          echo "=========================================="
+          echo "VERIFICANDO WORKSPACE"
+          echo "=========================================="
 
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
@@ -482,7 +524,75 @@ jobs:
 
 
       # ============================================================
-      # 10. FULL BUILD
+      # 10. PREPARAR GIT PARA FULL BUILD
+      #
+      # Full Build cria uma nova baseline.
+      #
+      # O DBB exige um repositório Git válido com HEAD.
+      # ============================================================
+
+      - name: Preparar Git para Full Build
+        if: env.BUILD_TYPE == 'full'
+        shell: bash
+        run: |
+
+          echo "=========================================="
+          echo "CRIANDO BASELINE GIT"
+          echo "=========================================="
+
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             rm -rf .git && \
+             git init && \
+             git add . && \
+             git -c user.name='IDzEE Pipeline' \
+                 -c user.email='idzee-pipeline@local' \
+                 commit -m 'Full Build baseline ${GITHUB_SHA}'" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ============================================================
+      # 11. VERIFICAR BASELINE PARA IMPACT
+      #
+      # Impact só pode ocorrer se existir:
+      #
+      #   .git
+      #   HEAD
+      #
+      # ============================================================
+
+      - name: Verificar baseline Git para Impact
+        if: env.BUILD_TYPE == 'impact'
+        shell: bash
+        run: |
+
+          echo "=========================================="
+          echo "VERIFICANDO BASELINE GIT"
+          echo "=========================================="
+
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             test -d .git && \
+             git rev-parse --verify HEAD && \
+             echo 'Baseline Git encontrada.' && \
+             echo 'HEAD atual:' && \
+             git log -1 --oneline && \
+             echo && \
+             echo 'Alterações no working tree:' && \
+             git status --short" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ============================================================
+      # 12. FULL BUILD
       # ============================================================
 
       - name: Executar DBB Full Build
@@ -508,7 +618,14 @@ jobs:
 
 
       # ============================================================
-      # 11. IMPACT BUILD
+      # 13. IMPACT BUILD
+      #
+      # Nesse momento:
+      #
+      # HEAD         = baseline anterior
+      # Working tree = arquivos novos enviados pela pipeline
+      #
+      # O DBB pode executar a análise de impacto.
       # ============================================================
 
       - name: Executar DBB Impact Build
@@ -534,7 +651,63 @@ jobs:
 
 
       # ============================================================
-      # 12. NENHUM BUILD
+      # 14. ATUALIZAR BASELINE APÓS IMPACT
+      #
+      # Esse step só executa se o Impact Build anterior terminar
+      # com sucesso.
+      #
+      # A versão atual passa a ser a nova baseline.
+      # ============================================================
+
+      - name: Atualizar baseline Git após Impact
+        if: env.BUILD_TYPE == 'impact'
+        shell: bash
+        run: |
+
+          echo "=========================================="
+          echo "ATUALIZANDO BASELINE GIT"
+          echo "=========================================="
+
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             git add -A && \
+             git -c user.name='IDzEE Pipeline' \
+                 -c user.email='idzee-pipeline@local' \
+                 commit -m 'Impact Build baseline ${GITHUB_SHA}' || true" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ============================================================
+      # 15. MOSTRAR BASELINE ATUAL
+      # ============================================================
+
+      - name: Mostrar baseline atual
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+
+          echo "=========================================="
+          echo "BASELINE GIT ATUAL"
+          echo "=========================================="
+
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             git log -1 --oneline && \
+             echo && \
+             git status --short" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ============================================================
+      # 16. NENHUM BUILD
       # ============================================================
 
       - name: Nenhum build necessário
@@ -549,7 +722,7 @@ jobs:
 
 
       # ============================================================
-      # 13. RESUMO
+      # 17. RESUMO
       # ============================================================
 
       - name: Resumo da execução
@@ -567,9 +740,9 @@ jobs:
           echo "Usuário   : $ZOS_USER"
 
           echo
-          echo "Alterados : ${CHANGED_COUNT:-N/A}"
-          echo "Removidos : ${DELETED_COUNT:-N/A}"
-          echo "Build files: ${BUILD_FILE_COUNT:-N/A}"
+          echo "Alterados   : ${CHANGED_COUNT:-N/A}"
+          echo "Removidos   : ${DELETED_COUNT:-N/A}"
+          echo "Build files : ${BUILD_FILE_COUNT:-N/A}"
 
           echo
           echo "Build     : ${BUILD_TYPE:-N/A}"
