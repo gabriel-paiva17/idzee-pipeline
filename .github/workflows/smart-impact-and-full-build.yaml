@@ -1,4 +1,4 @@
-name: IDzEE Smart Build
+name: IDzEE Smart Impact and Full Build
 
 on:
   push:

@@ -27,12 +27,12 @@ Self-hosted Runner
 Compilação / Link-edit
 ```
 
-O repositório possui dois workflows principais:
+O repositório possui os seguintes workflows:
 
 ```text
 .github/workflows/
 ├── full-build.yaml
-└── smart-build.yaml
+└── smart-user-and-full-build.yaml
 ```
 
 ---
@@ -47,12 +47,14 @@ Arquivo:
 
 O workflow **IDzEE Build** executa uma compilação completa da aplicação utilizando o DBB.
 
-Ele pode ser iniciado automaticamente por um `push` na branch `main` ou manualmente pelo menu **Actions > IDzEE Build > Run workflow**.
+Ele pode ser iniciado manualmente pelo menu **Actions > IDzEE Build > Run workflow**.
+
+> O gatilho automático por `push` está desativado neste workflow (`on` comentado).
 
 ## Fluxo
 
 ```text
-Push / execução manual
+Execução manual
         |
         v
 Checkout do repositório
@@ -92,15 +94,15 @@ O Full Build é indicado quando é necessário reconstruir toda a aplicação, p
 
 ---
 
-# 2. Smart Build
+# 2. Smart User and Full Build
 
 Arquivo:
 
 ```text
-.github/workflows/smart-build.yaml
+.github/workflows/smart-user-and-full-build.yaml
 ```
 
-O workflow **IDzEE Smart Build** analisa os arquivos modificados no commit e decide automaticamente qual estratégia de compilação utilizar.
+O workflow **IDzEE Smart User and Full Build** analisa os arquivos modificados no commit e decide automaticamente entre **User Build**, **Full Build** ou nenhuma compilação.
 
 Ele também pode ser executado manualmente, permitindo selecionar:
 
@@ -111,6 +113,8 @@ user
 ```
 
 No modo `auto`, a própria esteira escolhe o tipo de build.
+
+> O gatilho automático por `push` está desativado neste workflow (`on` comentado).
 
 ## Lógica de decisão
 
@@ -135,7 +139,7 @@ Analisar alterações
 
 ## Arquivos considerados compiláveis
 
-O Smart Build considera diretamente como fontes compiláveis:
+O workflow considera diretamente como fontes compiláveis:
 
 ```text
 .cbl
@@ -161,7 +165,6 @@ Copybooks são identificados separadamente:
 | Mais de 10 fontes | Full Build |
 | `copybook/cliente.cpy` | Full Build |
 | `dbb-app.yaml` | Full Build |
-| `dbb-build.yaml` | Full Build |
 
 Quando vários fontes são modificados, o workflow percorre a lista de arquivos e executa um **User Build para cada fonte alterado**.
 
@@ -181,22 +184,16 @@ User Build -> programa2.cbcw
 User Build -> tela.bms
 ```
 
----
+# Comparativo dos workflows
 
-# Full Build x Smart Build
-
-| Característica | Full Build | Smart Build |
-|---|---:|---:|
+| Característica | Full Build | Smart User+Full |
+|---|:---:|:---:|
 | Compila toda a aplicação | Sim | Quando necessário |
 | Detecta arquivos alterados | Não | Sim |
 | Executa User Build | Não | Sim |
-| Suporta vários fontes alterados | Sim, via Full Build | Sim, individualmente |
-| Detecta copybook alterado | Não necessário | Sim |
 | Decide estratégia automaticamente | Não | Sim |
 | Execução manual | Sim | Sim |
-| Execução em push para `main` | Sim | Sim |
-
-O **Full Build** prioriza simplicidade e reconstrução completa. O **Smart Build** busca reduzir compilações desnecessárias e preparar a esteira para uma estratégia baseada em análise de impacto.
+| Execução automática em `push` para `main` | Não | Não |
 
 ---
 
@@ -291,69 +288,6 @@ B027086.DBB
 
 ---
 
-# Evolução prevista — Impact Analysis
-
-Atualmente, uma alteração em `.cpy` provoca um **Full Build**, pois simplesmente compilar o copybook não seria suficiente.
-
-Por exemplo:
-
-```text
-CUSTOMER.cpy
-     |
-     +-- PROGA.cbl
-     +-- PROGB.cbl
-     +-- PROGC.cbcw
-```
-
-Se `CUSTOMER.cpy` for alterado, os programas que dependem dele precisam ser identificados e recompilados.
-
-A evolução do Smart Build é integrar o **DBB Impact Analysis**:
-
-```text
-Copybook alterado
-       |
-       v
-DBB Impact Analysis
-       |
-       v
-Identificação das dependências
-       |
-       v
-Programas impactados
-       |
-       v
-Build somente do necessário
-```
-
-Isso permitirá que a pipeline combine o versionamento em **Git/GitHub** com as capacidades de compilação e análise de dependências do **IBM DBB**, evitando Full Builds desnecessários.
-
----
-
-# Alternativa de Arquitetura: Git Clone / Pull Remoto no USS
-
-Atualmente, o fluxo de sincronização dos fontes com o z/OS utiliza o runner para fazer o upload dos arquivos via Zowe CLI (`dir-to-uss`) e recriar/atualizar o Git localmente no USS.
-
-Uma decisão/alternativa arquitetural válida é **manter o runner orquestrando toda a esteira**, mas, em vez de transferir arquivos via upload HTTP/REST, ele instrui o z/OS a executar o `git clone` ou `git pull` diretamente no USS.
-
-```text
-GitHub Actions (Runner)
-       |
-       | Dispara comando remoto (RSE API / Zowe CLI)
-       v
-   z/OS USS
-       |
-       +---> Executa 'git clone / git pull' direto do GitHub
-       |
-       +---> Executa 'dbb build'
-```
-
-### Requisitos:
-- Conectividade de rede entre o z/OS e o GitHub (direta ou via proxy corporativo).
-- Autenticação configurada no z/OS (chaves SSH ou Token) para acesso ao repositório.
-- Git for z/OS instalado e disponível no PATH do USS.
-
----
-
 # Vantagens da Pipeline
 
 A arquitetura **GitHub + GitHub Actions + RSE API + IBM DBB** moderniza o processo de desenvolvimento e build no z/OS, utilizando Git como SCM e separando claramente versionamento, orquestração e compilação.
@@ -364,13 +298,13 @@ A arquitetura **GitHub + GitHub Actions + RSE API + IBM DBB** moderniza o proces
 
 * **Pipeline as Code:** toda a lógica de CI/CD fica definida em YAML e versionada junto ao projeto, facilitando manutenção, auditoria e evolução da esteira.
 
-* **Build inteligente e incremental:** o Smart Build identifica as alterações do commit e decide automaticamente entre User Build, Full Build ou nenhuma compilação.
+* **Build inteligente e incremental:** os Smart Builds identificam as alterações do commit e decidem automaticamente entre User Build, Impact Build, Full Build ou nenhuma compilação.
 
-* **Transferência incremental:** em User Builds, somente os arquivos modificados são enviados do runner para o USS, reduzindo transferência e processamento desnecessários.
+* **Transferência incremental:** em builds incrementais, somente os arquivos modificados são enviados do runner para o USS, reduzindo transferência e processamento desnecessários.
 
 * **Rastreabilidade:** cada execução pode ser associada diretamente ao commit, branch, arquivos alterados, tipo de build e resultado da compilação.
 
-* **Análise de dependências:** o DBB permite evoluir a pipeline para utilizar Impact Analysis, recompilando apenas os componentes afetados por alterações em dependências como copybooks.
+* **Análise de dependências:** o DBB permite utilizar Impact Analysis, recompilando apenas os componentes afetados por alterações em dependências como copybooks.
 
 * **Integração DevOps:** Pull Requests, Code Review, branches, automações e futuras etapas de testes, quality gates e deploy podem fazer parte do mesmo fluxo.
 
@@ -395,33 +329,6 @@ Nesta arquitetura, essas responsabilidades são desacopladas:
 | Compilação                     | Ferramentas nativas do z/OS |
 | Segurança                      | RACF                        |
 
-As principais vantagens desse modelo são a **padronização com o ecossistema DevOps corporativo**, maior flexibilidade de branching e colaboração, Pipeline as Code, integração simplificada com outras ferramentas e menor acoplamento entre o SCM e o processo de build.
-
-A arquitetura também permite que aplicações mainframe utilizem um fluxo semelhante ao de aplicações distribuídas:
-
-```text
-Desenvolvedor
-     |
-     v
-Git / GitHub
-     |
-     v
-Pull Request / Code Review
-     |
-     v
-GitHub Actions
-     |
-     v
-RSE API
-     |
-     v
-IBM DBB
-     |
-     v
-z/OS
-
-```
-
 ---
 
 # Resumo
@@ -430,6 +337,4 @@ Os dois workflows atendem objetivos diferentes:
 
 **`full-build.yaml`** fornece um fluxo simples e previsível para reconstrução completa da aplicação.
 
-**`smart-build.yaml`** adiciona inteligência à pipeline, analisando as mudanças do Git e escolhendo entre User Build, Full Build ou nenhuma compilação.
-
-A estratégia permite evoluir gradualmente de uma pipeline de compilação completa para um modelo de **build incremental orientado pelas alterações e dependências da aplicação**.
+**`smart-user-and-full-build.yaml`** adiciona inteligência à pipeline, analisando as mudanças do Git e escolhendo entre User Build, Full Build ou nenhuma compilação.
