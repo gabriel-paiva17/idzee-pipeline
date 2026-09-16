@@ -172,10 +172,10 @@ jobs:
           # --------------------------------------------------------
           # Arquivos relevantes para o build
           #
-          # COBOL
-          # Compuware COBOL
-          # Copybook
-          # BMS
+          # .cbl  = COBOL
+          # .cbcw = COBOL Compuware
+          # .cpy  = Copybook
+          # .bms  = BMS
           # --------------------------------------------------------
 
           grep -Ei '\.(cbl|cbcw|cpy|bms)$' \
@@ -376,9 +376,10 @@ jobs:
       # ============================================================
       # 7. PREPARAR WORKSPACE NO Z/OS
       #
+      # O workspace é persistente.
+      #
       # IMPORTANTE:
-      # O workspace não é removido.
-      # Impact Build depende da baseline Git existente.
+      # O diretório logs/ NÃO é removido.
       # ============================================================
 
       - name: Preparar workspace no z/OS
@@ -392,7 +393,8 @@ jobs:
 
           PREP_CMD="\
             mkdir -p '${DBB_ROOT}/logs' && \
-            mkdir -p '${DBB_ROOT}/${APP_NAME}'"
+            mkdir -p '${DBB_ROOT}/${APP_NAME}' && \
+            mkdir -p '${DBB_ROOT}/${APP_NAME}/logs'"
 
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "/u" \
@@ -433,6 +435,9 @@ jobs:
 
       # ============================================================
       # 8B. IMPACT - UPLOAD INCREMENTAL
+      #
+      # Apenas os arquivos alterados são enviados.
+      # A baseline Git existente no USS é preservada.
       # ============================================================
 
       - name: Upload incremental para o z/OS
@@ -470,7 +475,7 @@ jobs:
 
 
             # ------------------------------------------------------
-            # Criar diretório remoto
+            # Criar estrutura de diretórios no USS
             # ------------------------------------------------------
 
             zowe rse-api-for-zowe-cli issue unix-shell \
@@ -516,7 +521,9 @@ jobs:
             "pwd && \
              ls -la && \
              test -f dbb-app.yaml && \
-             echo 'dbb-app.yaml encontrado'" \
+             echo 'dbb-app.yaml encontrado' && \
+             test -d logs && \
+             echo 'Diretório logs encontrado'" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -526,9 +533,15 @@ jobs:
       # ============================================================
       # 10. PREPARAR GIT PARA FULL BUILD
       #
-      # Full Build cria uma nova baseline.
+      # Full Build estabelece uma nova baseline.
       #
-      # O DBB exige um repositório Git válido com HEAD.
+      # O DBB precisa encontrar:
+      #
+      #   .git/
+      #   HEAD
+      #
+      # O diretório logs/ continua existindo normalmente,
+      # porém é ignorado pelo Git.
       # ============================================================
 
       - name: Preparar Git para Full Build
@@ -544,11 +557,21 @@ jobs:
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
              rm -rf .git && \
-             git init && \
+             printf 'logs/\n' > .gitignore && \
+             git init -b main && \
              git add . && \
              git -c user.name='IDzEE Pipeline' \
                  -c user.email='idzee-pipeline@local' \
-                 commit -m 'Full Build baseline ${GITHUB_SHA}'" \
+                 commit -m 'Full Build baseline ${GITHUB_SHA}' && \
+             echo && \
+             echo 'Baseline criada com sucesso:' && \
+             git log -1 --oneline && \
+             echo && \
+             echo 'Status do repositório:' && \
+             git status --short && \
+             echo && \
+             echo 'Diretório de logs preservado:' && \
+             ls -ld logs" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -558,11 +581,10 @@ jobs:
       # ============================================================
       # 11. VERIFICAR BASELINE PARA IMPACT
       #
-      # Impact só pode ocorrer se existir:
+      # O Impact Build NÃO recria o Git.
       #
-      #   .git
-      #   HEAD
-      #
+      # HEAD         = baseline anterior
+      # Working Tree = arquivos enviados pelo novo push
       # ============================================================
 
       - name: Verificar baseline Git para Impact
@@ -579,12 +601,17 @@ jobs:
             ". ~/.profile && \
              test -d .git && \
              git rev-parse --verify HEAD && \
+             echo && \
              echo 'Baseline Git encontrada.' && \
+             echo && \
              echo 'HEAD atual:' && \
              git log -1 --oneline && \
              echo && \
-             echo 'Alterações no working tree:' && \
-             git status --short" \
+             echo 'Alterações em relação à baseline:' && \
+             git status --short && \
+             echo && \
+             echo 'Diff:' && \
+             git diff --stat" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -620,12 +647,13 @@ jobs:
       # ============================================================
       # 13. IMPACT BUILD
       #
-      # Nesse momento:
+      # O DBB recebe:
       #
-      # HEAD         = baseline anterior
-      # Working tree = arquivos novos enviados pela pipeline
+      # HEAD         -> baseline do último build bem-sucedido
+      # Working Tree -> nova versão da aplicação
       #
-      # O DBB pode executar a análise de impacto.
+      # O lifecycle impact executa a análise de impacto configurada
+      # no zBuilder.
       # ============================================================
 
       - name: Executar DBB Impact Build
@@ -653,10 +681,11 @@ jobs:
       # ============================================================
       # 14. ATUALIZAR BASELINE APÓS IMPACT
       #
-      # Esse step só executa se o Impact Build anterior terminar
+      # Só é executado se o Impact Build anterior terminar
       # com sucesso.
       #
-      # A versão atual passa a ser a nova baseline.
+      # Os logs continuam no USS e continuam sendo gerados pelo DBB.
+      # Como logs/ está no .gitignore, não entram no commit.
       # ============================================================
 
       - name: Atualizar baseline Git após Impact
@@ -672,9 +701,19 @@ jobs:
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
              git add -A && \
-             git -c user.name='IDzEE Pipeline' \
-                 -c user.email='idzee-pipeline@local' \
-                 commit -m 'Impact Build baseline ${GITHUB_SHA}' || true" \
+             if git diff --cached --quiet; then \
+               echo 'Nenhuma alteração para adicionar à baseline.'; \
+             else \
+               git -c user.name='IDzEE Pipeline' \
+                   -c user.email='idzee-pipeline@local' \
+                   commit -m 'Impact Build baseline ${GITHUB_SHA}'; \
+             fi && \
+             echo && \
+             echo 'Baseline atual:' && \
+             git log -1 --oneline && \
+             echo && \
+             echo 'Status do repositório:' && \
+             git status --short" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -697,9 +736,14 @@ jobs:
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
+             echo 'HEAD:' && \
              git log -1 --oneline && \
              echo && \
-             git status --short" \
+             echo 'Status:' && \
+             git status --short && \
+             echo && \
+             echo 'Logs:' && \
+             ls -la logs 2>/dev/null || true" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
