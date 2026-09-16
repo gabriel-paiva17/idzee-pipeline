@@ -18,7 +18,6 @@ on:
           - full
 
 jobs:
-
   build:
 
     runs-on:
@@ -33,7 +32,6 @@ jobs:
       ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
 
       APP_NAME: idzee-pipeline
-
 
     steps:
 
@@ -80,10 +78,12 @@ jobs:
           USS_USER="${ZOS_USER,,}"
           DBB_HLQ="${ZOS_USER}.DBB"
           DBB_ROOT="/u/${USS_USER}/dbb"
+          APP_ROOT="${DBB_ROOT}/${APP_NAME}"
 
           echo "USS_USER=$USS_USER" >> "$GITHUB_ENV"
           echo "DBB_HLQ=$DBB_HLQ" >> "$GITHUB_ENV"
           echo "DBB_ROOT=$DBB_ROOT" >> "$GITHUB_ENV"
+          echo "APP_ROOT=$APP_ROOT" >> "$GITHUB_ENV"
 
           echo "=========================================="
           echo "AMBIENTE DBB"
@@ -91,6 +91,7 @@ jobs:
           echo "USS_USER : $USS_USER"
           echo "DBB_HLQ  : $DBB_HLQ"
           echo "DBB_ROOT : $DBB_ROOT"
+          echo "APP_ROOT : $APP_ROOT"
 
 
       # ============================================================
@@ -111,10 +112,6 @@ jobs:
           fi
 
           echo "Modo solicitado: $REQUESTED_BUILD"
-
-          # --------------------------------------------------------
-          # Descobrir alterações do commit
-          # --------------------------------------------------------
 
           if git rev-parse HEAD^ >/dev/null 2>&1; then
 
@@ -137,7 +134,6 @@ jobs:
 
           fi
 
-
           echo
           echo "Arquivos adicionados/modificados:"
           echo "------------------------------------------"
@@ -150,11 +146,6 @@ jobs:
           cat deleted-files.txt || true
           echo "------------------------------------------"
 
-
-          # --------------------------------------------------------
-          # Arquivos relevantes ao build
-          # --------------------------------------------------------
-
           grep -Ei '\.(cbl|cbcw|cpy|bms|lnk)$' \
             changed-files.txt \
             > changed-build-files.txt || true
@@ -163,7 +154,6 @@ jobs:
             deleted-files.txt \
             > deleted-build-files.txt || true
 
-
           CHANGED_COUNT=$(wc -l < changed-files.txt | tr -d ' ')
           DELETED_COUNT=$(wc -l < deleted-files.txt | tr -d ' ')
 
@@ -171,11 +161,6 @@ jobs:
           DELETED_BUILD_COUNT=$(wc -l < deleted-build-files.txt | tr -d ' ')
 
           RELEVANT_COUNT=$((CHANGED_BUILD_COUNT + DELETED_BUILD_COUNT))
-
-
-          # --------------------------------------------------------
-          # Configuração DBB
-          # --------------------------------------------------------
 
           CONFIG_CHANGED=false
 
@@ -191,16 +176,9 @@ jobs:
             CONFIG_CHANGED=true
           fi
 
-
-          # --------------------------------------------------------
-          # Decisão
-          # --------------------------------------------------------
-
           BUILD_TYPE="$REQUESTED_BUILD"
-          BUILD_REASON="Execução manual: $REQUESTED_BUILD"
 
-
-          if [[ "$BUILD_TYPE" == "auto" ]]; then
+          if [[ "$REQUESTED_BUILD" == "auto" ]]; then
 
             if [[ "$CONFIG_CHANGED" == "true" ]]; then
 
@@ -219,8 +197,11 @@ jobs:
 
             fi
 
-          fi
+          else
 
+            BUILD_REASON="Execução manual: $REQUESTED_BUILD"
+
+          fi
 
           echo
           echo "=========================================="
@@ -237,7 +218,6 @@ jobs:
           echo "Motivo               : $BUILD_REASON"
           echo "=========================================="
 
-
           echo "BUILD_TYPE=$BUILD_TYPE" >> "$GITHUB_ENV"
           echo "BUILD_REASON=$BUILD_REASON" >> "$GITHUB_ENV"
 
@@ -249,14 +229,16 @@ jobs:
 
 
       # ============================================================
-      # 5. VERIFICAR BASELINE GIT NO USS
+      # 5. VERIFICAR BASELINE
       #
-      # Não basta .git existir.
-      # HEAD precisa apontar para um commit válido.
+      # Só precisamos transformar IMPACT em FULL quando ainda não
+      # existe um Git HEAD válido no workspace USS.
+      #
+      # FULL manual não precisa passar por essa decisão.
       # ============================================================
 
       - name: Verificar baseline Git no USS
-        if: env.BUILD_TYPE != 'none'
+        if: env.BUILD_TYPE == 'impact'
         shell: bash
         run: |
           echo "=========================================="
@@ -266,12 +248,14 @@ jobs:
           set +e
 
           RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            "git rev-parse --verify HEAD 2>/dev/null" \
+            --cwd "/u" \
+            "cd '${APP_ROOT}' 2>/dev/null && \
+             git rev-parse --verify HEAD 2>/dev/null" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD" 2>&1)
+            --password "$ZOS_PASSWORD" \
+            2>&1)
 
           RC=$?
 
@@ -280,21 +264,19 @@ jobs:
           echo "Retorno do USS:"
           echo "$RESULT"
           echo
-          echo "RC do comando: $RC"
+          echo "RC Zowe: $RC"
 
-          if [[ "$RC" -eq 0 ]] && \
-             echo "$RESULT" | grep -Eq '[0-9a-fA-F]{7,40}'; then
+          if echo "$RESULT" | grep -Eq '^[0-9a-fA-F]{40}$'; then
 
             echo
             echo "Baseline Git encontrado."
-
             echo "BASELINE_EXISTS=true" >> "$GITHUB_ENV"
 
           else
 
             echo
             echo "Baseline Git não encontrado."
-            echo "A execução será convertida para Full Build."
+            echo "Impact convertido para Full Build inicial."
 
             echo "BASELINE_EXISTS=false" >> "$GITHUB_ENV"
             echo "BUILD_TYPE=full" >> "$GITHUB_ENV"
@@ -317,7 +299,7 @@ jobs:
           echo "Aplicação : $APP_NAME"
           echo "Usuário   : $ZOS_USER"
           echo "HLQ       : $DBB_HLQ"
-          echo "USS       : $DBB_ROOT/$APP_NAME"
+          echo "USS       : $APP_ROOT"
 
           echo
           echo "Alterados      : ${CHANGED_COUNT:-0}"
@@ -362,14 +344,20 @@ jobs:
 
           RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "/u" \
-            "mkdir -p '${DBB_ROOT}/logs' '${DBB_ROOT}/${APP_NAME}' && pwd" \
+            "mkdir -p '${DBB_ROOT}/logs' '${APP_ROOT}'" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD")
 
-          echo "Retorno do USS:"
-          echo "$RESULT"
+          echo "Workspace preparado:"
+          echo "$APP_ROOT"
+
+          if [[ -n "$RESULT" ]]; then
+            echo
+            echo "Retorno do USS:"
+            echo "$RESULT"
+          fi
 
 
       # ============================================================
@@ -386,7 +374,7 @@ jobs:
 
           zowe rse-api-for-zowe-cli upload dir-to-uss \
             "." \
-            "${DBB_ROOT}/${APP_NAME}" \
+            "${APP_ROOT}" \
             --recursive \
             --attributes .zosattributes \
             --max-concurrent-requests 5 \
@@ -416,7 +404,7 @@ jobs:
             [[ -z "$FILE" ]] && continue
 
             LOCAL_FILE="$FILE"
-            REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
+            REMOTE_FILE="${APP_ROOT}/${FILE}"
             REMOTE_DIR=$(dirname "$REMOTE_FILE")
 
             echo
@@ -424,14 +412,16 @@ jobs:
             echo "Destino : $REMOTE_FILE"
 
             RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
-              --cwd "${DBB_ROOT}/${APP_NAME}" \
+              --cwd "/u" \
               "mkdir -p '${REMOTE_DIR}'" \
               --host "$ZOS_HOST" \
               --port "$ZOS_PORT" \
               --user "$ZOS_USER" \
               --password "$ZOS_PASSWORD")
 
-            echo "$RESULT"
+            if [[ -n "$RESULT" ]]; then
+              echo "$RESULT"
+            fi
 
             zowe rse-api-for-zowe-cli upload file-to-uss \
               "$LOCAL_FILE" \
@@ -463,19 +453,21 @@ jobs:
           do
             [[ -z "$FILE" ]] && continue
 
-            REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
+            REMOTE_FILE="${APP_ROOT}/${FILE}"
 
             echo "Removendo do USS: $FILE"
 
             RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
-              --cwd "${DBB_ROOT}/${APP_NAME}" \
+              --cwd "/u" \
               "rm -f '${REMOTE_FILE}'" \
               --host "$ZOS_HOST" \
               --port "$ZOS_PORT" \
               --user "$ZOS_USER" \
               --password "$ZOS_PASSWORD")
 
-            echo "$RESULT"
+            if [[ -n "$RESULT" ]]; then
+              echo "$RESULT"
+            fi
 
           done < deleted-files.txt
 
@@ -483,8 +475,12 @@ jobs:
       # ============================================================
       # 11. ATUALIZAR GIT LOCAL DO USS
       #
-      # Sem || true no git commit.
-      # Primeiro verificamos se há algo para commitar.
+      # IMPORTANTE:
+      # - não confiamos no --cwd para o Git
+      # - fazemos cd explicitamente
+      # - criamos .git se necessário
+      # - commitamos o estado atual
+      # - no final HEAD obrigatoriamente precisa existir
       # ============================================================
 
       - name: Atualizar Git local no USS
@@ -496,18 +492,19 @@ jobs:
           echo "=========================================="
 
           RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            ". ~/.profile && \
+            --cwd "/u" \
+            "cd '${APP_ROOT}' && \
+             . ~/.profile && \
              if [ ! -d .git ]; then \
                git init; \
              fi && \
              git add -A && \
-             if git diff --cached --quiet; then \
-               exit 0; \
+             if ! git diff --cached --quiet; then \
+               git -c user.name='IDzEE Pipeline' \
+                   -c user.email='idzee-pipeline@local' \
+                   commit -m 'GitHub ${GITHUB_SHA}'; \
              fi && \
-             git -c user.name='IDzEE Pipeline' \
-                 -c user.email='idzee-pipeline@local' \
-                 commit -m 'GitHub ${GITHUB_SHA}'" \
+             git rev-parse --verify HEAD" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -518,10 +515,45 @@ jobs:
 
 
       # ============================================================
-      # 12. CONSULTAR ESTADO DO GIT
+      # 12. VALIDAR GIT
       #
-      # Os comandos rodam no USS.
-      # A resposta é capturada e impressa pelo runner.
+      # Este step é propositalmente obrigatório.
+      # Se HEAD não puder ser obtido, não deixamos DBB executar.
+      # ============================================================
+
+      - name: Validar Git antes do DBB
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "VALIDANDO GIT NO USS"
+          echo "=========================================="
+
+          RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "/u" \
+            "cd '${APP_ROOT}' && \
+             git rev-parse --verify HEAD" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD")
+
+          echo "HEAD:"
+          echo "$RESULT"
+
+          if ! echo "$RESULT" | grep -Eq '[0-9a-fA-F]{40}'; then
+            echo
+            echo "ERRO: Git HEAD não foi encontrado no workspace USS."
+            echo "DBB não será executado."
+            exit 1
+          fi
+
+          echo
+          echo "Git HEAD válido."
+
+
+      # ============================================================
+      # 13. MOSTRAR HISTÓRICO GIT
       # ============================================================
 
       - name: Verificar Git no USS
@@ -533,49 +565,40 @@ jobs:
           echo "=========================================="
 
           echo
-          echo "HEAD atual:"
-
-          RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            "git rev-parse HEAD" \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD")
-
-          echo "$RESULT"
-
-
-          echo
           echo "Últimos commits:"
 
           RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            "git log --oneline -5" \
+            --cwd "/u" \
+            "cd '${APP_ROOT}' && \
+             git log --oneline -5" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD")
 
           echo "$RESULT"
-
 
           echo
           echo "Git status:"
 
           RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            "git status --short" \
+            --cwd "/u" \
+            "cd '${APP_ROOT}' && \
+             git status --short" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD")
 
-          echo "$RESULT"
+          if [[ -z "$RESULT" ]]; then
+            echo "Working tree clean."
+          else
+            echo "$RESULT"
+          fi
 
 
       # ============================================================
-      # 13. VERIFICAR WORKSPACE
+      # 14. VERIFICAR WORKSPACE
       # ============================================================
 
       - name: Verificar workspace no USS
@@ -587,9 +610,10 @@ jobs:
           echo "=========================================="
 
           RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            "pwd; \
-             test -f dbb-app.yaml; \
+            --cwd "/u" \
+            "cd '${APP_ROOT}' && \
+             pwd && \
+             test -f dbb-app.yaml && \
              ls -la | head -30" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
@@ -600,7 +624,7 @@ jobs:
 
 
       # ============================================================
-      # 14. FULL BUILD
+      # 15. FULL BUILD
       # ============================================================
 
       - name: Executar DBB Full Build
@@ -614,10 +638,11 @@ jobs:
           echo "=========================================="
 
           RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            ". ~/.profile && \
+            --cwd "/u" \
+            "cd '${APP_ROOT}' && \
+             . ~/.profile && \
              \$DBB_HOME/bin/dbb build full \
-             --hlq ${DBB_HLQ}" \
+             --hlq '${DBB_HLQ}'" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -627,7 +652,10 @@ jobs:
 
 
       # ============================================================
-      # 15. IMPACT BUILD
+      # 16. IMPACT BUILD
+      #
+      # O DBB usa o hash do último Build Result bem-sucedido como
+      # baseline e compara com o HEAD atual do repositório USS.
       # ============================================================
 
       - name: Executar DBB Impact Build
@@ -641,10 +669,11 @@ jobs:
           echo "=========================================="
 
           RESULT=$(zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            ". ~/.profile && \
+            --cwd "/u" \
+            "cd '${APP_ROOT}' && \
+             . ~/.profile && \
              \$DBB_HOME/bin/dbb build impact \
-             --hlq ${DBB_HLQ}" \
+             --hlq '${DBB_HLQ}'" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -654,7 +683,7 @@ jobs:
 
 
       # ============================================================
-      # 16. NENHUM BUILD
+      # 17. NENHUM BUILD
       # ============================================================
 
       - name: Nenhum build necessário
@@ -669,7 +698,7 @@ jobs:
 
 
       # ============================================================
-      # 17. RESUMO
+      # 18. RESUMO
       # ============================================================
 
       - name: Resumo da execução
