@@ -322,10 +322,10 @@ jobs:
         shell: bash
         run: |
           cat > .zosattributes <<'EOF'
-          .git/        -
-          .github/     -
-          .DS_Store    -
-          EOF
+.git/        -
+.github/     -
+.DS_Store    -
+EOF
 
           echo "Arquivo .zosattributes criado."
 
@@ -431,7 +431,7 @@ jobs:
               --user "$ZOS_USER" \
               --password "$ZOS_PASSWORD"
 
-          done < changed-files.txt
+          done < changed-build-files.txt
 
           echo
           echo "Upload incremental finalizado."
@@ -469,7 +469,7 @@ jobs:
               echo "$RESULT"
             fi
 
-          done < deleted-files.txt
+          done < deleted-build-files.txt
 
 
       # ============================================================
@@ -502,7 +502,7 @@ jobs:
              if ! git diff --cached --quiet; then \
                git -c user.name='IDzEE Pipeline' \
                    -c user.email='idzee-pipeline@local' \
-                   commit -m 'GitHub ${GITHUB_SHA}'; \
+                   commit -m \"GitHub ${GITHUB_SHA}\"; \
              fi && \
              git rev-parse --verify HEAD" \
             --host "$ZOS_HOST" \
