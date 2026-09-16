@@ -1,21 +1,21 @@
 name: IDzEE Smart Build Backup
 
-on:
-  push:
-    branches:
-      - main
-
-  workflow_dispatch:
-    inputs:
-      build_type:
-        description: "Tipo de build"
-        required: true
-        default: auto
-        type: choice
-        options:
-          - auto
-          - full
-          - user
+#on:
+#  push:
+#    branches:
+#      - main
+#
+#  workflow_dispatch:
+#    inputs:
+#      build_type:
+#        description: "Tipo de build"
+#        required: true
+#        default: auto
+#        type: choice
+#        options:
+#          - auto
+#          - full
+#          - user
 
 
 jobs:
