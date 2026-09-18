@@ -11,8 +11,6 @@ jobs:
   build:
     runs-on:
       - self-hosted
-      - Linux
-      - ARM64
 
     env:
       ZOS_HOST: ${{ secrets.ZOS_HOST }}
