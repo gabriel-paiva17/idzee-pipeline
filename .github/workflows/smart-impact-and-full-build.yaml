@@ -1,10 +1,8 @@
 name: IDzEE Impact and Full Build
-
 on:
   push:
     branches:
       - main
-
   workflow_dispatch:
     inputs:
       build_type:
@@ -16,43 +14,29 @@ on:
           - auto
           - impact
           - full
-
-
 jobs:
-
   build:
-
     runs-on:
       - self-hosted
       - Linux
       - ARM64
-
     env:
-
       ZOS_HOST: ${{ secrets.ZOS_HOST }}
       ZOS_PORT: ${{ secrets.ZOS_PORT }}
       ZOS_USER: ${{ secrets.ZOS_USER }}
       ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
-
       APP_NAME: idzee-pipeline
-
-
     steps:
-
       # ============================================================
       # 1. CHECKOUT
       # ============================================================
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
-
-
       # ============================================================
       # 2. VERIFICAR AMBIENTE
       # ============================================================
-
       - name: Verificar ambiente
         shell: bash
         run: |
@@ -70,7 +54,6 @@ jobs:
       # ============================================================
       # 3. DEFINIR AMBIENTE
       # ============================================================
-
       - name: Definir ambiente DBB
         shell: bash
         run: |
@@ -107,7 +90,6 @@ jobs:
       # O DBB será responsável por determinar o conjunto real
       # de programas impactados.
       # ============================================================
-
       - name: Analisar alterações
         shell: bash
         run: |
@@ -223,7 +205,6 @@ jobs:
       # ============================================================
       # 5. PLANO DE EXECUÇÃO
       # ============================================================
-
       - name: Plano de execução
         shell: bash
         run: |
@@ -249,7 +230,6 @@ jobs:
       # Os arquivos changed-files.txt etc. não precisam ser
       # excluídos porque agora estão em $RUNNER_TEMP.
       # ============================================================
-
       - name: Configurar upload
         if: env.BUILD_TYPE != 'none'
         shell: bash
@@ -270,7 +250,6 @@ jobs:
       #
       # logs/ continua existindo normalmente.
       # ============================================================
-
       - name: Preparar workspace no z/OS
         if: env.BUILD_TYPE != 'none'
         shell: bash
@@ -294,7 +273,6 @@ jobs:
       #
       # Full continua disponível manualmente.
       # ============================================================
-
       - name: Upload completo para o z/OS
         if: env.BUILD_TYPE == 'full'
         shell: bash
@@ -320,7 +298,6 @@ jobs:
       # Antes do upload incremental, refletimos no USS os arquivos
       # que foram removidos do Git.
       # ============================================================
-
       - name: Remover arquivos deletados do USS
         if: env.BUILD_TYPE == 'impact'
         shell: bash
@@ -355,7 +332,6 @@ jobs:
       # .git permanece intacto.
       # logs/ permanece intacto.
       # ============================================================
-
       - name: Upload incremental para o z/OS
         if: env.BUILD_TYPE == 'impact'
         shell: bash
@@ -407,7 +383,6 @@ jobs:
       # ============================================================
       # 10. VERIFICAR WORKSPACE
       # ============================================================
-
       - name: Verificar workspace no USS
         if: env.BUILD_TYPE != 'none'
         shell: bash
@@ -440,7 +415,6 @@ jobs:
       #
       # O DBB continua podendo apagar/recriar logs durante o build.
       # ============================================================
-
       - name: Preparar Git para Full Build
         if: env.BUILD_TYPE == 'full'
         shell: bash
@@ -453,7 +427,7 @@ jobs:
             ". ~/.profile && \
              rm -rf .git && \
              printf 'logs/\n' > .gitignore && \
-             git init -b main && \
+             git init -b ${GITHUB_REF_NAME} && \
              git add . && \
              git -c user.name='IDzEE Pipeline' \
                  -c user.email='idzee-pipeline@local' \
@@ -475,7 +449,6 @@ jobs:
       #
       # Não recriamos .git.
       # ============================================================
-
       - name: Verificar Git para Impact
         if: env.BUILD_TYPE == 'impact'
         shell: bash
@@ -502,11 +475,59 @@ jobs:
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
       # ============================================================
-      # 13. FULL BUILD
+      # 13. CRIAR SNAPSHOT GIT PARA IMPACT
+      #
+      # O ImpactAnalysis compara o hash Git atual com a baseline
+      # registrada no BuildResult anterior. Por isso, o novo estado
+      # precisa estar commitado ANTES do dbb build impact.
+      #
+      # logs/ fica fora do Git para não contaminar o snapshot.
+      # ============================================================
+      - name: Criar snapshot Git para Impact
+        if: env.BUILD_TYPE == 'impact'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "CRIANDO SNAPSHOT GIT PARA IMPACT"
+          echo "=========================================="
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             test -d .git && \
+             echo 'HEAD anterior:' && \
+             git rev-parse HEAD && \
+             git log -1 --oneline && \
+             echo && \
+             echo 'Alterações antes do snapshot:' && \
+             git status --short && \
+             echo && \
+             touch .gitignore && \
+             (grep -qxF 'logs/' .gitignore || echo 'logs/' >> .gitignore) && \
+             git rm -r --cached --ignore-unmatch logs >/dev/null 2>&1 || true; \
+             git add -A && \
+             if git diff --cached --quiet; then \
+               echo 'Nenhuma alteração para criar novo snapshot.'; \
+             else \
+               git -c user.name='IDzEE Pipeline' \
+                   -c user.email='idzee-pipeline@local' \
+                   commit -m 'Pipeline snapshot ${GITHUB_SHA}'; \
+             fi && \
+             echo && \
+             echo 'HEAD atual:' && \
+             git rev-parse HEAD && \
+             git log -1 --oneline && \
+             echo && \
+             echo 'Status após snapshot:' && \
+             git status --short" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+      # ============================================================
+      # 14. FULL BUILD
       #
       # Utilizado somente quando solicitado explicitamente.
       # ============================================================
-
       - name: Executar DBB Full Build
         if: env.BUILD_TYPE == 'full'
         shell: bash
@@ -526,7 +547,7 @@ jobs:
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
       # ============================================================
-      # 14. IMPACT BUILD
+      # 15. IMPACT BUILD
       #
       # Caminho padrão.
       #
@@ -535,7 +556,6 @@ jobs:
       # Se não existir resultado anterior no Metadata Store,
       # o próprio DBB pode gerar uma full build list.
       # ============================================================
-
       - name: Executar DBB Impact Build
         if: env.BUILD_TYPE == 'impact'
         shell: bash
@@ -555,49 +575,10 @@ jobs:
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
       # ============================================================
-      # 15. ATUALIZAR BASELINE GIT APÓS IMPACT
-      #
-      # Esse step só é alcançado se o Impact anterior retornar
-      # sucesso para o GitHub Actions.
-      #
-      # logs/ continua sendo gerado normalmente pelo DBB e continua
-      # fora do controle de versão.
-      # ============================================================
-
-      - name: Atualizar baseline Git após Impact
-        if: env.BUILD_TYPE == 'impact'
-        shell: bash
-        run: |
-          echo "=========================================="
-          echo "ATUALIZANDO BASELINE GIT"
-          echo "=========================================="
-          zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            ". ~/.profile && \
-             git add -A && \
-             if git diff --cached --quiet; then \
-               echo 'Nenhuma alteração para adicionar à baseline.'; \
-             else \
-               git -c user.name='IDzEE Pipeline' \
-                   -c user.email='idzee-pipeline@local' \
-                   commit -m 'Impact Build baseline ${GITHUB_SHA}'; \
-             fi && \
-             echo && \
-             echo 'Baseline atual:' && \
-             git log -1 --oneline && \
-             echo && \
-             echo 'Status:' && \
-             git status --short" \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD"
-      # ============================================================
       # 16. VERIFICAR RESULTADO
       #
       # Os relatórios continuam sendo gerados normalmente.
       # ============================================================
-
       - name: Verificar resultado do build
         if: env.BUILD_TYPE != 'none'
         shell: bash
@@ -623,7 +604,6 @@ jobs:
       # ============================================================
       # 17. NENHUM BUILD
       # ============================================================
-
       - name: Nenhum build necessário
         if: env.BUILD_TYPE == 'none'
         shell: bash
@@ -635,7 +615,6 @@ jobs:
       # ============================================================
       # 18. RESUMO
       # ============================================================
-
       - name: Resumo da execução
         if: always()
         shell: bash
