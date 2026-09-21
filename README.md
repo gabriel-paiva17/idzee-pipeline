@@ -32,6 +32,7 @@ O repositório possui os seguintes workflows:
 ```text
 .github/workflows/
 ├── full-build.yaml
+├── smart-impact-and-full-build.yaml
 └── smart-user-and-full-build.yaml
 ```
 
@@ -184,16 +185,194 @@ User Build -> programa2.cbcw
 User Build -> tela.bms
 ```
 
+---
+
+# 3. Smart Impact and Full Build
+
+Arquivo:
+
+```text
+.github/workflows/smart-impact-and-full-build.yaml
+```
+
+O workflow **IDzEE Impact and Full Build** é o workflow principal em produção. Ele analisa os arquivos modificados no commit e decide automaticamente entre **Impact Build**, **Full Build** ou nenhuma compilação.
+
+Ele é iniciado automaticamente por um `push` na branch `main`, ou manualmente pelo menu **Actions > IDzEE Impact and Full Build > Run workflow**, permitindo selecionar:
+
+```text
+auto
+impact
+full
+```
+
+No modo `auto`, a própria esteira escolhe o tipo de build.
+
+## Lógica de decisão
+
+```text
+Arquivos alterados
+       |
+       v
+Analisar alterações
+       |
+       +-- Configuração DBB alterada? ------> IMPACT BUILD
+       |
+       +-- Fontes ou copybooks alterados? --> IMPACT BUILD
+       |
+       +-- Nenhum arquivo relevante --------> SEM BUILD
+```
+
+### O que o GitHub Actions decide
+
+O GitHub Actions tem uma responsabilidade simples e bem delimitada: detectar se existe alguma alteração relevante no commit e acionar o DBB com o lifecycle correto.
+
+Ele **não determina quais programas serão compilados**. Essa decisão é inteiramente do DBB.
+
+### O que o DBB decide
+
+Ao receber `dbb build impact`, o DBB executa a **Impact Analysis** e determina o conjunto real de programas a compilar. Para isso, ele:
+
+1. **Compara os hashes Git** — o HEAD atual do repositório USS com o hash registrado no BuildResult do último build bem-sucedido. Os arquivos cujo hash mudou entre os dois commits são os candidatos iniciais.
+
+2. **Expande as dependências** — para cada arquivo modificado, o DBB consulta o seu Metadata Store para identificar quais outros programas dependem dele. Por exemplo, se um copybook `.cpy` foi alterado, o DBB localiza todos os programas que fazem `COPY` desse copybook e os inclui na lista de compilação.
+
+3. **Gera a lista de build** — o resultado final é o conjunto mínimo de programas que precisam ser recompilados: os que mudaram diretamente mais todos os que dependem deles (transitivamente).
+
+```text
+Snapshot Git atual (HEAD)
+        |
+        v
+Comparar com hash do último BuildResult
+        |
+        v
+Arquivos com diff detectado
+        |
+        v
+Expandir dependências via Metadata Store
+        |
+        v
+Lista de build final
+        |
+        v
+Compilar somente o necessário
+```
+
+> O GitHub Actions **não executa** a Impact Analysis. Ele apenas detecta se existe alguma alteração relevante e repassa para o DBB com `dbb build impact`. O DBB é responsável por determinar o conjunto real de programas a compilar com base no histórico Git e no Metadata Store.
+
+## Arquivos considerados relevantes
+
+```text
+.cbl
+.cbcw
+.cpy
+.bms
+.lnk
+dbb-app.yaml
+```
+
+## Fluxo detalhado
+
+```text
+Push / execução manual
+        |
+        v
+Checkout do repositório
+        |
+        v
+Verificar ambiente (node, zowe)
+        |
+        v
+Definir ambiente DBB (HLQ, DBB_ROOT, PIPELINE_TMP)
+        |
+        v
+Analisar alterações do commit
+        |
+        v
+Plano de execução
+        |
+        v
+Configurar .zosattributes
+        |
+        v
+Preparar workspace no z/OS (mkdir -p)
+        |
+        +-- Full? --> Upload completo (dir-to-uss)
+        |
+        +-- Impact? --> Remover arquivos deletados do USS
+        |               Upload incremental (somente arquivos alterados)
+        |
+        v
+Verificar workspace (dbb-app.yaml e logs/ presentes)
+        |
+        +-- Full? --> Recriar .git (nova baseline) -> dbb build full
+        |
+        +-- Impact? --> Verificar HEAD existente -> Criar snapshot Git -> dbb build impact
+        |
+        +-- none? --> Nenhum build necessário
+        |
+        v
+Verificar resultado (git log, ls logs/)
+        |
+        v
+Resumo da execução
+```
+
+## Snapshot Git para Impact Build
+
+O DBB Impact Analysis compara o hash Git do HEAD atual com o hash registrado no **BuildResult** do último build bem-sucedido. Para isso, o estado atual dos fontes precisa estar **commitado no Git do USS antes** de `dbb build impact` ser executado.
+
+A pipeline cria esse snapshot automaticamente:
+
+```text
+Upload incremental dos fontes alterados
+        |
+        v
+git add -A
+        |
+        v
+git commit "Pipeline snapshot <SHA>"
+        |
+        v
+dbb build impact --hlq <HLQ>
+```
+
+O diretório `logs/` é excluído do Git via `.gitignore` para não contaminar o snapshot.
+
+## Full Build manual
+
+O Full Build está disponível manualmente para casos como:
+
+- primeira compilação após um reset do workspace;
+- alterações estruturais que exijam recompilação completa;
+- fallback quando o Metadata Store do DBB estiver inconsistente.
+
+No Full Build, o `.git` do workspace USS é **recriado** do zero como nova baseline, e `dbb build full` é executado.
+
+## Exemplos
+
+| Alteração | Estratégia |
+|---|---|
+| `README.md` | Nenhum build |
+| `cobol/programa.cbl` | Impact Build |
+| `copybook/cliente.cpy` | Impact Build |
+| `bms/tela.bms` | Impact Build |
+| `dbb-app.yaml` | Impact Build |
+| Full Build manual | Full Build |
+
+---
+
 # Comparativo dos workflows
 
-| Característica | Full Build | Smart User+Full |
-|---|:---:|:---:|
-| Compila toda a aplicação | Sim | Quando necessário |
-| Detecta arquivos alterados | Não | Sim |
-| Executa User Build | Não | Sim |
-| Decide estratégia automaticamente | Não | Sim |
-| Execução manual | Sim | Sim |
-| Execução automática em `push` para `main` | Não | Não |
+| Característica | Full Build | Smart User+Full | Smart Impact+Full |
+|---|:---:|:---:|:---:|
+| Compila toda a aplicação | Sim | Quando necessário | Quando necessário |
+| Detecta arquivos alterados | Não | Sim | Sim |
+| Executa User Build | Não | Sim | Não |
+| Executa Impact Build | Não | Não | Sim |
+| Suporta copybook com análise de impacto | Não | Não (Full como fallback) | Sim |
+| Decide estratégia automaticamente | Não | Sim | Sim |
+| Execução manual | Sim | Sim | Sim |
+| Execução automática em `push` para `main` | Não | Não | Sim |
 
 ---
 
@@ -333,8 +512,10 @@ Nesta arquitetura, essas responsabilidades são desacopladas:
 
 # Resumo
 
-Os dois workflows atendem objetivos diferentes:
+Os três workflows atendem objetivos diferentes:
 
 **`full-build.yaml`** fornece um fluxo simples e previsível para reconstrução completa da aplicação.
 
 **`smart-user-and-full-build.yaml`** adiciona inteligência à pipeline, analisando as mudanças do Git e escolhendo entre User Build, Full Build ou nenhuma compilação.
+
+**`smart-impact-and-full-build.yaml`** é o workflow principal em produção, ativo no `push` para `main`, que utiliza o **DBB Impact Build** para recompilar somente os programas impactados pelas mudanças do commit.
