@@ -16,7 +16,7 @@ application:
     - task: MetadataInit
       variables:
         - name: fileLocation
-          value: /u/b027086/.dbb/metadata
+          value: ${HOME}/.dbb/metadata
 
     # Variable overrides for the ImpactAnalysis task
     - task: ImpactAnalysis

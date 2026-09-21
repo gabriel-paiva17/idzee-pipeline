@@ -16,6 +16,7 @@
            02  LITYEARSF    PICTURE X.
            02  FILLER REDEFINES LITYEARSF.
              03 LITYEARSA    PICTURE X.
+      *   
            02  FILLER   PICTURE X(2).
            02  LITYEARSI  PIC X(24).
            02  EPYEARSL    COMP  PIC  S9(4).
