@@ -218,6 +218,7 @@
 
 
        A600-CALCULATE-MORTGAGE.
+           DISPLAY 'TESTANDO'
            MOVE SAVE-COMM-AREA   TO DFHCOMMAREA.
            MOVE 'Y' TO EPSPCOM-YEAR-MONTH-IND
                                  OF DFHCOMMAREA.
