@@ -24,6 +24,8 @@ jobs:
 
     runs-on:
       - self-hosted
+      - Linux
+      - ARM64
 
     env:
 
@@ -54,23 +56,17 @@ jobs:
       - name: Verificar ambiente
         shell: bash
         run: |
-
           echo "=========================================="
           echo "AMBIENTE DO RUNNER"
           echo "=========================================="
-
           echo "Hostname:"
           hostname
-
           echo
           echo "Node:"
           node --version
-
           echo
           echo "Zowe:"
           zowe --version
-
-
       # ============================================================
       # 3. DEFINIR AMBIENTE
       # ============================================================
@@ -78,20 +74,17 @@ jobs:
       - name: Definir ambiente DBB
         shell: bash
         run: |
-
           USS_USER="${ZOS_USER,,}"
           DBB_HLQ="${ZOS_USER}.DBB"
           DBB_ROOT="/u/${USS_USER}/dbb"
-
+          # Arquivos utilizados internamente pela pipeline ficam
+          # fora do checkout do repositório.
           PIPELINE_TMP="${RUNNER_TEMP}/${APP_NAME}"
-
           mkdir -p "$PIPELINE_TMP"
-
           echo "USS_USER=$USS_USER" >> "$GITHUB_ENV"
           echo "DBB_HLQ=$DBB_HLQ" >> "$GITHUB_ENV"
           echo "DBB_ROOT=$DBB_ROOT" >> "$GITHUB_ENV"
           echo "PIPELINE_TMP=$PIPELINE_TMP" >> "$GITHUB_ENV"
-
           echo "=========================================="
           echo "AMBIENTE DBB"
           echo "=========================================="
@@ -99,168 +92,123 @@ jobs:
           echo "HLQ          : $DBB_HLQ"
           echo "DBB root     : $DBB_ROOT"
           echo "Pipeline tmp : $PIPELINE_TMP"
-
-
       # ============================================================
       # 4. ANALISAR ALTERAÇÕES
       #
-      # O GitHub Actions determina apenas se existe alteração
-      # relevante para iniciar o lifecycle Impact.
+      # O GitHub Actions NÃO executa Impact Analysis.
       #
-      # O conjunto realmente impactado será determinado pelo DBB.
+      # Ele apenas determina:
+      #
+      #   existe alteração relevante?
+      #
+      # SIM -> dbb build impact
+      # NÃO -> nenhum build
+      #
+      # O DBB será responsável por determinar o conjunto real
+      # de programas impactados.
       # ============================================================
 
       - name: Analisar alterações
         shell: bash
         run: |
-
           echo "=========================================="
           echo "ANÁLISE DAS ALTERAÇÕES"
           echo "=========================================="
-
           CHANGED_FILES="${PIPELINE_TMP}/changed-files.txt"
           DELETED_FILES="${PIPELINE_TMP}/deleted-files.txt"
-
-
           # --------------------------------------------------------
           # Tipo solicitado
           # --------------------------------------------------------
-
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-
             REQUESTED_BUILD="${{ github.event.inputs.build_type }}"
-
           else
-
             REQUESTED_BUILD="auto"
-
           fi
-
           echo "Modo solicitado: $REQUESTED_BUILD"
-
-
           # --------------------------------------------------------
           # Identificar alterações do commit
           # --------------------------------------------------------
-
           if git rev-parse HEAD^ >/dev/null 2>&1; then
-
             git diff \
               --name-only \
               --diff-filter=ACMR \
               HEAD^ HEAD \
               > "$CHANGED_FILES"
-
             git diff \
               --name-only \
               --diff-filter=D \
               HEAD^ HEAD \
               > "$DELETED_FILES"
-
           else
-
+            # Caso não exista commit anterior disponível
             git ls-files > "$CHANGED_FILES"
             : > "$DELETED_FILES"
-
           fi
-
-
           echo
           echo "Arquivos adicionados/modificados:"
           echo "------------------------------------------"
-
           cat "$CHANGED_FILES" || true
-
           echo "------------------------------------------"
-
           echo
           echo "Arquivos removidos:"
           echo "------------------------------------------"
-
           cat "$DELETED_FILES" || true
-
           echo "------------------------------------------"
-
-
           # --------------------------------------------------------
           # Contadores
           # --------------------------------------------------------
-
           CHANGED_COUNT=$(wc -l < "$CHANGED_FILES" | tr -d ' ')
           DELETED_COUNT=$(wc -l < "$DELETED_FILES" | tr -d ' ')
-
           echo
           echo "Arquivos adicionados/modificados : $CHANGED_COUNT"
           echo "Arquivos removidos               : $DELETED_COUNT"
-
-
           # ========================================================
           # DECISÃO
           # ========================================================
-
           BUILD_TYPE="$REQUESTED_BUILD"
           BUILD_REASON=""
-
-
           # --------------------------------------------------------
           # AUTO
+          #
+          # Qualquer alteração relevante é entregue ao lifecycle
+          # impact. O DBB decide o conjunto realmente impactado.
           # --------------------------------------------------------
-
           if [[ "$BUILD_TYPE" == "auto" ]]; then
-
             RELEVANT_CHANGE=false
-
-
+            # Arquivos adicionados/modificados relevantes
             if grep -Eiq '\.(cbl|cbcw|cpy|bms|lnk)$' \
               "$CHANGED_FILES"; then
-
               RELEVANT_CHANGE=true
-
             fi
-
-
+            # Arquivos removidos relevantes
             if grep -Eiq '\.(cbl|cbcw|cpy|bms|lnk)$' \
               "$DELETED_FILES"; then
-
               RELEVANT_CHANGE=true
-
             fi
-
-
+            # Configuração DBB também é relevante
             if grep -Eq \
               '(^|/)(dbb-app\.yaml|dbb-build\.yaml)$' \
               "$CHANGED_FILES"; then
-
               RELEVANT_CHANGE=true
-
             fi
-
-
             if [[ "$RELEVANT_CHANGE" == "true" ]]; then
-
               BUILD_TYPE="impact"
               BUILD_REASON="Alteração relevante detectada - análise delegada ao DBB"
-
             else
-
               BUILD_TYPE="none"
               BUILD_REASON="Nenhuma alteração relevante para build"
-
             fi
-
-
+          # --------------------------------------------------------
+          # IMPACT MANUAL
+          # --------------------------------------------------------
           elif [[ "$BUILD_TYPE" == "impact" ]]; then
-
             BUILD_REASON="Impact Build solicitado manualmente"
-
-
+          # --------------------------------------------------------
+          # FULL MANUAL
+          # --------------------------------------------------------
           elif [[ "$BUILD_TYPE" == "full" ]]; then
-
             BUILD_REASON="Full Build solicitado manualmente"
-
           fi
-
-
           echo
           echo "=========================================="
           echo "DECISÃO"
@@ -268,14 +216,10 @@ jobs:
           echo "Build  : $BUILD_TYPE"
           echo "Motivo : $BUILD_REASON"
           echo "=========================================="
-
-
           echo "BUILD_TYPE=$BUILD_TYPE" >> "$GITHUB_ENV"
           echo "BUILD_REASON=$BUILD_REASON" >> "$GITHUB_ENV"
           echo "CHANGED_COUNT=$CHANGED_COUNT" >> "$GITHUB_ENV"
           echo "DELETED_COUNT=$DELETED_COUNT" >> "$GITHUB_ENV"
-
-
       # ============================================================
       # 5. PLANO DE EXECUÇÃO
       # ============================================================
@@ -283,71 +227,61 @@ jobs:
       - name: Plano de execução
         shell: bash
         run: |
-
           echo "=========================================="
           echo "IDzEE DBB BUILD"
           echo "=========================================="
-
           echo "Aplicação : $APP_NAME"
           echo "Usuário   : $ZOS_USER"
           echo "HLQ       : $DBB_HLQ"
           echo "USS       : $DBB_ROOT/$APP_NAME"
-
           echo
           echo "Alterados : $CHANGED_COUNT"
           echo "Removidos : $DELETED_COUNT"
-
           echo
           echo "Build     : $BUILD_TYPE"
           echo "Motivo    : $BUILD_REASON"
-
           echo "=========================================="
-
-
       # ============================================================
       # 6. CONFIGURAR UPLOAD
+      #
+      # Arquivos internos do GitHub não são enviados.
+      #
+      # Os arquivos changed-files.txt etc. não precisam ser
+      # excluídos porque agora estão em $RUNNER_TEMP.
       # ============================================================
 
       - name: Configurar upload
         if: env.BUILD_TYPE != 'none'
         shell: bash
         run: |
-
           cat > .zosattributes <<'EOF'
           .git/        -
           .github/     -
           .DS_Store    -
           EOF
-
-
       # ============================================================
       # 7. PREPARAR WORKSPACE NO Z/OS
       #
-      # O workspace é persistente.
+      # O workspace é persistente para permitir:
       #
-      # NÃO apagamos:
+      #   - Git HEAD
+      #   - histórico
+      #   - Metadata do DBB
       #
-      #   .git
-      #   logs
-      #
-      # Isso permite que o DBB utilize o histórico Git e o
-      # MetadataStore para calcular o Impact.
+      # logs/ continua existindo normalmente.
       # ============================================================
 
       - name: Preparar workspace no z/OS
         if: env.BUILD_TYPE != 'none'
         shell: bash
         run: |
-
           echo "=========================================="
           echo "PREPARANDO WORKSPACE"
           echo "=========================================="
-
           PREP_CMD="\
             mkdir -p '${DBB_ROOT}' && \
             mkdir -p '${DBB_ROOT}/${APP_NAME}' && \
             mkdir -p '${DBB_ROOT}/${APP_NAME}/logs'"
-
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "/u" \
             "$PREP_CMD" \
@@ -355,24 +289,21 @@ jobs:
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-
-
       # ============================================================
       # 8A. FULL - UPLOAD COMPLETO
+      #
+      # Full continua disponível manualmente.
       # ============================================================
 
       - name: Upload completo para o z/OS
         if: env.BUILD_TYPE == 'full'
         shell: bash
         run: |
-
           echo "=========================================="
           echo "FULL UPLOAD"
           echo "=========================================="
-
           echo "Destino:"
           echo "$DBB_ROOT/$APP_NAME"
-
           zowe rse-api-for-zowe-cli upload dir-to-uss \
             "." \
             "${DBB_ROOT}/${APP_NAME}" \
@@ -383,39 +314,30 @@ jobs:
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-
-
       # ============================================================
       # 8B. IMPACT - REMOVER ARQUIVOS DELETADOS
+      #
+      # Antes do upload incremental, refletimos no USS os arquivos
+      # que foram removidos do Git.
       # ============================================================
 
       - name: Remover arquivos deletados do USS
         if: env.BUILD_TYPE == 'impact'
         shell: bash
         run: |
-
           DELETED_FILES="${PIPELINE_TMP}/deleted-files.txt"
-
           echo "=========================================="
           echo "ARQUIVOS REMOVIDOS"
           echo "=========================================="
-
           if [[ ! -s "$DELETED_FILES" ]]; then
-
             echo "Nenhum arquivo removido."
-
           else
-
             while IFS= read -r FILE
             do
-
               [[ -z "$FILE" ]] && continue
-
               REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
-
               echo "Removendo:"
               echo "$REMOTE_FILE"
-
               zowe rse-api-for-zowe-cli issue unix-shell \
                 --cwd "${DBB_ROOT}/${APP_NAME}" \
                 "rm -f '${REMOTE_FILE}'" \
@@ -423,62 +345,47 @@ jobs:
                 --port "$ZOS_PORT" \
                 --user "$ZOS_USER" \
                 --password "$ZOS_PASSWORD"
-
             done < "$DELETED_FILES"
-
           fi
-
-
       # ============================================================
       # 9. IMPACT - UPLOAD INCREMENTAL
       #
       # Somente arquivos adicionados/modificados são enviados.
       #
-      # O .git do USS NÃO é alterado pelo upload.
+      # .git permanece intacto.
+      # logs/ permanece intacto.
       # ============================================================
 
       - name: Upload incremental para o z/OS
         if: env.BUILD_TYPE == 'impact'
         shell: bash
         run: |
-
           CHANGED_FILES="${PIPELINE_TMP}/changed-files.txt"
-
           echo "=========================================="
           echo "IMPACT - UPLOAD INCREMENTAL"
           echo "=========================================="
-
           echo "Arquivos:"
           cat "$CHANGED_FILES" || true
-
           echo
-
           while IFS= read -r FILE
           do
-
             [[ -z "$FILE" ]] && continue
-
             LOCAL_FILE="$FILE"
             REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
             REMOTE_DIR=$(dirname "$REMOTE_FILE")
-
-
+            # Arquivo pode ter desaparecido entre os passos.
             if [[ ! -f "$LOCAL_FILE" ]]; then
-
               echo "Ignorando arquivo inexistente:"
               echo "$LOCAL_FILE"
-
               continue
-
             fi
-
-
             echo "------------------------------------------"
             echo "Arquivo : $LOCAL_FILE"
             echo "Destino : $REMOTE_FILE"
             echo "------------------------------------------"
-
-
+            # ------------------------------------------------------
+            # Criar diretório remoto
+            # ------------------------------------------------------
             zowe rse-api-for-zowe-cli issue unix-shell \
               --cwd "${DBB_ROOT}/${APP_NAME}" \
               "mkdir -p '${REMOTE_DIR}'" \
@@ -486,8 +393,9 @@ jobs:
               --port "$ZOS_PORT" \
               --user "$ZOS_USER" \
               --password "$ZOS_PASSWORD"
-
-
+            # ------------------------------------------------------
+            # Upload
+            # ------------------------------------------------------
             zowe rse-api-for-zowe-cli upload file-to-uss \
               "$LOCAL_FILE" \
               "$REMOTE_FILE" \
@@ -495,11 +403,7 @@ jobs:
               --port "$ZOS_PORT" \
               --user "$ZOS_USER" \
               --password "$ZOS_PASSWORD"
-
-
           done < "$CHANGED_FILES"
-
-
       # ============================================================
       # 10. VERIFICAR WORKSPACE
       # ============================================================
@@ -508,11 +412,9 @@ jobs:
         if: env.BUILD_TYPE != 'none'
         shell: bash
         run: |
-
           echo "=========================================="
           echo "WORKSPACE USS"
           echo "=========================================="
-
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             "pwd && \
@@ -525,57 +427,40 @@ jobs:
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-
-
       # ============================================================
       # 11. PREPARAR GIT PARA FULL
       #
-      # IMPORTANTE:
+      # O Full manual cria uma nova baseline Git.
       #
-      # NÃO fazemos mais:
+      # logs/ NÃO é removido.
       #
-      #   rm -rf .git
+      # Apenas é ignorado pelo Git para evitar:
       #
-      # Se o repositório ainda não existir, inicializamos.
+      #   fatal: can't add logs/BuildReport.html
       #
-      # Se já existir, preservamos todo o histórico.
+      # O DBB continua podendo apagar/recriar logs durante o build.
       # ============================================================
 
       - name: Preparar Git para Full Build
         if: env.BUILD_TYPE == 'full'
         shell: bash
         run: |
-
           echo "=========================================="
-          echo "PREPARANDO GIT PARA FULL"
+          echo "CRIANDO BASELINE GIT"
           echo "=========================================="
-
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
+             rm -rf .git && \
              printf 'logs/\n' > .gitignore && \
-             if [ ! -d .git ]; then \
-               echo 'Inicializando repositório Git...' && \
-               git init -b main; \
-             fi && \
+             git init -b main && \
+             git add . && \
+             git -c user.name='IDzEE Pipeline' \
+                 -c user.email='idzee-pipeline@local' \
+                 commit -m 'Full Build baseline ${GITHUB_SHA}' && \
              echo && \
-             echo 'Estado antes do commit:' && \
-             git status --short && \
-             echo && \
-             git add -A && \
-             if git diff --cached --quiet; then \
-               echo 'Nenhuma alteração para commit.'; \
-             else \
-               git -c user.name='IDzEE Pipeline' \
-                   -c user.email='idzee-pipeline@local' \
-                   commit -m 'GitHub ${GITHUB_SHA}'; \
-             fi && \
-             echo && \
-             echo 'HEAD do Full:' && \
+             echo 'Baseline criada:' && \
              git log -1 --oneline && \
-             echo && \
-             echo 'Histórico:' && \
-             git log --oneline -5 && \
              echo && \
              echo 'Status:' && \
              git status --short" \
@@ -583,179 +468,148 @@ jobs:
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-
-
       # ============================================================
-      # 12. PREPARAR GIT PARA IMPACT
+      # 12. VERIFICAR GIT PARA IMPACT
       #
-      # ESTA É A PRINCIPAL ALTERAÇÃO.
+      # O Impact preserva o HEAD anterior.
       #
-      # Antes:
-      #
-      #   upload
-      #   dbb build impact
-      #   git commit
-      #
-      # Agora:
-      #
-      #   upload
-      #   git add
-      #   git commit
-      #   dbb build impact
-      #
-      # Portanto o HEAD atual representa o código novo ANTES de o
-      # ImpactAnalysis executar.
+      # Não recriamos .git.
       # ============================================================
 
-      - name: Criar commit Git para Impact
+      - name: Verificar Git para Impact
         if: env.BUILD_TYPE == 'impact'
         shell: bash
         run: |
-
           echo "=========================================="
-          echo "PREPARANDO GIT PARA IMPACT"
+          echo "GIT - IMPACT"
           echo "=========================================="
-
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
              test -d .git && \
              git rev-parse --verify HEAD && \
              echo && \
-             echo 'HEAD anterior:' && \
+             echo 'HEAD:' && \
              git log -1 --oneline && \
              echo && \
-             echo 'Alterações recebidas:' && \
+             echo 'Alterações:' && \
              git status --short && \
              echo && \
-             echo 'Diff antes do commit:' && \
-             git diff --stat && \
-             echo && \
-             git add -A && \
-             if git diff --cached --quiet; then \
-               echo 'Nenhuma alteração para commit.'; \
-             else \
-               git -c user.name='IDzEE Pipeline' \
-                   -c user.email='idzee-pipeline@local' \
-                   commit -m 'GitHub ${GITHUB_SHA}'; \
-             fi && \
-             echo && \
-             echo 'HEAD que será utilizado pelo Impact:' && \
-             git log -1 --oneline && \
-             echo && \
-             echo 'Histórico:' && \
-             git log --oneline -5 && \
-             echo && \
-             echo 'Status final:' && \
-             git status --short" \
+             echo 'Diff:' && \
+             git diff --stat" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-
-
       # ============================================================
       # 13. FULL BUILD
       #
-      # O HEAD Git já representa o código que será compilado.
-      #
-      # O BuildResult CLEAN criado pelo DBB poderá ser utilizado
-      # posteriormente como baseline pelo ImpactAnalysis.
+      # Utilizado somente quando solicitado explicitamente.
       # ============================================================
 
       - name: Executar DBB Full Build
         if: env.BUILD_TYPE == 'full'
         shell: bash
         run: |
-
           echo "=========================================="
           echo "FULL BUILD"
           echo "=========================================="
           echo "Motivo: $BUILD_REASON"
           echo "=========================================="
-
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
-             echo 'HEAD utilizado pelo Full:' && \
-             git log -1 --oneline && \
-             echo && \
              \$DBB_HOME/bin/dbb build full \
              --hlq ${DBB_HLQ}" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-
-
       # ============================================================
       # 14. IMPACT BUILD
       #
-      # O commit novo já existe ANTES deste step.
+      # Caminho padrão.
       #
-      # O DBB deverá:
+      # O DBB executa a ImpactAnalysis.
       #
-      #   1. localizar o último BuildResult bem-sucedido
-      #   2. recuperar o Git hash utilizado naquele build
-      #   3. comparar esse hash com o HEAD atual
-      #   4. determinar Changed Files
-      #   5. consultar MetadataStore
-      #   6. determinar Impacted Files
+      # Se não existir resultado anterior no Metadata Store,
+      # o próprio DBB pode gerar uma full build list.
       # ============================================================
 
       - name: Executar DBB Impact Build
         if: env.BUILD_TYPE == 'impact'
         shell: bash
         run: |
-
           echo "=========================================="
           echo "IMPACT BUILD"
           echo "=========================================="
           echo "Motivo: $BUILD_REASON"
           echo "=========================================="
-
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
-             echo 'HEAD utilizado pelo Impact:' && \
-             git log -1 --oneline && \
-             echo && \
-             echo 'Commits disponíveis:' && \
-             git log --oneline -5 && \
-             echo && \
              \$DBB_HOME/bin/dbb build impact \
              --hlq ${DBB_HLQ}" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-
-
       # ============================================================
-      # 15. VERIFICAR RESULTADO
+      # 15. ATUALIZAR BASELINE GIT APÓS IMPACT
       #
-      # Não fazemos mais commit após o Impact.
+      # Esse step só é alcançado se o Impact anterior retornar
+      # sucesso para o GitHub Actions.
       #
-      # O commit utilizado pelo DBB já foi criado ANTES do build.
+      # logs/ continua sendo gerado normalmente pelo DBB e continua
+      # fora do controle de versão.
+      # ============================================================
+
+      - name: Atualizar baseline Git após Impact
+        if: env.BUILD_TYPE == 'impact'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "ATUALIZANDO BASELINE GIT"
+          echo "=========================================="
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             git add -A && \
+             if git diff --cached --quiet; then \
+               echo 'Nenhuma alteração para adicionar à baseline.'; \
+             else \
+               git -c user.name='IDzEE Pipeline' \
+                   -c user.email='idzee-pipeline@local' \
+                   commit -m 'Impact Build baseline ${GITHUB_SHA}'; \
+             fi && \
+             echo && \
+             echo 'Baseline atual:' && \
+             git log -1 --oneline && \
+             echo && \
+             echo 'Status:' && \
+             git status --short" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+      # ============================================================
+      # 16. VERIFICAR RESULTADO
+      #
+      # Os relatórios continuam sendo gerados normalmente.
       # ============================================================
 
       - name: Verificar resultado do build
         if: env.BUILD_TYPE != 'none'
         shell: bash
         run: |
-
           echo "=========================================="
           echo "RESULTADO"
           echo "=========================================="
-
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
-             echo 'HEAD Git:' && \
+             echo 'Baseline Git:' && \
              git log -1 --oneline && \
-             echo && \
-             echo 'Histórico Git:' && \
-             git log --oneline -5 && \
              echo && \
              echo 'Status Git:' && \
              git status --short && \
@@ -766,48 +620,37 @@ jobs:
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-
-
       # ============================================================
-      # 16. NENHUM BUILD
+      # 17. NENHUM BUILD
       # ============================================================
 
       - name: Nenhum build necessário
         if: env.BUILD_TYPE == 'none'
         shell: bash
         run: |
-
           echo "=========================================="
           echo "BUILD IGNORADO"
           echo "=========================================="
-
           echo "$BUILD_REASON"
-
-
       # ============================================================
-      # 17. RESUMO
+      # 18. RESUMO
       # ============================================================
 
       - name: Resumo da execução
         if: always()
         shell: bash
         run: |
-
           echo "=========================================="
           echo "RESUMO - IDzEE DBB BUILD"
           echo "=========================================="
-
           echo "Aplicação : $APP_NAME"
           echo "Commit    : $GITHUB_SHA"
           echo "Branch    : $GITHUB_REF_NAME"
           echo "Usuário   : $ZOS_USER"
-
           echo
           echo "Alterados : ${CHANGED_COUNT:-N/A}"
           echo "Removidos : ${DELETED_COUNT:-N/A}"
-
           echo
           echo "Build     : ${BUILD_TYPE:-N/A}"
           echo "Motivo    : ${BUILD_REASON:-N/A}"
-
           echo "=========================================="
