@@ -1,607 +1,705 @@
-name: IDzEE Impact and Full Build
+name: IDzEE DBB Build and Wazi Deploy
+
 on:
   push:
     branches:
       - main
+
   workflow_dispatch:
     inputs:
       build_type:
         description: "Tipo de build"
-        required: true
-        default: auto
+        required: false
+        default: "auto"
         type: choice
         options:
           - auto
-          - impact
           - full
+          - impact
+
+
+# ============================================================
+# VARIÁVEIS GLOBAIS
+# ============================================================
+
+env:
+  ZOS_HOST: ${{ secrets.ZOS_HOST }}
+  ZOS_PORT: ${{ secrets.ZOS_PORT }}
+  ZOS_USER: ${{ secrets.ZOS_USER }}
+  ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
+
+  APP_NAME: idzee-pipeline
+
+  IMPACT_BUILD_LIMIT: 10
+
+  # Diretórios locais no runner
+  PIPELINE_TMP: /tmp/idzee-pipeline-${{ github.run_id }}
+
+
 jobs:
+
+  # ============================================================
+  # BUILD + PACKAGE + WAZI DEPLOY GENERATE
+  # ============================================================
+
   build:
+    name: DBB Build and Wazi Deploy
+
     runs-on:
       - self-hosted
-    env:
-      ZOS_HOST: ${{ secrets.ZOS_HOST }}
-      ZOS_PORT: ${{ secrets.ZOS_PORT }}
-      ZOS_USER: ${{ secrets.ZOS_USER }}
-      ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
-      APP_NAME: idzee-pipeline
+      - Linux
+      - X64
+
     steps:
-      # ============================================================
+
+      # ========================================================
       # 1. CHECKOUT
-      # ============================================================
+      # ========================================================
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
-      # ============================================================
-      # 2. VERIFICAR AMBIENTE
-      # ============================================================
+          fetch-depth: 0
+
+
+      # ========================================================
+      # 2. CONFIGURAR VARIÁVEIS
+      # ========================================================
+
+      - name: Configurar variáveis
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "CONFIGURANDO VARIÁVEIS"
+          echo "=========================================="
+
+          USS_USER=$(echo "$ZOS_USER" | tr '[:upper:]' '[:lower:]')
+
+          echo "USS_USER=$USS_USER" >> "$GITHUB_ENV"
+
+          echo "DBB_HLQ=${ZOS_USER}.DBB" >> "$GITHUB_ENV"
+          echo "DBB_ROOT=/u/${USS_USER}/dbb" >> "$GITHUB_ENV"
+
+          echo
+          echo "USS_USER : $USS_USER"
+          echo "DBB_HLQ  : ${ZOS_USER}.DBB"
+          echo "DBB_ROOT : /u/${USS_USER}/dbb"
+
+
+      # ========================================================
+      # 3. VERIFICAR AMBIENTE DO RUNNER
+      # ========================================================
+
       - name: Verificar ambiente
         shell: bash
         run: |
           echo "=========================================="
           echo "AMBIENTE DO RUNNER"
           echo "=========================================="
-          echo "Hostname:"
-          hostname
+
           echo
           echo "Node:"
-          node --version
+          node --version || true
+
           echo
           echo "Zowe:"
           zowe --version
-      # ============================================================
-      # 3. DEFINIR AMBIENTE
-      # ============================================================
-      - name: Definir ambiente DBB
+
+          echo
+          echo "RSE API plugin:"
+          zowe plugins validate @ibm/rse-api-for-zowe-cli || true
+
+          echo
+          echo "Python:"
+          python3 --version
+
+          echo
+          echo "Ansible:"
+          ansible --version
+
+          echo
+          echo "Wazi Deploy:"
+          wazideploy --version
+
+          echo
+          echo "wazideploy-generate:"
+          command -v wazideploy-generate
+
+          echo
+          echo "=========================================="
+
+
+      # ========================================================
+      # 4. TESTAR CONEXÃO COM z/OS
+      # ========================================================
+
+      - name: Testar conexão RSE API
         shell: bash
         run: |
-          USS_USER="${ZOS_USER,,}"
-          DBB_HLQ="${ZOS_USER}.DBB"
-          DBB_ROOT="/u/${USS_USER}/dbb"
-          # Arquivos utilizados internamente pela pipeline ficam
-          # fora do checkout do repositório.
-          PIPELINE_TMP="${RUNNER_TEMP}/${APP_NAME}"
-          mkdir -p "$PIPELINE_TMP"
-          echo "USS_USER=$USS_USER" >> "$GITHUB_ENV"
-          echo "DBB_HLQ=$DBB_HLQ" >> "$GITHUB_ENV"
-          echo "DBB_ROOT=$DBB_ROOT" >> "$GITHUB_ENV"
-          echo "PIPELINE_TMP=$PIPELINE_TMP" >> "$GITHUB_ENV"
           echo "=========================================="
-          echo "AMBIENTE DBB"
+          echo "TESTANDO RSE API"
           echo "=========================================="
-          echo "USS user     : $USS_USER"
-          echo "HLQ          : $DBB_HLQ"
-          echo "DBB root     : $DBB_ROOT"
-          echo "Pipeline tmp : $PIPELINE_TMP"
-      # ============================================================
-      # 4. ANALISAR ALTERAÇÕES
-      #
-      # O GitHub Actions NÃO executa Impact Analysis.
-      #
-      # Ele apenas determina:
-      #
-      #   existe alteração relevante?
-      #
-      # SIM -> dbb build impact
-      # NÃO -> nenhum build
-      #
-      # O DBB será responsável por determinar o conjunto real
-      # de programas impactados.
-      # ============================================================
+
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "/u/${USS_USER}" \
+            "pwd && id" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ========================================================
+      # 5. PREPARAR DIRETÓRIO DBB
+      # ========================================================
+
+      - name: Preparar diretório no USS
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "PREPARANDO WORKSPACE USS"
+          echo "=========================================="
+
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "/u/${USS_USER}" \
+            "mkdir -p '${DBB_ROOT}/${APP_NAME}' && \
+             mkdir -p '${DBB_ROOT}/${APP_NAME}/logs' && \
+             mkdir -p '${DBB_ROOT}/${APP_NAME}/cobol' && \
+             mkdir -p '${DBB_ROOT}/${APP_NAME}/copybook' && \
+             mkdir -p '${DBB_ROOT}/${APP_NAME}/bms'" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ========================================================
+      # 6. SINCRONIZAR REPOSITÓRIO COM USS
+      # ========================================================
+
+      - name: Upload do projeto para USS
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "UPLOAD DO PROJETO"
+          echo "=========================================="
+
+          zowe rse-api-for-zowe-cli upload dir-to-uss \
+            "." \
+            "${DBB_ROOT}/${APP_NAME}" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ========================================================
+      # 7. VERIFICAR WORKSPACE REMOTO
+      # ========================================================
+
+      - name: Verificar workspace remoto
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "WORKSPACE REMOTO"
+          echo "=========================================="
+
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            "pwd && ls -la" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ========================================================
+      # 8. ANALISAR ALTERAÇÕES
+      # ========================================================
+
       - name: Analisar alterações
         shell: bash
         run: |
           echo "=========================================="
-          echo "ANÁLISE DAS ALTERAÇÕES"
+          echo "ANÁLISE DE ALTERAÇÕES"
           echo "=========================================="
-          CHANGED_FILES="${PIPELINE_TMP}/changed-files.txt"
-          DELETED_FILES="${PIPELINE_TMP}/deleted-files.txt"
-          # --------------------------------------------------------
-          # Tipo solicitado
-          # --------------------------------------------------------
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            REQUESTED_BUILD="${{ github.event.inputs.build_type }}"
-          else
-            REQUESTED_BUILD="auto"
+
+          # workflow_dispatch pode forçar FULL ou IMPACT
+          REQUESTED_BUILD="${{ github.event.inputs.build_type }}"
+
+          if [[ "$REQUESTED_BUILD" == "full" ]]; then
+
+            echo "BUILD_TYPE=full" >> "$GITHUB_ENV"
+            echo "BUILD_REASON=Full build solicitado manualmente" >> "$GITHUB_ENV"
+            echo "CHANGED_COUNT=0" >> "$GITHUB_ENV"
+            echo "DELETED_COUNT=0" >> "$GITHUB_ENV"
+
+            exit 0
+
+          elif [[ "$REQUESTED_BUILD" == "impact" ]]; then
+
+            echo "BUILD_TYPE=impact" >> "$GITHUB_ENV"
+            echo "BUILD_REASON=Impact build solicitado manualmente" >> "$GITHUB_ENV"
+
           fi
-          echo "Modo solicitado: $REQUESTED_BUILD"
-          # --------------------------------------------------------
-          # Identificar alterações do commit
-          # --------------------------------------------------------
-          if git rev-parse HEAD^ >/dev/null 2>&1; then
-            git diff \
-              --name-only \
-              --diff-filter=ACMR \
-              HEAD^ HEAD \
-              > "$CHANGED_FILES"
-            git diff \
-              --name-only \
-              --diff-filter=D \
-              HEAD^ HEAD \
-              > "$DELETED_FILES"
-          else
-            # Caso não exista commit anterior disponível
-            git ls-files > "$CHANGED_FILES"
-            : > "$DELETED_FILES"
+
+          # Se não houver commit anterior, FULL
+          if ! git rev-parse HEAD^ >/dev/null 2>&1; then
+
+            echo "BUILD_TYPE=full" >> "$GITHUB_ENV"
+            echo "BUILD_REASON=Sem histórico Git suficiente" >> "$GITHUB_ENV"
+            echo "CHANGED_COUNT=0" >> "$GITHUB_ENV"
+            echo "DELETED_COUNT=0" >> "$GITHUB_ENV"
+
+            exit 0
           fi
+
           echo
-          echo "Arquivos adicionados/modificados:"
-          echo "------------------------------------------"
-          cat "$CHANGED_FILES" || true
-          echo "------------------------------------------"
+          echo "HEAD:"
+          git rev-parse HEAD
+
           echo
-          echo "Arquivos removidos:"
-          echo "------------------------------------------"
-          cat "$DELETED_FILES" || true
-          echo "------------------------------------------"
-          # --------------------------------------------------------
-          # Contadores
-          # --------------------------------------------------------
-          CHANGED_COUNT=$(wc -l < "$CHANGED_FILES" | tr -d ' ')
-          DELETED_COUNT=$(wc -l < "$DELETED_FILES" | tr -d ' ')
+          echo "HEAD anterior:"
+          git rev-parse HEAD^
+
           echo
-          echo "Arquivos adicionados/modificados : $CHANGED_COUNT"
-          echo "Arquivos removidos               : $DELETED_COUNT"
-          # ========================================================
-          # DECISÃO
-          # ========================================================
-          BUILD_TYPE="$REQUESTED_BUILD"
-          BUILD_REASON=""
-          # --------------------------------------------------------
-          # AUTO
-          #
-          # Qualquer alteração relevante é entregue ao lifecycle
-          # impact. O DBB decide o conjunto realmente impactado.
-          # --------------------------------------------------------
-          if [[ "$BUILD_TYPE" == "auto" ]]; then
-            RELEVANT_CHANGE=false
-            # Arquivos adicionados/modificados relevantes
-            if grep -Eiq '\.(cbl|cbcw|cpy|bms|lnk)$' \
-              "$CHANGED_FILES"; then
-              RELEVANT_CHANGE=true
-            fi
-            # Arquivos removidos relevantes
-            if grep -Eiq '\.(cbl|cbcw|cpy|bms|lnk)$' \
-              "$DELETED_FILES"; then
-              RELEVANT_CHANGE=true
-            fi
-            # Configuração DBB também é relevante
-            if grep -Eq \
-              '(^|/)(dbb-app\.yaml|dbb-build\.yaml)$' \
-              "$CHANGED_FILES"; then
-              RELEVANT_CHANGE=true
-            fi
-            if [[ "$RELEVANT_CHANGE" == "true" ]]; then
-              BUILD_TYPE="impact"
-              BUILD_REASON="Alteração relevante detectada - análise delegada ao DBB"
-            else
-              BUILD_TYPE="none"
-              BUILD_REASON="Nenhuma alteração relevante para build"
-            fi
-          # --------------------------------------------------------
-          # IMPACT MANUAL
-          # --------------------------------------------------------
-          elif [[ "$BUILD_TYPE" == "impact" ]]; then
-            BUILD_REASON="Impact Build solicitado manualmente"
-          # --------------------------------------------------------
-          # FULL MANUAL
-          # --------------------------------------------------------
-          elif [[ "$BUILD_TYPE" == "full" ]]; then
-            BUILD_REASON="Full Build solicitado manualmente"
-          fi
-          echo
-          echo "=========================================="
-          echo "DECISÃO"
-          echo "=========================================="
-          echo "Build  : $BUILD_TYPE"
-          echo "Motivo : $BUILD_REASON"
-          echo "=========================================="
-          echo "BUILD_TYPE=$BUILD_TYPE" >> "$GITHUB_ENV"
-          echo "BUILD_REASON=$BUILD_REASON" >> "$GITHUB_ENV"
-          echo "CHANGED_COUNT=$CHANGED_COUNT" >> "$GITHUB_ENV"
-          echo "DELETED_COUNT=$DELETED_COUNT" >> "$GITHUB_ENV"
-      # ============================================================
-      # 5. PLANO DE EXECUÇÃO
-      # ============================================================
-      - name: Plano de execução
-        shell: bash
-        run: |
-          echo "=========================================="
-          echo "IDzEE DBB BUILD"
-          echo "=========================================="
-          echo "Aplicação : $APP_NAME"
-          echo "Usuário   : $ZOS_USER"
-          echo "HLQ       : $DBB_HLQ"
-          echo "USS       : $DBB_ROOT/$APP_NAME"
+          echo "Alterações:"
+
+          git diff --name-status HEAD^ HEAD || true
+
+          CHANGED_COUNT=$(git diff \
+            --diff-filter=ACMR \
+            --name-only HEAD^ HEAD \
+            | wc -l \
+            | tr -d ' ')
+
+          DELETED_COUNT=$(git diff \
+            --diff-filter=D \
+            --name-only HEAD^ HEAD \
+            | wc -l \
+            | tr -d ' ')
+
           echo
           echo "Alterados : $CHANGED_COUNT"
           echo "Removidos : $DELETED_COUNT"
-          echo
-          echo "Build     : $BUILD_TYPE"
-          echo "Motivo    : $BUILD_REASON"
-          echo "=========================================="
-      # ============================================================
-      # 6. CONFIGURAR UPLOAD
-      #
-      # Arquivos internos do GitHub não são enviados.
-      #
-      # Os arquivos changed-files.txt etc. não precisam ser
-      # excluídos porque agora estão em $RUNNER_TEMP.
-      # ============================================================
-      - name: Configurar upload
-        if: env.BUILD_TYPE != 'none'
-        shell: bash
-        run: |
-          cat > .zosattributes <<'EOF'
-          .git/        -
-          .github/     -
-          .DS_Store    -
-          EOF
-      # ============================================================
-      # 7. PREPARAR WORKSPACE NO Z/OS
-      #
-      # O workspace é persistente para permitir:
-      #
-      #   - Git HEAD
-      #   - histórico
-      #   - Metadata do DBB
-      #
-      # logs/ continua existindo normalmente.
-      # ============================================================
-      - name: Preparar workspace no z/OS
-        if: env.BUILD_TYPE != 'none'
-        shell: bash
-        run: |
-          echo "=========================================="
-          echo "PREPARANDO WORKSPACE"
-          echo "=========================================="
-          PREP_CMD="\
-            mkdir -p '${DBB_ROOT}' && \
-            mkdir -p '${DBB_ROOT}/${APP_NAME}' && \
-            mkdir -p '${DBB_ROOT}/${APP_NAME}/logs'"
-          zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "/u" \
-            "$PREP_CMD" \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD"
-      # ============================================================
-      # 8A. FULL - UPLOAD COMPLETO
-      #
-      # Full continua disponível manualmente.
-      # ============================================================
-      - name: Upload completo para o z/OS
-        if: env.BUILD_TYPE == 'full'
-        shell: bash
-        run: |
-          echo "=========================================="
-          echo "FULL UPLOAD"
-          echo "=========================================="
-          echo "Destino:"
-          echo "$DBB_ROOT/$APP_NAME"
-          zowe rse-api-for-zowe-cli upload dir-to-uss \
-            "." \
-            "${DBB_ROOT}/${APP_NAME}" \
-            --recursive \
-            --attributes .zosattributes \
-            --max-concurrent-requests 5 \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD"
-      # ============================================================
-      # 8B. IMPACT - REMOVER ARQUIVOS DELETADOS
-      #
-      # Antes do upload incremental, refletimos no USS os arquivos
-      # que foram removidos do Git.
-      # ============================================================
-      - name: Remover arquivos deletados do USS
-        if: env.BUILD_TYPE == 'impact'
-        shell: bash
-        run: |
-          DELETED_FILES="${PIPELINE_TMP}/deleted-files.txt"
-          echo "=========================================="
-          echo "ARQUIVOS REMOVIDOS"
-          echo "=========================================="
-          if [[ ! -s "$DELETED_FILES" ]]; then
-            echo "Nenhum arquivo removido."
-          else
-            while IFS= read -r FILE
-            do
-              [[ -z "$FILE" ]] && continue
-              REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
-              echo "Removendo:"
-              echo "$REMOTE_FILE"
-              zowe rse-api-for-zowe-cli issue unix-shell \
-                --cwd "${DBB_ROOT}/${APP_NAME}" \
-                "rm -f '${REMOTE_FILE}'" \
-                --host "$ZOS_HOST" \
-                --port "$ZOS_PORT" \
-                --user "$ZOS_USER" \
-                --password "$ZOS_PASSWORD"
-            done < "$DELETED_FILES"
+
+          echo "CHANGED_COUNT=$CHANGED_COUNT" >> "$GITHUB_ENV"
+          echo "DELETED_COUNT=$DELETED_COUNT" >> "$GITHUB_ENV"
+
+          # Se usuário forçou IMPACT
+          if [[ "$REQUESTED_BUILD" == "impact" ]]; then
+            exit 0
           fi
-      # ============================================================
-      # 9. IMPACT - UPLOAD INCREMENTAL
-      #
-      # Somente arquivos adicionados/modificados são enviados.
-      #
-      # .git permanece intacto.
-      # logs/ permanece intacto.
-      # ============================================================
-      - name: Upload incremental para o z/OS
-        if: env.BUILD_TYPE == 'impact'
-        shell: bash
-        run: |
-          CHANGED_FILES="${PIPELINE_TMP}/changed-files.txt"
-          echo "=========================================="
-          echo "IMPACT - UPLOAD INCREMENTAL"
-          echo "=========================================="
-          echo "Arquivos:"
-          cat "$CHANGED_FILES" || true
-          echo
-          while IFS= read -r FILE
-          do
-            [[ -z "$FILE" ]] && continue
-            LOCAL_FILE="$FILE"
-            REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
-            REMOTE_DIR=$(dirname "$REMOTE_FILE")
-            # Arquivo pode ter desaparecido entre os passos.
-            if [[ ! -f "$LOCAL_FILE" ]]; then
-              echo "Ignorando arquivo inexistente:"
-              echo "$LOCAL_FILE"
-              continue
-            fi
-            echo "------------------------------------------"
-            echo "Arquivo : $LOCAL_FILE"
-            echo "Destino : $REMOTE_FILE"
-            echo "------------------------------------------"
-            # ------------------------------------------------------
-            # Criar diretório remoto
-            # ------------------------------------------------------
-            zowe rse-api-for-zowe-cli issue unix-shell \
-              --cwd "${DBB_ROOT}/${APP_NAME}" \
-              "mkdir -p '${REMOTE_DIR}'" \
-              --host "$ZOS_HOST" \
-              --port "$ZOS_PORT" \
-              --user "$ZOS_USER" \
-              --password "$ZOS_PASSWORD"
-            # ------------------------------------------------------
-            # Upload
-            # ------------------------------------------------------
-            zowe rse-api-for-zowe-cli upload file-to-uss \
-              "$LOCAL_FILE" \
-              "$REMOTE_FILE" \
-              --host "$ZOS_HOST" \
-              --port "$ZOS_PORT" \
-              --user "$ZOS_USER" \
-              --password "$ZOS_PASSWORD"
-          done < "$CHANGED_FILES"
-      # ============================================================
-      # 10. VERIFICAR WORKSPACE
-      # ============================================================
-      - name: Verificar workspace no USS
-        if: env.BUILD_TYPE != 'none'
+
+          # Arquivo removido -> FULL
+          if [[ "$DELETED_COUNT" -gt 0 ]]; then
+
+            echo "BUILD_TYPE=full" >> "$GITHUB_ENV"
+            echo "BUILD_REASON=Arquivo removido - Full Build necessário" >> "$GITHUB_ENV"
+
+            exit 0
+          fi
+
+          # Muitas alterações -> FULL
+          if [[ "$CHANGED_COUNT" -gt "$IMPACT_BUILD_LIMIT" ]]; then
+
+            echo "BUILD_TYPE=full" >> "$GITHUB_ENV"
+            echo "BUILD_REASON=Quantidade de alterações acima do limite" >> "$GITHUB_ENV"
+
+            exit 0
+          fi
+
+          # Nenhuma alteração relevante
+          if [[ "$CHANGED_COUNT" -eq 0 ]]; then
+
+            echo "BUILD_TYPE=none" >> "$GITHUB_ENV"
+            echo "BUILD_REASON=Nenhuma alteração para compilar" >> "$GITHUB_ENV"
+
+            exit 0
+          fi
+
+          # Caso normal -> IMPACT
+          echo "BUILD_TYPE=impact" >> "$GITHUB_ENV"
+          echo "BUILD_REASON=Alterações elegíveis para Impact Build" >> "$GITHUB_ENV"
+
+
+      # ========================================================
+      # 9. MOSTRAR DECISÃO
+      # ========================================================
+
+      - name: Mostrar decisão do build
         shell: bash
         run: |
           echo "=========================================="
-          echo "WORKSPACE USS"
+          echo "DECISÃO"
           echo "=========================================="
-          zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            "pwd && \
-             test -f dbb-app.yaml && \
-             echo 'dbb-app.yaml encontrado' && \
-             test -d logs && \
-             echo 'logs/ encontrado' && \
-             ls -la" \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD"
-      # ============================================================
-      # 11. PREPARAR GIT PARA FULL
-      #
-      # O Full manual cria uma nova baseline Git.
-      #
-      # logs/ NÃO é removido.
-      #
-      # Apenas é ignorado pelo Git para evitar:
-      #
-      #   fatal: can't add logs/BuildReport.html
-      #
-      # O DBB continua podendo apagar/recriar logs durante o build.
-      # ============================================================
-      - name: Preparar Git para Full Build
-        if: env.BUILD_TYPE == 'full'
-        shell: bash
-        run: |
-          echo "=========================================="
-          echo "CRIANDO BASELINE GIT"
-          echo "=========================================="
-          zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            ". ~/.profile && \
-             rm -rf .git && \
-             printf 'logs/\n' > .gitignore && \
-             git init -b ${GITHUB_REF_NAME} && \
-             git add . && \
-             git -c user.name='IDzEE Pipeline' \
-                 -c user.email='idzee-pipeline@local' \
-                 commit -m 'Full Build baseline ${GITHUB_SHA}' && \
-             echo && \
-             echo 'Baseline criada:' && \
-             git log -1 --oneline && \
-             echo && \
-             echo 'Status:' && \
-             git status --short" \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD"
-      # ============================================================
-      # 12. VERIFICAR GIT PARA IMPACT
-      #
-      # O Impact preserva o HEAD anterior.
-      #
-      # Não recriamos .git.
-      # ============================================================
-      - name: Verificar Git para Impact
-        if: env.BUILD_TYPE == 'impact'
-        shell: bash
-        run: |
-          echo "=========================================="
-          echo "GIT - IMPACT"
-          echo "=========================================="
-          zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            ". ~/.profile && \
-             test -d .git && \
-             git rev-parse --verify HEAD && \
-             echo && \
-             echo 'HEAD:' && \
-             git log -1 --oneline && \
-             echo && \
-             echo 'Alterações:' && \
-             git status --short && \
-             echo && \
-             echo 'Diff:' && \
-             git diff --stat" \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD"
-      # ============================================================
-      # 13. CRIAR SNAPSHOT GIT PARA IMPACT
-      #
-      # O ImpactAnalysis compara o hash Git atual com a baseline
-      # registrada no BuildResult anterior. Por isso, o novo estado
-      # precisa estar commitado ANTES do dbb build impact.
-      #
-      # logs/ fica fora do Git para não contaminar o snapshot.
-      # ============================================================
-      - name: Criar snapshot Git para Impact
-        if: env.BUILD_TYPE == 'impact'
-        shell: bash
-        run: |
-          echo "=========================================="
-          echo "CRIANDO SNAPSHOT GIT PARA IMPACT"
-          echo "=========================================="
-          zowe rse-api-for-zowe-cli issue unix-shell \
-            --cwd "${DBB_ROOT}/${APP_NAME}" \
-            ". ~/.profile && \
-             test -d .git && \
-             echo 'HEAD anterior:' && \
-             git rev-parse HEAD && \
-             git log -1 --oneline && \
-             echo && \
-             echo 'Alterações antes do snapshot:' && \
-             git status --short && \
-             echo && \
-             touch .gitignore && \
-             (grep -qxF 'logs/' .gitignore || echo 'logs/' >> .gitignore) && \
-             git rm -r --cached --ignore-unmatch logs >/dev/null 2>&1 || true; \
-             git add -A && \
-             if git diff --cached --quiet; then \
-               echo 'Nenhuma alteração para criar novo snapshot.'; \
-             else \
-               git -c user.name='IDzEE Pipeline' \
-                   -c user.email='idzee-pipeline@local' \
-                   commit -m 'Pipeline snapshot ${GITHUB_SHA}'; \
-             fi && \
-             echo && \
-             echo 'HEAD atual:' && \
-             git rev-parse HEAD && \
-             git log -1 --oneline && \
-             echo && \
-             echo 'Status após snapshot:' && \
-             git status --short" \
-            --host "$ZOS_HOST" \
-            --port "$ZOS_PORT" \
-            --user "$ZOS_USER" \
-            --password "$ZOS_PASSWORD"
-      # ============================================================
-      # 14. FULL BUILD
-      #
-      # Utilizado somente quando solicitado explicitamente.
-      # ============================================================
-      - name: Executar DBB Full Build
+
+          echo "Build  : $BUILD_TYPE"
+          echo "Motivo : $BUILD_REASON"
+
+          echo "Alterados : ${CHANGED_COUNT:-0}"
+          echo "Removidos : ${DELETED_COUNT:-0}"
+
+
+      # ========================================================
+      # 10. FULL BUILD
+      # ========================================================
+
+      - name: FULL BUILD
         if: env.BUILD_TYPE == 'full'
         shell: bash
         run: |
           echo "=========================================="
           echo "FULL BUILD"
           echo "=========================================="
-          echo "Motivo: $BUILD_REASON"
-          echo "=========================================="
+
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
-             \$DBB_HOME/bin/dbb build full \
-             --hlq ${DBB_HLQ}" \
+             \$DBB_HOME/bin/dbb build \
+             --hlq '${DBB_HLQ}' \
+             --fullBuild" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-      # ============================================================
-      # 15. IMPACT BUILD
-      #
-      # Caminho padrão.
-      #
-      # O DBB executa a ImpactAnalysis.
-      #
-      # Se não existir resultado anterior no Metadata Store,
-      # o próprio DBB pode gerar uma full build list.
-      # ============================================================
-      - name: Executar DBB Impact Build
+
+
+      # ========================================================
+      # 11. IMPACT BUILD
+      # ========================================================
+
+      - name: IMPACT BUILD
         if: env.BUILD_TYPE == 'impact'
         shell: bash
         run: |
           echo "=========================================="
           echo "IMPACT BUILD"
           echo "=========================================="
-          echo "Motivo: $BUILD_REASON"
-          echo "=========================================="
+
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
-             \$DBB_HOME/bin/dbb build impact \
-             --hlq ${DBB_HLQ}" \
+             \$DBB_HOME/bin/dbb build \
+             --hlq '${DBB_HLQ}' \
+             --impactBuild" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-      # ============================================================
-      # 16. VERIFICAR RESULTADO
-      #
-      # Os relatórios continuam sendo gerados normalmente.
-      # ============================================================
+
+
+      # ========================================================
+      # 12. BASELINE APÓS FULL BUILD
+      # ========================================================
+
+      - name: Criar baseline após Full Build
+        if: env.BUILD_TYPE == 'full'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "CRIANDO BASELINE"
+          echo "=========================================="
+
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            ". ~/.profile && \
+             rm -rf .git && \
+             git init && \
+             git config user.name 'GitHub Actions' && \
+             git config user.email 'github-actions@users.noreply.github.com' && \
+             git add . && \
+             git commit -m 'Full Build baseline ${GITHUB_SHA}'" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ========================================================
+      # 13. VERIFICAR RESULTADO DO BUILD
+      # ========================================================
+
       - name: Verificar resultado do build
         if: env.BUILD_TYPE != 'none'
         shell: bash
         run: |
           echo "=========================================="
-          echo "RESULTADO"
+          echo "RESULTADO DO BUILD"
           echo "=========================================="
+
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
             ". ~/.profile && \
              echo 'Baseline Git:' && \
-             git log -1 --oneline && \
+             git log -1 --oneline || true && \
              echo && \
              echo 'Status Git:' && \
-             git status --short && \
+             git status --short || true && \
              echo && \
-             echo 'Relatórios DBB:' && \
+             echo 'Relatórios / Packages:' && \
              ls -la logs" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
             --password "$ZOS_PASSWORD"
-      # ============================================================
-      # 17. NENHUM BUILD
-      # ============================================================
+
+
+      # ========================================================
+      # 14. LOCALIZAR PACKAGE GERADO PELO DBB
+      # ========================================================
+
+      - name: Localizar package Wazi Deploy
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "LOCALIZANDO PACKAGE DBB"
+          echo "=========================================="
+
+          PACKAGE_OUTPUT=$(zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            "ls -1t logs/*.tar 2>/dev/null | head -1" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD")
+
+          echo "$PACKAGE_OUTPUT"
+
+          PACKAGE_REMOTE=$(echo "$PACKAGE_OUTPUT" \
+            | grep -o '[^[:space:]]*\.tar' \
+            | tail -1)
+
+          if [[ -z "$PACKAGE_REMOTE" ]]; then
+            echo
+            echo "ERRO: nenhum package .tar foi encontrado em logs/"
+            exit 1
+          fi
+
+          PACKAGE_BASENAME=$(basename "$PACKAGE_REMOTE")
+
+          # Caso ls tenha retornado somente logs/arquivo.tar,
+          # transformamos em caminho USS absoluto.
+          if [[ "$PACKAGE_REMOTE" != /* ]]; then
+            PACKAGE_REMOTE="${DBB_ROOT}/${APP_NAME}/${PACKAGE_REMOTE}"
+          fi
+
+          echo
+          echo "Package remoto:"
+          echo "$PACKAGE_REMOTE"
+
+          echo
+          echo "Package basename:"
+          echo "$PACKAGE_BASENAME"
+
+          echo "PACKAGE_REMOTE=$PACKAGE_REMOTE" >> "$GITHUB_ENV"
+          echo "PACKAGE_BASENAME=$PACKAGE_BASENAME" >> "$GITHUB_ENV"
+
+
+      # ========================================================
+      # 15. VALIDAR PACKAGE NO z/OS
+      # ========================================================
+
+      - name: Validar conteúdo do package no zOS
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "PACKAGE NO z/OS"
+          echo "=========================================="
+
+          zowe rse-api-for-zowe-cli issue unix-shell \
+            --cwd "${DBB_ROOT}/${APP_NAME}" \
+            "tar -tf '${PACKAGE_REMOTE}'" \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+
+      # ========================================================
+      # 16. PREPARAR DIRETÓRIO LOCAL PARA WAZI DEPLOY
+      # ========================================================
+
+      - name: Preparar diretório Wazi Deploy
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "PREPARANDO WAZI DEPLOY"
+          echo "=========================================="
+
+          rm -rf "$PIPELINE_TMP"
+
+          mkdir -p "$PIPELINE_TMP/package"
+          mkdir -p "$PIPELINE_TMP/deploy"
+
+          echo "Diretório:"
+          echo "$PIPELINE_TMP"
+
+
+      # ========================================================
+      # 17. DOWNLOAD DO PACKAGE USS -> RUNNER
+      #
+      # IMPORTANTE:
+      # O .tar deve ser transferido em BINARY.
+      #
+      # Caso a sua versão do plugin RSE API utilize sintaxe
+      # diferente para download file-from-uss, ajuste somente
+      # este step.
+      # ========================================================
+
+      - name: Baixar package para o runner
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "DOWNLOAD PACKAGE"
+          echo "=========================================="
+
+          PACKAGE_LOCAL="${PIPELINE_TMP}/package/${PACKAGE_BASENAME}"
+
+          echo "Remoto:"
+          echo "$PACKAGE_REMOTE"
+
+          echo
+          echo "Local:"
+          echo "$PACKAGE_LOCAL"
+
+          zowe rse-api-for-zowe-cli download file-from-uss \
+            "$PACKAGE_REMOTE" \
+            "$PACKAGE_LOCAL" \
+            --binary \
+            --host "$ZOS_HOST" \
+            --port "$ZOS_PORT" \
+            --user "$ZOS_USER" \
+            --password "$ZOS_PASSWORD"
+
+          if [[ ! -f "$PACKAGE_LOCAL" ]]; then
+            echo
+            echo "ERRO: package não encontrado no runner após download."
+            exit 1
+          fi
+
+          echo "PACKAGE_LOCAL=$PACKAGE_LOCAL" >> "$GITHUB_ENV"
+
+          echo
+          echo "Package baixado:"
+          ls -lh "$PACKAGE_LOCAL"
+
+
+      # ========================================================
+      # 18. VALIDAR PACKAGE NO RUNNER
+      # ========================================================
+
+      - name: Validar package no runner
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "VALIDANDO PACKAGE NO RUNNER"
+          echo "=========================================="
+
+          echo
+          echo "Arquivo:"
+          ls -lh "$PACKAGE_LOCAL"
+
+          echo
+          echo "Conteúdo:"
+          tar -tf "$PACKAGE_LOCAL"
+
+          echo
+          echo "Manifest:"
+          tar -xOf "$PACKAGE_LOCAL" ./wazideploy_manifest.yml || \
+          tar -xOf "$PACKAGE_LOCAL" wazideploy_manifest.yml
+
+
+      # ========================================================
+      # 19. VERIFICAR DEPLOYMENT METHOD
+      # ========================================================
+
+      - name: Verificar deployment method
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "DEPLOYMENT METHOD"
+          echo "=========================================="
+
+          if [[ ! -f "deploy/static-deployment-method.yml" ]]; then
+            echo "ERRO:"
+            echo "deploy/static-deployment-method.yml não existe."
+            exit 1
+          fi
+
+          echo
+          cat deploy/static-deployment-method.yml
+
+
+      # ========================================================
+      # 20. WAZI DEPLOY - GENERATE
+      # ========================================================
+
+      - name: Gerar deployment plan
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "WAZI DEPLOY - GENERATE"
+          echo "=========================================="
+
+          DEPLOYMENT_PLAN="${PIPELINE_TMP}/deploy/deployment_plan.yml"
+
+          wazideploy-generate \
+            -dm deploy/static-deployment-method.yml \
+            -dp "$DEPLOYMENT_PLAN" \
+            -pif "$PACKAGE_LOCAL" \
+            -dpn "CICS" \
+            -dpv "1.0.0" \
+            -dpd "MortgageApplication"
+
+          if [[ ! -f "$DEPLOYMENT_PLAN" ]]; then
+            echo
+            echo "ERRO: deployment_plan.yml não foi gerado."
+            exit 1
+          fi
+
+          echo "DEPLOYMENT_PLAN=$DEPLOYMENT_PLAN" >> "$GITHUB_ENV"
+
+          echo
+          echo "=========================================="
+          echo "DEPLOYMENT PLAN GERADO"
+          echo "=========================================="
+
+          ls -lh "$DEPLOYMENT_PLAN"
+
+          echo
+          cat "$DEPLOYMENT_PLAN"
+
+
+      # ========================================================
+      # 21. LISTAR ARQUIVOS GERADOS PELO WAZI DEPLOY
+      # ========================================================
+
+      - name: Listar saída Wazi Deploy
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "ARQUIVOS WAZI DEPLOY"
+          echo "=========================================="
+
+          find "$PIPELINE_TMP" \
+            -maxdepth 3 \
+            -type f \
+            -print
+
+
+      # ========================================================
+      # 22. NENHUM BUILD
+      # ========================================================
+
       - name: Nenhum build necessário
         if: env.BUILD_TYPE == 'none'
         shell: bash
@@ -609,25 +707,52 @@ jobs:
           echo "=========================================="
           echo "BUILD IGNORADO"
           echo "=========================================="
+
           echo "$BUILD_REASON"
-      # ============================================================
-      # 18. RESUMO
-      # ============================================================
+
+
+      # ========================================================
+      # 23. RESUMO
+      # ========================================================
+
       - name: Resumo da execução
         if: always()
         shell: bash
         run: |
           echo "=========================================="
-          echo "RESUMO - IDzEE DBB BUILD"
+          echo "RESUMO"
           echo "=========================================="
+
           echo "Aplicação : $APP_NAME"
           echo "Commit    : $GITHUB_SHA"
           echo "Branch    : $GITHUB_REF_NAME"
           echo "Usuário   : $ZOS_USER"
+
           echo
           echo "Alterados : ${CHANGED_COUNT:-N/A}"
           echo "Removidos : ${DELETED_COUNT:-N/A}"
+
           echo
           echo "Build     : ${BUILD_TYPE:-N/A}"
           echo "Motivo    : ${BUILD_REASON:-N/A}"
+
+          if [[ "${BUILD_TYPE:-none}" != "none" ]]; then
+
+            echo
+            echo "Package remoto:"
+            echo "${PACKAGE_REMOTE:-N/A}"
+
+            echo
+            echo "Package local:"
+            echo "${PACKAGE_LOCAL:-N/A}"
+
+            echo
+            echo "Deployment Plan:"
+            echo "${DEPLOYMENT_PLAN:-N/A}"
+
+          fi
+
+          echo
+          echo "=========================================="
+          echo "PIPELINE FINALIZADA"
           echo "=========================================="

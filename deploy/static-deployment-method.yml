@@ -1,0 +1,73 @@
+---
+apiVersion: deploy.ibm.com/v1
+kind: DeploymentMethod
+metadata:
+  name: "CICS"
+  version: "1.0.0"
+  description: |
+    This deployment method can be used for the deployment of a CICS application.
+
+activities:
+  - name: PACKAGE
+    description: |
+      This activity handles the package
+    actions:
+        - name: PACKAGE
+          steps:
+          - name: PACKAGE
+    tags:
+    - always
+
+  - name: DEPLOY_MODULES
+    description: |
+      This activity is dedicated to the deployment of the artifacts into the PDS
+    actions:
+        - name: UPDATE
+          description: |
+            This action is applicable when artifacts are updated
+          states:
+             - UNDEFINED
+          steps:
+          - name: MEMBER_COPY
+            description: |
+              This step copies artifacts into PDSs
+    types:
+      - name: 'DBRM'
+      - name: 'LOAD'
+      - name: 'CICSLOAD'
+      - name: 'MAPLOAD'
+      - name: 'JCL'
+    is_artifact: True
+
+  - name: DB2
+    description: |
+      This activity is dedicated to DBRM bind modules
+    actions:
+        - name: UPDATE
+          description: |
+            This action is applicable when DBRM modules are updated
+          states:
+             - UNDEFINED
+          steps:
+          - name: DB2_BIND_PACKAGE
+          - name: DB2_BIND_PLAN
+    types:
+      - name: 'DBRM'
+    is_artifact: True
+
+  - name: CICS
+    description: |
+       This activity is dedicated to CICS load modules
+    actions:
+        - name: UPDATE
+          states:
+             - UNDEFINED
+          steps:
+          - name: PROG_UPDATE
+            properties:
+            - key: "template"
+              value: "cics_cmci_prog_update"
+    types:
+      - name: 'CICSLOAD'
+      - name: 'MAPLOAD'
+    is_artifact: True
