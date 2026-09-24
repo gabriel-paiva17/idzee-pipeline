@@ -86,3 +86,5 @@ application:
             - scanner: COBOL
               extensions: "cbl,cob,cobol,cbcw"
 
+    - task: Package
+
