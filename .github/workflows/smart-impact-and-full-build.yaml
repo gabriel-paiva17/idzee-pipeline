@@ -1,53 +1,33 @@
 name: IDzEE Impact and Full Build
 
 on:
-
   push:
-
     branches:
-
       - main
 
   workflow_dispatch:
-
     inputs:
-
       build_type:
-
         description: "Tipo de build"
-
         required: true
-
         default: auto
-
         type: choice
-
         options:
-
           - auto
-
           - impact
-
           - full
 
 jobs:
-
   build:
 
     runs-on:
-
       - self-hosted
 
     env:
-
       ZOS_HOST: ${{ secrets.ZOS_HOST }}
-
       ZOS_PORT: ${{ secrets.ZOS_PORT }}
-
       ZOS_USER: ${{ secrets.ZOS_USER }}
-
       ZOS_PASSWORD: ${{ secrets.ZOS_PASSWORD }}
-
       APP_NAME: idzee-pipeline
 
     steps:
@@ -57,11 +37,8 @@ jobs:
       # ============================================================
 
       - name: Checkout
-
         uses: actions/checkout@v4
-
         with:
-
           fetch-depth: 2
 
       # ============================================================
@@ -69,43 +46,29 @@ jobs:
       # ============================================================
 
       - name: Verificar ambiente
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "AMBIENTE DO RUNNER"
-
           echo "=========================================="
 
           echo "Hostname:"
-
           hostname
 
           echo
-
           echo "Node:"
-
           node --version
 
           echo
-
           echo "Zowe:"
-
           zowe --version
 
           echo
-
           echo "Ansible:"
-
           ansible --version
 
           echo
-
           echo "Wazi Deploy Generate:"
-
           command -v wazideploy-generate
 
       # ============================================================
@@ -113,11 +76,8 @@ jobs:
       # ============================================================
 
       - name: Definir ambiente DBB
-
         shell: bash
-
         run: |
-
           USS_USER="${ZOS_USER,,}"
 
           DBB_HLQ="${ZOS_USER}.DBB"
@@ -140,17 +100,12 @@ jobs:
           echo "PIPELINE_TMP=$PIPELINE_TMP" >> "$GITHUB_ENV"
 
           echo "=========================================="
-
           echo "AMBIENTE DBB"
-
           echo "=========================================="
 
           echo "USS user     : $USS_USER"
-
           echo "HLQ          : $DBB_HLQ"
-
           echo "DBB root     : $DBB_ROOT"
-
           echo "Pipeline tmp : $PIPELINE_TMP"
 
       # ============================================================
@@ -170,15 +125,10 @@ jobs:
       # ============================================================
 
       - name: Analisar alterações
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "ANÁLISE DAS ALTERAÇÕES"
-
           echo "=========================================="
 
           CHANGED_FILES="${PIPELINE_TMP}/changed-files.txt"
@@ -230,9 +180,7 @@ jobs:
           fi
 
           echo
-
           echo "Arquivos adicionados/modificados:"
-
           echo "------------------------------------------"
 
           cat "$CHANGED_FILES" || true
@@ -240,9 +188,7 @@ jobs:
           echo "------------------------------------------"
 
           echo
-
           echo "Arquivos removidos:"
-
           echo "------------------------------------------"
 
           cat "$DELETED_FILES" || true
@@ -258,9 +204,7 @@ jobs:
           DELETED_COUNT=$(wc -l < "$DELETED_FILES" | tr -d ' ')
 
           echo
-
           echo "Arquivos adicionados/modificados : $CHANGED_COUNT"
-
           echo "Arquivos removidos               : $DELETED_COUNT"
 
           # ========================================================
@@ -343,15 +287,11 @@ jobs:
           fi
 
           echo
-
           echo "=========================================="
-
           echo "DECISÃO"
-
           echo "=========================================="
 
           echo "Build  : $BUILD_TYPE"
-
           echo "Motivo : $BUILD_REASON"
 
           echo "=========================================="
@@ -369,35 +309,23 @@ jobs:
       # ============================================================
 
       - name: Plano de execução
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "IDzEE DBB BUILD"
-
           echo "=========================================="
 
           echo "Aplicação : $APP_NAME"
-
           echo "Usuário   : $ZOS_USER"
-
           echo "HLQ       : $DBB_HLQ"
-
           echo "USS       : $DBB_ROOT/$APP_NAME"
 
           echo
-
           echo "Alterados : $CHANGED_COUNT"
-
           echo "Removidos : $DELETED_COUNT"
 
           echo
-
           echo "Build     : $BUILD_TYPE"
-
           echo "Motivo    : $BUILD_REASON"
 
           echo "=========================================="
@@ -412,13 +340,9 @@ jobs:
       # ============================================================
 
       - name: Configurar upload
-
         if: env.BUILD_TYPE != 'none'
-
         shell: bash
-
         run: |
-
           cat > .zosattributes <<'EOF'
           .git/        -
           .github/     -
@@ -438,17 +362,11 @@ jobs:
       # ============================================================
 
       - name: Preparar workspace no z/OS
-
         if: env.BUILD_TYPE != 'none'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "PREPARANDO WORKSPACE"
-
           echo "=========================================="
 
           PREP_CMD="\
@@ -471,21 +389,14 @@ jobs:
       # ============================================================
 
       - name: Upload completo para o z/OS
-
         if: env.BUILD_TYPE == 'full'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "FULL UPLOAD"
-
           echo "=========================================="
 
           echo "Destino:"
-
           echo "$DBB_ROOT/$APP_NAME"
 
           zowe rse-api-for-zowe-cli upload dir-to-uss \
@@ -507,19 +418,13 @@ jobs:
       # ============================================================
 
       - name: Remover arquivos deletados do USS
-
         if: env.BUILD_TYPE == 'impact'
-
         shell: bash
-
         run: |
-
           DELETED_FILES="${PIPELINE_TMP}/deleted-files.txt"
 
           echo "=========================================="
-
           echo "ARQUIVOS REMOVIDOS"
-
           echo "=========================================="
 
           if [[ ! -s "$DELETED_FILES" ]]; then
@@ -536,7 +441,6 @@ jobs:
               REMOTE_FILE="${DBB_ROOT}/${APP_NAME}/${FILE}"
 
               echo "Removendo:"
-
               echo "$REMOTE_FILE"
 
               zowe rse-api-for-zowe-cli issue unix-shell \
@@ -561,23 +465,16 @@ jobs:
       # ============================================================
 
       - name: Upload incremental para o z/OS
-
         if: env.BUILD_TYPE == 'impact'
-
         shell: bash
-
         run: |
-
           CHANGED_FILES="${PIPELINE_TMP}/changed-files.txt"
 
           echo "=========================================="
-
           echo "IMPACT - UPLOAD INCREMENTAL"
-
           echo "=========================================="
 
           echo "Arquivos:"
-
           cat "$CHANGED_FILES" || true
 
           echo
@@ -598,7 +495,6 @@ jobs:
             if [[ ! -f "$LOCAL_FILE" ]]; then
 
               echo "Ignorando arquivo inexistente:"
-
               echo "$LOCAL_FILE"
 
               continue
@@ -606,11 +502,8 @@ jobs:
             fi
 
             echo "------------------------------------------"
-
             echo "Arquivo : $LOCAL_FILE"
-
             echo "Destino : $REMOTE_FILE"
-
             echo "------------------------------------------"
 
             # ------------------------------------------------------
@@ -644,17 +537,11 @@ jobs:
       # ============================================================
 
       - name: Verificar workspace no USS
-
         if: env.BUILD_TYPE != 'none'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "WORKSPACE USS"
-
           echo "=========================================="
 
           zowe rse-api-for-zowe-cli issue unix-shell \
@@ -685,17 +572,11 @@ jobs:
       # ============================================================
 
       - name: Preparar Git para Full Build
-
         if: env.BUILD_TYPE == 'full'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "CRIANDO BASELINE GIT"
-
           echo "=========================================="
 
           zowe rse-api-for-zowe-cli issue unix-shell \
@@ -728,17 +609,11 @@ jobs:
       # ============================================================
 
       - name: Verificar Git para Impact
-
         if: env.BUILD_TYPE == 'impact'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "GIT - IMPACT"
-
           echo "=========================================="
 
           zowe rse-api-for-zowe-cli issue unix-shell \
@@ -771,17 +646,11 @@ jobs:
       # ============================================================
 
       - name: Criar snapshot Git para Impact
-
         if: env.BUILD_TYPE == 'impact'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "CRIANDO SNAPSHOT GIT PARA IMPACT"
-
           echo "=========================================="
 
           zowe rse-api-for-zowe-cli issue unix-shell \
@@ -825,17 +694,11 @@ jobs:
       # ============================================================
 
       - name: Executar DBB Full Build
-
         if: env.BUILD_TYPE == 'full'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "FULL BUILD"
-
           echo "=========================================="
 
           echo "Motivo: $BUILD_REASON"
@@ -864,17 +727,11 @@ jobs:
       # ============================================================
 
       - name: Executar DBB Impact Build
-
         if: env.BUILD_TYPE == 'impact'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "IMPACT BUILD"
-
           echo "=========================================="
 
           echo "Motivo: $BUILD_REASON"
@@ -898,17 +755,11 @@ jobs:
       # ============================================================
 
       - name: Verificar resultado do build
-
         if: env.BUILD_TYPE != 'none'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "RESULTADO"
-
           echo "=========================================="
 
           zowe rse-api-for-zowe-cli issue unix-shell \
@@ -930,22 +781,18 @@ jobs:
       # ============================================================
       # 17. LOCALIZAR PACKAGE GERADO PELO DBB
       #
-      # O Package task do DBB/zBuilder gera o .tar dentro de logs/.
-      # O nome possui timestamp, então localizamos o mais recente.
+      # O Package task do zBuilder gera o arquivo .tar em logs/.
+      #
+      # Como o nome contém timestamp, buscamos o package mais
+      # recente.
       # ============================================================
 
       - name: Localizar package Wazi Deploy
-
         if: env.BUILD_TYPE != 'none'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "LOCALIZANDO PACKAGE DBB"
-
           echo "=========================================="
 
           PACKAGE_OUTPUT=$(zowe rse-api-for-zowe-cli issue unix-shell \
@@ -964,6 +811,7 @@ jobs:
 
           if [[ -z "$PACKAGE_REMOTE" ]]; then
 
+            echo
             echo "ERRO: nenhum package .tar encontrado em logs/"
 
             exit 1
@@ -972,6 +820,10 @@ jobs:
 
           PACKAGE_BASENAME=$(basename "$PACKAGE_REMOTE")
 
+          # O ls é executado dentro do workspace.
+          # Se retornar logs/arquivo.tar, transformamos em path
+          # absoluto do USS.
+
           if [[ "$PACKAGE_REMOTE" != /* ]]; then
 
             PACKAGE_REMOTE="${DBB_ROOT}/${APP_NAME}/${PACKAGE_REMOTE}"
@@ -979,15 +831,11 @@ jobs:
           fi
 
           echo
-
           echo "Package remoto:"
-
           echo "$PACKAGE_REMOTE"
 
           echo
-
-          echo "Nome do package:"
-
+          echo "Nome:"
           echo "$PACKAGE_BASENAME"
 
           echo "PACKAGE_REMOTE=$PACKAGE_REMOTE" >> "$GITHUB_ENV"
@@ -999,22 +847,16 @@ jobs:
       # ============================================================
 
       - name: Validar package no z/OS
-
         if: env.BUILD_TYPE != 'none'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "PACKAGE GERADO PELO DBB"
-
           echo "=========================================="
 
           zowe rse-api-for-zowe-cli issue unix-shell \
             --cwd "${DBB_ROOT}/${APP_NAME}" \
-            "echo 'Package:' && \
+            "echo 'Arquivo:' && \
              ls -l '${PACKAGE_REMOTE}' && \
              echo && \
              echo 'Conteúdo:' && \
@@ -1025,49 +867,41 @@ jobs:
             --password "$ZOS_PASSWORD"
 
       # ============================================================
-      # 19. PREPARAR DIRETÓRIO LOCAL
+      # 19. PREPARAR DIRETÓRIOS LOCAIS
       # ============================================================
 
-      - name: Preparar diretório local Wazi Deploy
-
+      - name: Preparar diretórios Wazi Deploy
         if: env.BUILD_TYPE != 'none'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
-          echo "PREPARANDO DIRETÓRIO LOCAL"
-
+          echo "PREPARANDO DIRETÓRIOS LOCAIS"
           echo "=========================================="
 
           mkdir -p "${PIPELINE_TMP}/package"
 
           mkdir -p "${PIPELINE_TMP}/deploy"
 
-          echo "Package dir : ${PIPELINE_TMP}/package"
+          echo "Package : ${PIPELINE_TMP}/package"
 
-          echo "Deploy dir  : ${PIPELINE_TMP}/deploy"
+          echo "Deploy  : ${PIPELINE_TMP}/deploy"
 
       # ============================================================
       # 20. DOWNLOAD DO PACKAGE
       #
-      # O .tar precisa ser transferido em modo binário.
+      # Sintaxe do RSE API CLI:
+      #
+      #   download uss-file <arquivo> -b -f <destino>
+      #
+      # O .tar é transferido em modo binário.
       # ============================================================
 
       - name: Baixar package para o runner
-
         if: env.BUILD_TYPE != 'none'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "DOWNLOAD PACKAGE"
-
           echo "=========================================="
 
           PACKAGE_LOCAL="${PIPELINE_TMP}/package/${PACKAGE_BASENAME}"
@@ -1076,10 +910,10 @@ jobs:
 
           echo "Local  : $PACKAGE_LOCAL"
 
-          zowe rse-api-for-zowe-cli download file-from-uss \
+          zowe rse-api-for-zowe-cli download uss-file \
             "$PACKAGE_REMOTE" \
-            "$PACKAGE_LOCAL" \
-            --binary \
+            -b \
+            -f "$PACKAGE_LOCAL" \
             --host "$ZOS_HOST" \
             --port "$ZOS_PORT" \
             --user "$ZOS_USER" \
@@ -1087,6 +921,7 @@ jobs:
 
           if [[ ! -f "$PACKAGE_LOCAL" ]]; then
 
+            echo
             echo "ERRO: package não encontrado após download."
 
             exit 1
@@ -1096,85 +931,94 @@ jobs:
           echo "PACKAGE_LOCAL=$PACKAGE_LOCAL" >> "$GITHUB_ENV"
 
           echo
+          echo "Package baixado:"
 
           ls -lh "$PACKAGE_LOCAL"
 
       # ============================================================
       # 21. VALIDAR PACKAGE NO RUNNER
+      #
+      # Confirma que o .tar chegou íntegro e mostra o manifest
+      # produzido pelo DBB Package task.
       # ============================================================
 
       - name: Validar package no runner
-
         if: env.BUILD_TYPE != 'none'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "VALIDANDO PACKAGE NO RUNNER"
-
           echo "=========================================="
+
+          echo "Arquivo:"
 
           ls -lh "$PACKAGE_LOCAL"
 
           echo
-
-          echo "Conteúdo do package:"
+          echo "Conteúdo:"
 
           tar -tf "$PACKAGE_LOCAL"
 
           echo
+          echo "=========================================="
+          echo "WAZIDEPLOY MANIFEST"
+          echo "=========================================="
 
-          echo "Manifest Wazi Deploy:"
-
-          tar -xOf "$PACKAGE_LOCAL" ./wazideploy_manifest.yml
+          tar -xOf \
+            "$PACKAGE_LOCAL" \
+            ./wazideploy_manifest.yml
 
       # ============================================================
       # 22. VERIFICAR DEPLOYMENT METHOD
+      #
+      # Esperado no repositório:
+      #
+      #   deploy/static-deployment-method.yml
       # ============================================================
 
       - name: Verificar deployment method
-
         if: env.BUILD_TYPE != 'none'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "DEPLOYMENT METHOD"
-
           echo "=========================================="
 
           if [[ ! -f "deploy/static-deployment-method.yml" ]]; then
 
-            echo "ERRO: deploy/static-deployment-method.yml não encontrado."
+            echo
+            echo "ERRO:"
+            echo "deploy/static-deployment-method.yml não encontrado."
 
             exit 1
 
           fi
 
+          echo "Arquivo encontrado:"
+          echo "deploy/static-deployment-method.yml"
+
+          echo
           cat deploy/static-deployment-method.yml
 
       # ============================================================
       # 23. GERAR DEPLOYMENT PLAN
+      #
+      # Entrada:
+      #
+      #   DBB Package (.tar)
+      #   Deployment Method
+      #
+      # Saída:
+      #
+      #   deployment_plan.yml
       # ============================================================
 
       - name: Gerar deployment plan
-
         if: env.BUILD_TYPE != 'none'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "WAZI DEPLOY - GENERATE"
-
           echo "=========================================="
 
           DEPLOYMENT_PLAN="${PIPELINE_TMP}/deploy/deployment_plan.yml"
@@ -1189,6 +1033,7 @@ jobs:
 
           if [[ ! -f "$DEPLOYMENT_PLAN" ]]; then
 
+            echo
             echo "ERRO: deployment_plan.yml não foi gerado."
 
             exit 1
@@ -1198,87 +1043,88 @@ jobs:
           echo "DEPLOYMENT_PLAN=$DEPLOYMENT_PLAN" >> "$GITHUB_ENV"
 
           echo
-
           echo "=========================================="
-
           echo "DEPLOYMENT PLAN GERADO"
-
           echo "=========================================="
 
           ls -lh "$DEPLOYMENT_PLAN"
 
           echo
-
           cat "$DEPLOYMENT_PLAN"
 
       # ============================================================
-      # 24. NENHUM BUILD
+      # 24. LISTAR ARQUIVOS GERADOS
+      # ============================================================
+
+      - name: Listar arquivos Wazi Deploy
+        if: env.BUILD_TYPE != 'none'
+        shell: bash
+        run: |
+          echo "=========================================="
+          echo "ARQUIVOS WAZI DEPLOY"
+          echo "=========================================="
+
+          find "$PIPELINE_TMP" \
+            -maxdepth 3 \
+            -type f \
+            -print
+
+      # ============================================================
+      # 25. NENHUM BUILD
       # ============================================================
 
       - name: Nenhum build necessário
-
         if: env.BUILD_TYPE == 'none'
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
           echo "BUILD IGNORADO"
-
           echo "=========================================="
 
           echo "$BUILD_REASON"
 
       # ============================================================
-      # 25. RESUMO
+      # 26. RESUMO
       # ============================================================
 
       - name: Resumo da execução
-
         if: always()
-
         shell: bash
-
         run: |
-
           echo "=========================================="
-
-          echo "RESUMO - IDzEE DBB BUILD"
-
+          echo "RESUMO - IDzEE DBB BUILD / WAZI DEPLOY"
           echo "=========================================="
 
           echo "Aplicação : $APP_NAME"
-
           echo "Commit    : $GITHUB_SHA"
-
           echo "Branch    : $GITHUB_REF_NAME"
-
           echo "Usuário   : $ZOS_USER"
 
           echo
-
           echo "Alterados : ${CHANGED_COUNT:-N/A}"
-
           echo "Removidos : ${DELETED_COUNT:-N/A}"
 
           echo
-
           echo "Build     : ${BUILD_TYPE:-N/A}"
-
           echo "Motivo    : ${BUILD_REASON:-N/A}"
 
           if [[ "${BUILD_TYPE:-none}" != "none" ]]; then
 
             echo
+            echo "Package remoto:"
+            echo "${PACKAGE_REMOTE:-N/A}"
 
-            echo "Package remoto : ${PACKAGE_REMOTE:-N/A}"
+            echo
+            echo "Package local:"
+            echo "${PACKAGE_LOCAL:-N/A}"
 
-            echo "Package local  : ${PACKAGE_LOCAL:-N/A}"
-
-            echo "Deployment plan: ${DEPLOYMENT_PLAN:-N/A}"
+            echo
+            echo "Deployment Plan:"
+            echo "${DEPLOYMENT_PLAN:-N/A}"
 
           fi
 
+          echo
+          echo "=========================================="
+          echo "PIPELINE FINALIZADA"
           echo "=========================================="
