@@ -116,12 +116,8 @@ jobs:
           ansible --version
 
           echo
-          echo "Wazi Deploy:"
-          wazideploy --version
-
-          echo
-          echo "wazideploy-generate:"
-          command -v wazideploy-generate
+          echo "Wazi Deploy Generate:"
+          wazideploy-generate -h
 
           echo
           echo "=========================================="
