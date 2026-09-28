@@ -1,21 +1,21 @@
-name: IDzEE Impact and Full Build with Wazi Deploy
+name: IDzEE Impact and Full Build with Wazi Deploy Backup
 
-on:
-  push:
-    branches:
-      - main
+#on:
+#  push:
+#    branches:
+#      - main
 
-  workflow_dispatch:
-    inputs:
-      build_type:
-        description: "Tipo de build"
-        required: true
-        default: auto
-        type: choice
-        options:
-          - auto
-          - impact
-          - full
+#  workflow_dispatch:
+#    inputs:
+#      build_type:
+#        description: "Tipo de build"
+#        required: true
+#        default: auto
+#        type: choice
+#        options:
+#          - auto
+#          - impact
+#          - full
 
 jobs:
   build:
@@ -1052,358 +1052,25 @@ jobs:
           echo
           cat "$DEPLOYMENT_PLAN"
 
-            # ============================================================
-      # 24. VALIDAR CONFIGURAÇÃO ANSIBLE / WAZI DEPLOY
-      #
-      # Estrutura esperada no repositório:
-      #
-      #   inventories/
-      #     inventory.yml
-      #     ansible.cfg
-      #     deploy.yml
-      #     group_vars/
-      #       all.yml
-      #
+      # ============================================================
+      # 24. LISTAR ARQUIVOS GERADOS
       # ============================================================
 
-      - name: Validar configuração Ansible
+      - name: Listar arquivos Wazi Deploy
         if: env.BUILD_TYPE != 'none'
         shell: bash
         run: |
           echo "=========================================="
-          echo "ANSIBLE / WAZI DEPLOY - CONFIGURAÇÃO"
+          echo "ARQUIVOS WAZI DEPLOY"
           echo "=========================================="
 
-          echo
-          echo "Verificando arquivos..."
-
-          test -f inventories/inventory.yml || {
-            echo "ERRO: inventories/inventory.yml não encontrado."
-            exit 1
-          }
-
-          test -f inventories/ansible.cfg || {
-            echo "ERRO: inventories/ansible.cfg não encontrado."
-            exit 1
-          }
-
-          test -f inventories/deploy.yml || {
-            echo "ERRO: inventories/deploy.yml não encontrado."
-            exit 1
-          }
-
-          test -f inventories/group_vars/all.yml || {
-            echo "ERRO: inventories/group_vars/all.yml não encontrado."
-            exit 1
-          }
-
-          echo
-          echo "Arquivos encontrados:"
-          echo "------------------------------------------"
-
-          find inventories \
+          find "$PIPELINE_TMP" \
             -maxdepth 3 \
             -type f \
             -print
 
-          echo "------------------------------------------"
-
-
       # ============================================================
-      # 25. VERIFICAR ANSIBLE E COLLECTION WAZI DEPLOY
-      # ============================================================
-
-      - name: Verificar Ansible e Wazi Deploy Collection
-        if: env.BUILD_TYPE != 'none'
-        shell: bash
-        env:
-          ANSIBLE_CONFIG: ${{ github.workspace }}/inventories/ansible.cfg
-        run: |
-          echo "=========================================="
-          echo "ANSIBLE / WAZI DEPLOY"
-          echo "=========================================="
-
-          echo
-          echo "Ansible:"
-          ansible --version
-
-          echo
-          echo "Collection Wazi Deploy:"
-          echo "------------------------------------------"
-
-          if ! ansible-galaxy collection list \
-            | grep -q "ibm.ibm_zos_wazi_deploy"; then
-
-            echo
-            echo "ERRO:"
-            echo "Collection ibm.ibm_zos_wazi_deploy não encontrada."
-            exit 1
-
-          fi
-
-          ansible-galaxy collection list \
-            | grep "ibm.ibm_zos_wazi_deploy"
-
-          echo "------------------------------------------"
-
-
-      # ============================================================
-      # 26. VALIDAR ARQUIVOS GERADOS PELO WAZI DEPLOY
-      #
-      # Neste ponto já devemos possuir:
-      #
-      #   PACKAGE_LOCAL
-      #   DEPLOYMENT_PLAN
-      #
-      # ============================================================
-
-      - name: Validar arquivos para deployment
-        if: env.BUILD_TYPE != 'none'
-        shell: bash
-        run: |
-          echo "=========================================="
-          echo "ARQUIVOS PARA DEPLOYMENT"
-          echo "=========================================="
-
-          echo
-          echo "Package:"
-          echo "$PACKAGE_LOCAL"
-
-          if [[ -z "${PACKAGE_LOCAL:-}" ]]; then
-            echo "ERRO: PACKAGE_LOCAL não definido."
-            exit 1
-          fi
-
-          if [[ ! -f "$PACKAGE_LOCAL" ]]; then
-            echo "ERRO: package não encontrado."
-            exit 1
-          fi
-
-          ls -lh "$PACKAGE_LOCAL"
-
-          echo
-          echo "Deployment Plan:"
-          echo "$DEPLOYMENT_PLAN"
-
-          if [[ -z "${DEPLOYMENT_PLAN:-}" ]]; then
-            echo "ERRO: DEPLOYMENT_PLAN não definido."
-            exit 1
-          fi
-
-          if [[ ! -f "$DEPLOYMENT_PLAN" ]]; then
-            echo "ERRO: deployment_plan.yml não encontrado."
-            exit 1
-          fi
-
-          ls -lh "$DEPLOYMENT_PLAN"
-
-          echo
-          echo "=========================================="
-          echo "ARQUIVOS VALIDADOS"
-          echo "=========================================="
-
-
-      # ============================================================
-      # 27. VALIDAR INVENTORY ANSIBLE
-      #
-      # ZOS_HOST e ZOS_USER já existem como secrets da pipeline.
-      #
-      # São passados como:
-      #
-      #   zos_host
-      #   zos_user
-      #
-      # para inventories/inventory.yml.
-      #
-      # ============================================================
-
-      - name: Validar inventory Ansible
-        if: env.BUILD_TYPE != 'none'
-        shell: bash
-        env:
-          ANSIBLE_CONFIG: ${{ github.workspace }}/inventories/ansible.cfg
-        run: |
-          echo "=========================================="
-          echo "ANSIBLE INVENTORY"
-          echo "=========================================="
-
-          ansible-inventory \
-            -i inventories/inventory.yml \
-            --list \
-            -e "zos_host=${ZOS_HOST}" \
-            -e "zos_user=${ZOS_USER}"
-
-          echo
-          echo "=========================================="
-          echo "INVENTORY VALIDADO"
-          echo "=========================================="
-
-
-      # ============================================================
-      # 28. VALIDAR PLAYBOOK
-      #
-      # Faz syntax-check antes de iniciar qualquer alteração
-      # no ambiente z/OS.
-      #
-      # ============================================================
-
-      - name: Validar playbook Wazi Deploy
-        if: env.BUILD_TYPE != 'none'
-        shell: bash
-        env:
-          ANSIBLE_CONFIG: ${{ github.workspace }}/inventories/ansible.cfg
-        run: |
-          echo "=========================================="
-          echo "WAZI DEPLOY - PLAYBOOK CHECK"
-          echo "=========================================="
-
-          ansible-playbook \
-            inventories/deploy.yml \
-            -i inventories/inventory.yml \
-            --syntax-check \
-            -e "zos_host=${ZOS_HOST}" \
-            -e "zos_user=${ZOS_USER}" \
-            -e "wd_deployment_plan_file=${DEPLOYMENT_PLAN}" \
-            -e "wd_package_file=${PACKAGE_LOCAL}"
-
-          echo
-          echo "=========================================="
-          echo "PLAYBOOK VALIDADO"
-          echo "=========================================="
-
-
-      # ============================================================
-      # 29. EXECUTAR DEPLOYMENT
-      #
-      # Wazi Deploy Ansible Translator
-      #
-      # Entradas:
-      #
-      #   wd_deployment_plan_file
-      #     -> deployment_plan.yml gerado no passo 23
-      #
-      #   wd_package_file
-      #     -> package .tar gerado pelo DBB e baixado para o runner
-      #
-      # ============================================================
-
-      - name: Executar Wazi Deploy
-        if: env.BUILD_TYPE != 'none'
-        shell: bash
-        env:
-          ANSIBLE_CONFIG: ${{ github.workspace }}/inventories/ansible.cfg
-        run: |
-          echo "=========================================="
-          echo "WAZI DEPLOY - DEPLOYMENT"
-          echo "=========================================="
-
-          echo
-          echo "Aplicação:"
-          echo "$APP_NAME"
-
-          echo
-          echo "Target z/OS:"
-          echo "$ZOS_HOST"
-
-          echo
-          echo "Package:"
-          echo "$PACKAGE_LOCAL"
-
-          echo
-          echo "Deployment Plan:"
-          echo "$DEPLOYMENT_PLAN"
-
-          echo
-          echo "Inventory:"
-          echo "inventories/inventory.yml"
-
-          echo
-          echo "Playbook:"
-          echo "inventories/deploy.yml"
-
-          echo
-          echo "=========================================="
-          echo "INICIANDO DEPLOYMENT"
-          echo "=========================================="
-
-          ansible-playbook \
-            inventories/deploy.yml \
-            -i inventories/inventory.yml \
-            -e "zos_host=${ZOS_HOST}" \
-            -e "zos_user=${ZOS_USER}" \
-            -e "wd_deployment_plan_file=${DEPLOYMENT_PLAN}" \
-            -e "wd_package_file=${PACKAGE_LOCAL}"
-
-          DEPLOY_RC=$?
-
-          echo
-          echo "=========================================="
-          echo "RESULTADO DO DEPLOYMENT"
-          echo "=========================================="
-
-          echo "Return code: $DEPLOY_RC"
-
-          if [[ "$DEPLOY_RC" -ne 0 ]]; then
-
-            echo
-            echo "ERRO:"
-            echo "Wazi Deploy terminou com erro."
-
-            exit "$DEPLOY_RC"
-
-          fi
-
-          echo
-          echo "Deployment concluído com sucesso."
-
-
-      # ============================================================
-      # 30. LISTAR ARQUIVOS APÓS DEPLOYMENT
-      #
-      # Permite visualizar evidências e arquivos produzidos
-      # pelo Wazi Deploy / Ansible.
-      #
-      # ============================================================
-
-      - name: Listar arquivos após deployment
-        if: env.BUILD_TYPE != 'none'
-        shell: bash
-        run: |
-          echo "=========================================="
-          echo "ARQUIVOS APÓS DEPLOYMENT"
-          echo "=========================================="
-
-          echo
-          echo "PIPELINE_TMP:"
-          echo "$PIPELINE_TMP"
-
-          echo
-          find "$PIPELINE_TMP" \
-            -maxdepth 4 \
-            -type f \
-            -print || true
-
-          echo
-          echo "Possíveis evidências no workspace:"
-          echo "------------------------------------------"
-
-          find . \
-            -maxdepth 4 \
-            -type f \
-            \( \
-              -iname '*evidence*' \
-              -o \
-              -iname '*report*' \
-              -o \
-              -iname '*log*' \
-            \) \
-            -print 2>/dev/null || true
-
-          echo "------------------------------------------"
-
-
-      # ============================================================
-      # 31. NENHUM BUILD
+      # 25. NENHUM BUILD
       # ============================================================
 
       - name: Nenhum build necessário
@@ -1416,9 +1083,8 @@ jobs:
 
           echo "$BUILD_REASON"
 
-
       # ============================================================
-      # 32. RESUMO
+      # 26. RESUMO
       # ============================================================
 
       - name: Resumo da execução
@@ -1426,7 +1092,7 @@ jobs:
         shell: bash
         run: |
           echo "=========================================="
-          echo "RESUMO - IDzEE DBB / WAZI DEPLOY"
+          echo "RESUMO - IDzEE DBB BUILD / WAZI DEPLOY"
           echo "=========================================="
 
           echo "Aplicação : $APP_NAME"
@@ -1445,11 +1111,6 @@ jobs:
           if [[ "${BUILD_TYPE:-none}" != "none" ]]; then
 
             echo
-            echo "------------------------------------------"
-            echo "WAZI DEPLOY"
-            echo "------------------------------------------"
-
-            echo
             echo "Package remoto:"
             echo "${PACKAGE_REMOTE:-N/A}"
 
@@ -1460,14 +1121,6 @@ jobs:
             echo
             echo "Deployment Plan:"
             echo "${DEPLOYMENT_PLAN:-N/A}"
-
-            echo
-            echo "Inventory:"
-            echo "inventories/inventory.yml"
-
-            echo
-            echo "Playbook:"
-            echo "inventories/deploy.yml"
 
           fi
 
