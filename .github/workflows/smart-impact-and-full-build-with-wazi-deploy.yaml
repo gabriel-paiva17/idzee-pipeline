@@ -1328,6 +1328,7 @@ jobs:
 
           ansible-playbook \
             inventories/deploy.yml \
+            -vvv \
             -i inventories/inventory.yml \
             -e "zos_host=${ZOS_HOST}" \
             -e "zos_user=${ZOS_USER}" \
