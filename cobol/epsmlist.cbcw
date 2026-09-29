@@ -193,7 +193,6 @@
            END-IF
            .
 
-
        A300-SEND-MAP.
                    EXEC CICS
                      SEND MAP ('EPSMLIS')
