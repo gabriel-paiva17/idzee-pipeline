@@ -1,6 +1,6 @@
 all:
   hosts:
     zos_env_test:
-      ansible_host: zosvaltinho.ddns.net 
-      ansible_user: B027086 
+      ansible_host: "zosvaltinho.ddns.net" 
+      ansible_user: "B027086" 
       ansible_ssh_port: 22
