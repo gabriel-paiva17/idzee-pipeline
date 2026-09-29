@@ -36,9 +36,6 @@
                REDEFINES W-PRINC-CNVRT
                                PIC 9(10)V99.
 
-
-
-
        01 W-CALL-PROGRAM                      PIC X(8).
        01 RESPONSE                            PIC S9(8) COMP.
        01 INTERNAL-PROGRAM-VARIABLES.
