@@ -1263,6 +1263,7 @@ jobs:
             --syntax-check \
             -e "zos_host=${ZOS_HOST}" \
             -e "zos_user=${ZOS_USER}" \
+            -e "ansible_password=${ZOS_PASSWORD}" \
             -e "wd_deployment_plan_file=${DEPLOYMENT_PLAN}" \
             -e "wd_package_file=${PACKAGE_LOCAL}"
 
@@ -1332,6 +1333,7 @@ jobs:
             -i inventories/inventory.yml \
             -e "zos_host=${ZOS_HOST}" \
             -e "zos_user=${ZOS_USER}" \
+            -e "ansible_password=${ZOS_PASSWORD}" \
             -e "wd_deployment_plan_file=${DEPLOYMENT_PLAN}" \
             -e "wd_package_file=${PACKAGE_LOCAL}"
 
