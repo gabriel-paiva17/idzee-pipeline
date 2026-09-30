@@ -100,7 +100,7 @@ db2_sys_def:
 default_cics_cmci_action: 'PHASEIN'
 cics_sys_def:
    cmci_host: "{{ ansible_host }}"
-   cmci_port: 1490
+   cmci_port: 39320
 #   cmci_cert: 
 #   cmci_key: 
    cmci_user: "{{ansible_user}}"
