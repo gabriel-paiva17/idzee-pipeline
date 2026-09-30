@@ -32,28 +32,28 @@ activities:
             description: |
               This step copies artifacts into PDSs
     types:
-      - name: 'DBRM'
+      # - name: 'DBRM'
       - name: 'LOAD'
       - name: 'CICSLOAD'
       - name: 'MAPLOAD'
       - name: 'JCL'
     is_artifact: True
 
-  - name: DB2
-    description: |
-      This activity is dedicated to DBRM bind modules
-    actions:
-        - name: UPDATE
-          description: |
-            This action is applicable when DBRM modules are updated
-          states:
-             - UNDEFINED
-          steps:
-          - name: DB2_BIND_PACKAGE
-          - name: DB2_BIND_PLAN
-    types:
-      - name: 'DBRM'
-    is_artifact: True
+  # - name: DB2
+  #   description: |
+  #     This activity is dedicated to DBRM bind modules
+  #   actions:
+  #       - name: UPDATE
+  #         description: |
+  #           This action is applicable when DBRM modules are updated
+  #         states:
+  #            - UNDEFINED
+  #         steps:
+  #         - name: DB2_BIND_PACKAGE
+  #         - name: DB2_BIND_PLAN
+  #   types:
+  #     - name: 'DBRM'
+  #   is_artifact: True
 
   - name: CICS
     description: |
