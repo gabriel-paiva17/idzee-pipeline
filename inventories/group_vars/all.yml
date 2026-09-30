@@ -83,7 +83,7 @@ default_plan_jobcard: "BINDPLA JOB 'WD-PLANBIND',MSGLEVEL=(1,1),MSGCLASS=R,NOTIF
 default_db2_user: "{{ansible_user}}"
 default_db2_action: "REPLACE"
 db2_sys_def:
-   sdsnload: DSN.V12R1M0.SDSNLOAD
+   sdsnload: DSND10.SDSNLOAD
    subsys: DBC1
    qualifier: GENADB0
    package: GENASA1
