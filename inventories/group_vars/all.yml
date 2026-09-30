@@ -122,15 +122,16 @@ types:
     is_load: True
     aliases: True
     force_lock: True
-  - pattern: .*\.DBRM$
-    pds:
-      name: '{{ hlq}}.DBRM'
-      spec: "{{common_pds_binary_spec}}"
-      backup: '{{ hlq }}.BACK.DBRM'
-    is_binary: True
-    force_lock: True
-    db2_systems:
-    - "{{ db2_sys_def }}"
+  # DB2 bind temporariamente desativado
+  # - pattern: .*\.DBRM$
+  #   pds:
+  #     name: '{{ hlq}}.DBRM'
+  #     spec: "{{common_pds_binary_spec}}"
+  #     backup: '{{ hlq }}.BACK.DBRM'
+  #   is_binary: True
+  #   force_lock: True
+  #   db2_systems:
+  #   - "{{ db2_sys_def }}"
   - pattern: .*\.CICSLOAD$
     pds:
       name: '{{ hlq }}.LOADLIB'
