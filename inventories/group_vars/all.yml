@@ -105,7 +105,7 @@ cics_sys_def:
 #   cmci_key: 
    cmci_user: "{{ansible_user}}"
    cmci_password: "{{ansible_password if ansible_password is defined else None}}"
-   context: CICS01
+   context: CICSA001
    scheme: http
 #   scope: 
    insecure: true
