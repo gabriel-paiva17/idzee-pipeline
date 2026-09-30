@@ -210,6 +210,7 @@
             END-EXEC.
 
 
+
        A600-CALCULATE-MORTGAGE.
            DISPLAY 'TESTANDO'
            MOVE SAVE-COMM-AREA   TO DFHCOMMAREA.
@@ -228,4 +229,3 @@
                                  TO WS-FORMAT-NUMBER.
            MOVE WS-FORMAT-NUMBER TO OUTMAP-LOAN(DISP-COUNT).
 
-           
