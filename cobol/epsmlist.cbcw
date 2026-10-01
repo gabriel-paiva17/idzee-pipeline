@@ -129,6 +129,7 @@
            MOVE 'N'    TO CLOSE-FILE.
            MOVE 'N'    TO END-OF-FILE.
 
+
            EXEC CICS STARTBR DATASET('EPSMORTF')
                      RIDFLD(RID-LENGTH) RBA
                      EQUAL
